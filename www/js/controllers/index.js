@@ -1,5 +1,5 @@
 angular.module('mollect')
 
-.controller('ListCtrl', function($scope, Projects) {
-    $scope.projects = Projects;
+.controller('IndexCtrl', function($scope) {
+
 })

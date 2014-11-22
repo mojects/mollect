@@ -1,3 +1,5 @@
+<form name="myForm">
+
 <div class="row">
     <div class="large-12 columns">
         <input type="text" ng-model="node"  placeholder="Thing..." />
@@ -17,3 +19,7 @@
         <textarea placeholder="Comment"></textarea>
     </div>
 </div>
+
+<button ng-click="save()" ng-disabled="myForm.$invalid" class="small round button">Save</button>
+
+</form>

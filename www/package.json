@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": "http-server/bin/http-server"
+  },
+
+  "name":"mol",
+  "subdomain":"mol",
+  "version":"0.0.0-3",
+  "engines":{"node":"0.10.x"}
+}

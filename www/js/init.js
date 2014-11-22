@@ -18,6 +18,9 @@ angular.module('mollect', ['ngRoute'])
                 controller:'NewCtrl',
                 templateUrl:'views/new.html'
             })
+            .when('/stuff', {
+                templateUrl:'views/stuff.html'
+            })
             .otherwise({
                 redirectTo:'/'
             });
