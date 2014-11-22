@@ -1,8 +1,10 @@
 angular.module('mollect')
 
-.controller('NewCtrl', function($scope, $location, Projects) {
+.controller('NewCtrl', function($scope, $location, Node) {
+
     $scope.save = function() {
-        Projects.$add($scope.project).then(function(data) {
+        var node = new Node($scope.thing);
+        node.$save().then(function(data) {
             $location.path('/');
         });
     };

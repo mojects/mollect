@@ -1,7 +1,7 @@
-angular.module('mollect', ['ngRoute'])
+angular.module('mollect', ['ngRoute', 'ngResource'])
 
-    .factory('Nodes', ['$resource', function($resource) {
-        return $resource('/nodes/:id', null);
+    .factory('Node', ['$resource', function($resource) {
+        return $resource('http://mollect-server:3001/nodes/:id', null);
     }])
 
     .config(function($routeProvider) {
