@@ -1,8 +1,4 @@
-angular.module('mollect', ['ngRoute', 'ngResource'])
-
-    .factory('Node', ['$resource', function($resource) {
-        return $resource('http://mollect-server:3001/nodes/:id', null);
-    }])
+angular.module('mollect', ['ngRoute', 'ngResource', 'tagger'])
 
     .config(function($routeProvider) {
         $routeProvider
@@ -18,12 +14,37 @@ angular.module('mollect', ['ngRoute', 'ngResource'])
                 controller:'NewCtrl',
                 templateUrl:'views/new.html'
             })
+            .when('/node/:nodeId', {
+                controller:'NodeCtrl',
+                templateUrl:'views/node.html'
+            })
+
             .when('/stuff', {
                 templateUrl:'views/stuff.html'
             })
+            .when('/error', {
+                templateUrl:'views/error.html'
+            })
             .otherwise({
-                redirectTo:'/'
+                templateUrl:'views/error.html'
             });
+    })
+
+    .run(function($window, $rootScope, dbInitializer) {
+        $rootScope.online = navigator.onLine;
+        $window.addEventListener("offline", function () {
+            $rootScope.$apply(function() {
+                $rootScope.online = false;
+            });
+        }, false);
+        $window.addEventListener("online", function () {
+            $rootScope.$apply(function() {
+                $rootScope.online = true;
+            });
+        }, false);
+
+        dbInitializer;
+
     })
 
 

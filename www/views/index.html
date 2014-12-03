@@ -1,7 +1,15 @@
 <div class="row">
-    <h1>Welcome to da indax, bro!</h1>
+    <h1>Welcome to da indax, bro! {{info}}</h1>
     <div class="large-12 columns">
         <a href="#/new" class="small round button">New thing</a>
         <a href="#/stuff" class="small round button">HTML Components</a>
+
+        <div>
+            <ul>
+                <li ng-repeat="node in nodes"><a ng-href="#/node/{{node.id}}">{{node.name}}</a></li>
+            </ul>
+        </div>
+
     </div>
+
 </div>

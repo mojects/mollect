@@ -1,22 +1,31 @@
 <form name="myForm">
 
 <div class="row">
+
+    <div data-alert class="alert-box alert round" ng-class="{hide: !alert}">
+        <span>{{alert}}</span>
+        <a href="#" class="close">&times;</a>
+    </div>
+    <div data-alert class="alert-box success round" ng-class="{hide: !info}">
+        <span>{{info}}</span>
+        <a href="#" class="close">&times;</a>
+    </div>
+
+
     <div class="large-12 columns">
         <input type="text" ng-model="thing.name"  placeholder="Thing..." />
-        <a href="#" class="small round button">Seduction</a>
-        <a href="#" class="small round button">Business</a>
-        <a href="#" class="small round button">Art</a>
     </div>
-    <div class="large-12 columns">
+</div>
 
-        <input type="text" style="width:200px; float: left" placeholder="New tag" />
-        <a href="#" class="small round button" style="float: left; margin-left: 10px">+</a>
+<div class="row" style="height: 50px">
+    <div class="large-12 columns">
+        Tags: <tagger ng-model="tags" options="tags_list" style="width:600px"/>
     </div>
 </div>
 
 <div class="row">
     <div class="large-12 columns">
-        <textarea placeholder="Comment"></textarea>
+        <textarea ng-model="thing.description" placeholder="Comment"></textarea>
     </div>
 </div>
 

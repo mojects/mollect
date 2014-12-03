@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foundation | Welcome</title>
+    <title>Mollect</title>
     <link rel="stylesheet" href="css/foundation.min.css" />
+    <link rel="stylesheet" href="bower_components/angular-tagger/build/angular-tagger.css" />
   </head>
   <body ng-app="mollect">
 
@@ -21,11 +22,14 @@
   <!-- JS: -->
 
 <script src="js/vendor/modernizr.js"></script>
-<script src="js/vendor/jquery.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="js/vendor/foundation.min.js"></script>
+  <script src="js/vendor/jquery.websql.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
   <script src="bower_components/angular-route/angular-route.min.js"></script>
   <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+  <script src="bower_components/angular-tagger/build/angular-tagger.min.js"></script>
+  <script src="bower_components/async/lib/async.js"></script>
   <!--
     <script type="text/javascript" src="cordova.js"></script>
 -->
@@ -34,8 +38,11 @@
 <script src="js/init.js"></script>
 <script src="js/controllers/index.js"></script>
 <script src="js/controllers/new.js"></script>
+  <script src="js/controllers/node.js"></script>
+  <script src="js/model/dbinit.js"></script>
+  <script src="js/model/nodes.js"></script>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
        $(document).foundation();
        app.initialize();
     </script>
