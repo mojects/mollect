@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test</title>
+  <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="../build/angular-tagger.js"></script>
+  <script type="text/javascript">
+    angular.module("testapp", ["tagger"])
+    angular.module("testapp").controller("TestCtrl", function($scope){
+      $scope.options = ["Text", "Markdown", "HTML", "PHP", "Python", "Java", "JavaScript", "Ruby", "VHDL", "Verilog", "C#", "C/C++"]
+      $scope.tags = ["Markdown", "Ruby"]
+
+      $scope.font = null
+      $scope.fonts = [
+        {id: 1, name: "Lucida"},
+        {id: 2, name: "DejaVu"},
+        {id: 3, name: "Bitstream"},
+        {id: 4, name: "Liberation"},
+        {id: 5, name: "Verdana"}
+      ]
+
+      $scope.font2 = $scope.fonts[1]
+
+      $scope.showName = function(font){ return font.name; }
+      $scope.createName = function(name) { return {name: name} }
+
+      $scope.empty = {
+        value: [],
+        options: [],
+        addOption: function() {
+          $scope.empty.options.push(Math.random())
+        }
+      }
+
+      $scope.selected = function(item){
+        console.log("SELECTED ", item)
+      }
+
+      $scope.foc = function(){
+        document.getElementById("s1").focus()
+      }
+    })
+  </script>
+  <link rel="stylesheet" type="text/css" href="../build/angular-tagger.css"/>
+  <style type="text/css">
+    body {
+      font-size: 10px;
+      font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;;
+      padding: 50px;
+    }
+
+    .angular-tagger {
+      width: 300px;
+    }
+  </style>
+</head>
+<body ng-app="testapp">
+  <div ng-controller="TestCtrl">
+    <tagger ng-model="tags" options="options" placeholder="Select some tags"></tagger>
+    <input type="text"/>
+    <tagger ng-model="tags" options="options" disable-new></tagger>
+    <tagger ng-model="tags" options="options" disable-new limit=3></tagger>
+    <pre>{{ tags | json }}</pre>
+
+    single: <tagger tabindex="-1" id="s1" ng-model="font2" options="fonts" placeholder="Choose font" single display-fun="showName" create-fun="createName" on-select="selected"></tagger>
+    single: <tagger tabindex="-1" id="s1" ng-model="font" options="fonts" placeholder="Choose font" single display-fun="showName" create-fun="createName" on-select="selected"></tagger>
+    <pre>{{ font | json }}</pre>
+    <button ng-click='foc()'>Focus</button>
+
+    <tagger ng-model="empty.value" options="empty.options" placeholder="Select something"></tagger>
+    <pre>{{ empty | json }}</pre>
+
+    <button ng-click="empty.addOption()">Add option</button>
+  </div>
+</body>
+</html>

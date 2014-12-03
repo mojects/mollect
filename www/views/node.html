@@ -1,0 +1,41 @@
+<div class="row">
+
+    <h3>{{node.name}}</h3>
+
+    <div ng-class="{hide: node.category=='tag'}">{{node.description}}</div>
+
+</div>
+
+<div class="row" ng-class="{hide: node.category=='tag'}">
+
+    <hr>
+
+    Tags:
+
+    <ul class="stack-for-small round secondary button-group">
+        <li ng-repeat="tag in node.tags">
+            <a ng-href="#/node/{{tag.id}}" class="small button">{{tag.name}}</a>
+        </li>
+    </ul>
+
+</div>
+
+    <!--
+    -----
+
+        -----
+        button: Add new case  -- #/new/parent-node/:id
+
+        Related notes:  <list of related nodes type='things'> - это значит, что это реакции/дальнейшее действие на эту вещь.
+        1. прямой ребенок
+        2. ... (Случаи, когда реакции общие, не конкретные)
+
+        (Список: лимитирован на 5) Кнопка More reactions: (выводится, если там еще что-то есть. т.е. к БД лимит идет на 6 записей)
+        -----
+        Alternative actions:
+
+        1)	родительские в перемешку с родительски-родительскими. через один.
+
+
+    -->
+
