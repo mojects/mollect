@@ -4,7 +4,7 @@ angular.module('mollect', ['ngRoute', 'ngResource', 'tagger'])
         $routeProvider
             .when('/', {
                 controller:'IndexCtrl',
-                templateUrl:'views/index.html'
+                templateUrl:'views/home.html'
             })
          /*   .when('/edit/:projectId', {
                 controller:'EditCtrl',
