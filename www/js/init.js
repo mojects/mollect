@@ -1,7 +1,3 @@
-function log(msg) {
-    $("#msg").append(";"+msg);
-}
-
 ang = angular.module('mollect', ['ngRoute', 'ngResource', 'tagger']);
 
 if (document.URL.indexOf("http://localhost:8081") !== -1) {

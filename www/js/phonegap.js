@@ -17,7 +17,7 @@ var phonegap = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         console.log('onDeviceReady');
-        $("#msg").append(";onDeviceReady");
+        log("onDeviceReady");
     }
 };
 
