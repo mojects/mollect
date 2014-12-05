@@ -1,5 +1,6 @@
 function sync($http) {
     var self = this;
+    var db = $.WebSQL('mollect');
     this.nodes = null;
     this.links = null;
     this.clientVersion = null;
@@ -14,12 +15,12 @@ function sync($http) {
     }
     this.retrievePrerequisites = function(callback) {
         async.series([
-            self.selectNodes,
-            self.getClientVersion
-        ],
-        function(err, results) {
-            callback(null, true);
-        });
+                self.selectNodes,
+                self.getClientVersion
+            ],
+            function(err, results) {
+                callback(null, true);
+            });
     }
     this.pingServer = function(callback) {
         var req = {
@@ -38,11 +39,11 @@ function sync($http) {
             "UPDATE nodes SET sync='sent' WHERE sync='new';",
             "SELECT * FROM nodes WHERE NOT sync IN ('ok', 'new');"
         ).fail(function (tx, err) {
-            throw new Error(err.message);
-        }).done(function (nodes) {
-            self.nodes = nodes;
-            callback(null, true);
-        });
+                throw new Error(err.message);
+            }).done(function (nodes) {
+                self.nodes = nodes;
+                callback(null, true);
+            });
     }
     this.sendRequestToServer = function(callback) {
         var req = {
@@ -59,22 +60,29 @@ function sync($http) {
         });
     }
     this.processServerAnswer = function(callback, data) {
+
+        // Check for possible conflicts on local storage
+        // ToDO:
+        // Те записи, что успели стать new, убираем из очереди обновления и
+
+
+        // Transform to array which SQL will like
         var nodes = [];
         data.nodes.forEach(
             function(node) {
                 nodes.push([node.id, node.name, node.description, node.category]);
             }
         );
-        var db = $.WebSQL('mollect');
+        // Update nodes in local storage
         db.query(
             "INSERT OR REPLACE INTO nodes (id, name, description, category, sync, is_deleted) " +
             "VALUES (?, ?, ?, ?, 'original', 0)",
             nodes
         ).fail(function (tx, err) {
-            throw new Error(err.message);
-        }).done(function (version) {
-            return true;
-        });
+                throw new Error(err.message);
+            }).done(function (version) {
+                return true;
+            });
     }
     this.buildDataForServer = function() {
         var data = {};
@@ -84,7 +92,6 @@ function sync($http) {
         return data;
     }
     this.getClientVersion = function(callback) {
-        var db = $.WebSQL('mollect');
         db.query(
             "SELECT version FROM client_version;"
         ).fail(function (tx, err) {
@@ -99,10 +106,10 @@ function sync($http) {
         db.query(
             "UPDATE client_version SET version="+version+";"
         ).fail(function (tx, err) {
-            throw new Error(err.message);
-        }).done(function (version) {
-            return true;
-        });
+                throw new Error(err.message);
+            }).done(function (version) {
+                return true;
+            });
     }
 }
 
@@ -128,7 +135,7 @@ angular.module('mollect')
         ).fail(function (tx, err) {
                 throw new Error(err.message);
             }).done(function (products) {
-                 sync.run();
+                sync.run();
             });
         return true;
         /*

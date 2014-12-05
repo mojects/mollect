@@ -1,3 +1,4 @@
+
 angular.module('mollect')
 
     .service('Nodes', Nodes)
@@ -5,6 +6,7 @@ angular.module('mollect')
 function Nodes($q) {
 
     var db = $.WebSQL('mollect');
+    var self = this;
 
     this.insertNode = function(node, callback) {
         db.query(
@@ -14,22 +16,45 @@ function Nodes($q) {
         ).fail(function (tx, err) {
                 callback(err.message);
             }).done(function (result) {
-                alert('Returned ID: ' + result.insertId);
+                seld.linkTags(result.insertId, node.tags);
             });
     }
 
-    this.getWithDetails = function(nodeId) {
-        var deferred = $q.defer();
+    this.linkTags = function(nodeId, tags) {
+        //
+    }
 
+    this.getNodeWithDetails = function(nodeId) {
+        var resultNode = {};
         db.query(
-            "SELECT * FROM nodes;"
+            "SELECT * FROM nodes WHERE id=?;", nodeId
         ).fail(function (tx, err) {
-                deferred.reject(err.message);
-            }).done(function (nodes) {
-                deferred.resolve(nodes);
+                throw new Error(err.message);
+            }).done(function (node) {
+                resultNode.id = node.id;
+                resultNode.name = node.name;
+                resultNode.category = node.category;
+                resultNode.description = node.description;
+                resultNode.tags = self.getParentTags(nodeId);
             });
 
-        return deferred.promise;
+        return resultNode;
+    }
+
+    this.getParentTags = function(nodeId) {
+        var resultTags = {};
+
+        db.query(
+            "SELECT parents.* FROM links l "+
+            "JOIN nodes parents USING (l.parent_id=parents.id) "+
+            "WHERE parents.category='tag' AND l.child_id=?;", nodeId
+        ).fail(function (tx, err) {
+                throw new Error(err.message);
+            }).done(function (tags) {
+                resultTags.push.apply(resultTags, tags);
+            });
+
+        return resultTags;
     }
 
     this.getIndexNodes = function() {
@@ -46,4 +71,51 @@ function Nodes($q) {
 
         return resultNodes;
     }
+
+};
+
+function Node(nodeId) {
+
+    var id = nodeId;
+    var db = $.WebSQL('mollect');
+    var self = this;
+
+    this.getRelatedNodes = function() {
+        async.parallel([
+                self.getDirectChildren,
+                self.getParentTagReactions
+            ],
+            function () {
+
+            });
+
+    }
+
+    this.getDirectChildren = function(callback) {
+        db.query(
+            "SELECT children.* "+
+            "FROM links l "+
+            "JOIN nodes children USING (l.children_id=children.id) "+
+            "WHERE l.parent_id=?;", self.nodeId
+        ).fail(function (tx, err) {
+                throw new Error(err.message);
+            }).done(function (children) {
+                callback(null, children);
+            });
+    }
+
+    this.getParentTagReactions = function(callback) {
+        db.query(
+            "SELECT ractions.* FROM links l "+
+            "JOIN nodes parents USING (l.parent_id=parents.id) "+
+            "JOIN links parent_clinks USING (parents.id=parent_clinks.parent_id) "+
+              "WHERE parents.category='tag' AND l.child_id=?;", nodeId
+        ).fail(function (tx, err) {
+            throw new Error(err.message);
+        }).done(function (reactions) {
+            callback(null, reactions);
+        });
+    }
+
+
 }
