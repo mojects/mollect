@@ -1,5 +1,4 @@
-
-angular.module('mollect')
+ang
 
     .service('Nodes', Nodes)
 
@@ -8,16 +7,21 @@ function Nodes($q) {
     var db = $.WebSQL('mollect');
     var self = this;
 
-    this.insertNode = function(node, callback) {
+    this.insertNode = function(node) {
+        var deferred = $q.defer();
+
         db.query(
             "INSERT INTO nodes (name, category, description ,sync) "+
             "VALUES (?,?,?,'new');",
             [node.name, node.category, node.description ]
         ).fail(function (tx, err) {
-                callback(err.message);
+                throw new Error(err.message);
             }).done(function (result) {
-                seld.linkTags(result.insertId, node.tags);
+                //seld.linkTags(result.insertId, node.tags);
+                deferred.resolve();
             });
+
+        return deferred.promise;
     }
 
     this.linkTags = function(nodeId, tags) {
@@ -58,18 +62,17 @@ function Nodes($q) {
     }
 
     this.getIndexNodes = function() {
-        var resultNodes = [];
+        var deferred = $q.defer();
 
         db.query(
             "SELECT * FROM nodes;"
         ).fail(function (tx, err) {
                 throw new Error(err.message);
             }).done(function (nodes) {
-                // resultNodes = nodes;
-                resultNodes.push.apply(resultNodes, nodes)
+                deferred.resolve(nodes);
             });
 
-        return resultNodes;
+        return deferred.promise;
     }
 
 };

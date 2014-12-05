@@ -1,5 +1,10 @@
 angular.module('mollect')
 
 .controller('IndexCtrl', function($scope, Nodes) {
-        $scope.nodes = Nodes.getIndexNodes();
+    console.log('IndexCtrl');
+
+    Nodes.getIndexNodes()
+        .then(function(nodes) {
+                $scope.nodes = nodes;
+        });
 })

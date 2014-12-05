@@ -1,5 +1,17 @@
-angular.module('mollect', ['ngRoute', 'ngResource', 'tagger'])
+function log(msg) {
+    $("#msg").append(";"+msg);
+}
 
+ang = angular.module('mollect', ['ngRoute', 'ngResource', 'tagger']);
+
+if (document.URL.indexOf("http://localhost:8081") !== -1) {
+    ang.constant('host', 'http://mollect-server:3001');
+    //ang.constant('host', 'http://mollect-server.herokuapp.com');
+} else {
+    ang.constant('host', 'http://mollect-server.herokuapp.com');
+}
+
+ang
     .config(function($routeProvider) {
         $routeProvider
             .when('/', {
@@ -43,8 +55,7 @@ angular.module('mollect', ['ngRoute', 'ngResource', 'tagger'])
             });
         }, false);
 
-        dbInitializer;
-
+        log(document.URL);
     })
 
 

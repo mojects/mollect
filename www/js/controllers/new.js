@@ -4,14 +4,20 @@ angular.module('mollect')
 
     $scope.thing = {category: "thing"};
     // Tags:
+        /*
     var tags_objects = Nodes.tags(function() {
         tags_array = [];
         angular.forEach(tags_objects, function(tag) {
             this.push(String(tag.name));
         }, tags_array);
         $scope.tags_list = tags_array;
-    });
+    });   */
     $scope.tags = [];
+
+    $scope.error = function(err) {
+        $scope.alert = err;
+        $scope.$apply();
+    }
 
     $scope.save = function() {
 
@@ -20,19 +26,10 @@ angular.module('mollect')
         $scope.info = "";
         $scope.alert = "";
 
-        async.series([
-            async.apply(Nodes.insertNode, $scope.thing)
-            ],
-            function(err, results){
-                if (err) {
-                    $scope.alert = err;
-                    $scope.$apply();
-                }else {
-
-                }
+        Nodes.insertNode($scope.thing)
+            .then(function(){
+                $scope.info = "Saved!";
             });
-
-        return;
 
                 /*
         def self.save_node_with_tags (params)

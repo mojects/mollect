@@ -1,4 +1,4 @@
-function sync($http) {
+function sync($http, host) {
     var self = this;
     var db = $.WebSQL('mollect');
     this.nodes = null;
@@ -25,7 +25,7 @@ function sync($http) {
     this.pingServer = function(callback) {
         var req = {
             method: 'OPTIONS',
-            url: 'http://mollect-server:3001/sync'
+            url: host+'/sync'
         }
         $http(req).success(function(data, status, headers, config){
             callback(null, true);
@@ -48,7 +48,7 @@ function sync($http) {
     this.sendRequestToServer = function(callback) {
         var req = {
             method: 'POST',
-            url: 'http://mollect-server:3001/sync.json',
+            url: host+'/sync.json',
             data: self.buildDataForServer()
         }
 
@@ -113,11 +113,12 @@ function sync($http) {
     }
 }
 
-angular.module('mollect')
+ang
 
     .service('sync', sync)
 
-    .factory('dbInitializer', function (sync) {
+    .factory('dbInitializer', function (sync, host) {
+        log(host);
         var db = $.WebSQL('mollect');
         db.query(
             'CREATE TABLE IF NOT EXISTS ' +
