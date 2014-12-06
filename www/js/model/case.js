@@ -2,9 +2,9 @@ ang
 
     .service('Case', Case)
 
-function Case() {
+function Case($q, $rootScope, Node) {
 
-    var current = null;
+    this.current = null;
     var that = this;
 
     this.createFreshCase = function() {
@@ -21,6 +21,20 @@ function Case() {
 
     this.addTag = function() {
 
+    }
+
+    this.getRelatedNodes = function() {
+        var result = {}
+        async.parallel({
+                directChildren: this.current.getDirectChildren,
+                parentTagReactions: this.current.getParentTagReactions
+            },
+        function (err, r) {
+            $.extend(result, r);
+            $rootScope.$apply();
+        });
+
+        return result;
     }
 
 }

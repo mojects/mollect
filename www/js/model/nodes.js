@@ -94,22 +94,25 @@ function Node (nodeId) {
     }
 
     this.linkTags = function(callback) {
-        self.tags.forEach(function (tag) {
-            var tagRecord = newClass(Node);
-            async.series([
-                async.apply(tagRecord.find_or_create_by, {name: tag, category: "tag"}),
-                function (callback2) {
-                    var l = new Link();
-                    l.find_or_create_by.call( l,
-                        {parent_id: tagRecord.id, child_id: self.id},
-                        callback2);
-                }
-            ], function() {
-                console.log("id:"+self.id);
-                callback();
-            });
+        async.map(self.tags, self.linkTag, function(err, results){
+            callback();
         });
     }
+
+    this.linkTag = function (tag, callback) {
+        var tagRecord = newClass(Node);
+        async.series([
+            async.apply(tagRecord.find_or_create_by, {name: tag, category: "tag"}),
+            function (callback2) {
+                var l = new Link();
+                l.find_or_create_by.call( l,
+                    {parent_id: tagRecord.id, child_id: self.id},
+                    callback2);
+            }
+        ], function() {
+            callback();
+        });
+    };
 
 
     this.fillDetails = function(callback) {
@@ -135,17 +138,6 @@ function Node (nodeId) {
                 self.tags = tags;
                 callback();
             });
-    }
-
-    this.getRelatedNodes = function() {
-        async.parallel([
-                self.getDirectChildren,
-                self.getParentTagReactions
-            ],
-            function () {
-
-            });
-
     }
 
     this.getDirectChildren = function(callback) {
