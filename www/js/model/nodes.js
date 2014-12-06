@@ -1,7 +1,11 @@
 ang
 
    .service('Nodes', Nodes)
-   .factory('Node', function($q) { Node.prototype.$q = $q; return Node; });
+   .factory('Node', function($q, Link) {
+        Node.prototype.$q = $q;
+        Node.prototype.Link = Link;
+        return Node;
+    });
 
 function Nodes($q, $rootScope, Node) {
 
@@ -52,63 +56,66 @@ function Nodes($q, $rootScope, Node) {
  * @class Node
  * @extends ActiveRecord
  **/
-var Node = speculoos.Class({
-    extends : ActiveRecord,
-    constructor: function Node (nodeId) {
-        this.table = "nodes";
-        this.id = nodeId;
-        this.tags = [];
-        this.db = $.WebSQL('mollect');
-    },
+Node.prototype = new ActiveRecord();
+function Node (nodeId) {
+    this.table = "nodes";
+    this.id = nodeId;
+    this.tags = [];
 
-    setFields: function (node) {
-        this.name = node.name;
-        this.category = node.category;
-        this.description = node.description;
-        this.tags = node.tags;
-    },
+    var self = this;
 
-    save: function () {
+    this.setFields = function(node) {
+        self.name = node.name;
+        self.category = node.category;
+        self.description = node.description;
+        self.tags = node.tags;
+    };
+
+    this.save = function() {
         var deferred = this.$q.defer();
 
         async.series([
-            this.saveNode.bind(this),
-            this.linkTags.bind(this)
-        ], function () {
+            self.saveNode,
+            self.linkTags
+        ], function() {
             deferred.resolve();
         });
 
         return deferred.promise;
-    },
+    };
 
-    saveNode: function (callback) {
-        this.db.query(
-            "INSERT INTO nodes (name, category, description ,sync) " +
+    this.saveNode = function(callback) {
+        self.db.query(
+            "INSERT INTO nodes (name, category, description ,sync) "+
             "VALUES (?,?,?,'new');",
-            [this.name, this.category, this.description]
+            [self.name, self.category, self.description ]
         ).fail(dbErrorHandler)
             .done(function (result) {
-                this.id = result.insertId;
+                self.id = result.insertId;
                 callback();
             });
 
-    },
+    }
 
-    linkTags: function (callback) {
-        this.tags.forEach(function (tag) {
-            async.waterfall([
-                async.apply(Node.super.find_or_create_by.bind(this), {name: tag, category: "tag"}),
-                function (node, callback) {
-                    Link.find_or_create_by(
-                        {parent_id: node.id, child_id: self.id},
-                        callback);
+    this.linkTags = function(callback) {
+        self.tags.forEach(function (tag) {
+            var tagRecord = new Node();
+            async.series([
+                async.apply(tagRecord.find_or_create_by.bind(tagRecord), {name: tag, category: "tag"}),
+                function (callback2) {
+                    var l = new Link();
+                    l.find_or_create_by.call( l,
+                        {parent_id: tagRecord.id, child_id: self.id},
+                        callback2);
                 }
-            ]);
+            ], function() {
+                console.log("id:"+self.id);
+                callback();
+            });
         });
     }
-});
 
-function Node2 (nodeId) {
+
     this.fillDetails = function(callback) {
         self.db.query(
             "SELECT * FROM nodes WHERE id=?;", [self.id]
@@ -170,5 +177,3 @@ function Node2 (nodeId) {
     }
 };
 
-var n = new Node();
-n.test();
