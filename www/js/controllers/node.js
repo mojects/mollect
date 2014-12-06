@@ -7,7 +7,7 @@ angular.module('mollect')
 
         Case.createFreshCase()
             .then(function () {
-                $scope.relatedNodes = Case.getRelatedNodes;
+                $scope.relatedNodes = Case.getRelatedNodes();
             });
 
 

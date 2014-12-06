@@ -141,25 +141,23 @@ function Node (nodeId) {
     }
 
     this.getDirectChildren = function(callback) {
-        self.db.query(
+        self.sql(
             "SELECT children.* "+
             "FROM links l "+
-            "JOIN nodes children ON (l.children_id=children.id) "+
-            "WHERE l.parent_id=?;", self.nodeId
-        ).fail(dbErrorHandler)
-            .done(function (children) {
+            "JOIN nodes children ON (l.child_id=children.id) "+
+            "WHERE l.parent_id=?;", self.id
+        ).done(function (children) {
                 callback(null, children);
             });
     }
 
     this.getParentTagReactions = function(callback) {
-        self.db.query(
-            "SELECT ractions.* FROM links l "+
+        self.sql(
+            "SELECT reactions.* FROM links l "+
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
-            "JOIN links parent_clinks ON (parents.id=parent_clinks.parent_id) "+
-            "WHERE parents.category='tag' AND l.child_id=?;", nodeId
-        ).fail(dbErrorHandler)
-            .done(function (reactions) {
+            "JOIN links reactions ON (parents.id=reactions.parent_id) "+
+            "WHERE parents.category='tag' AND l.child_id=?;", self.id
+        ).done(function (reactions) {
                 callback(null, reactions);
             });
     }
