@@ -53,7 +53,6 @@ function sync($http, host) {
         }
 
         $http(req).success(function(data, status, headers, config){
-            // alert('got the point!');
             self.processServerAnswer(callback, data);
         }).error(function(data, status, headers, config){
             throw new Error(status);
@@ -78,6 +77,25 @@ function sync($http, host) {
             "INSERT OR REPLACE INTO nodes (id, name, description, category, sync, is_deleted) " +
             "VALUES (?, ?, ?, ?, 'original', 0)",
             nodes
+        ).fail(function (tx, err) {
+                throw new Error(err.message);
+            }).done(function (version) {
+                return true;
+            });
+
+
+        // Transform to array which SQL will like
+        var links = [];
+        data.links.forEach(
+            function(link) {
+                links.push([link.id, link.parent_id, link.child_id, link.child_id]);
+            }
+        );
+        // Update nodes in local storage
+        db.query(
+            "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, sync, is_deleted) " +
+            "VALUES (?, ?, ?, ?, 'original', 0)",
+            links
         ).fail(function (tx, err) {
                 throw new Error(err.message);
             }).done(function (version) {

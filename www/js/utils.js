@@ -2,6 +2,11 @@ function log(msg) {
     $("#msg").prepend(msg+"<br/>");
 }
 
+function dbErrorHandler (tx, err) {
+    throw new Error(err.message);
+
+}
+
 $(document).foundation({
     offcanvas : {
         // Sets method in which offcanvas opens.
