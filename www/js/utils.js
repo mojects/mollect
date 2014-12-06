@@ -1,3 +1,42 @@
+/**
+ *
+ * CLASS utils
+ *
+ */
+
+function newClass(klass) {
+    var obj = new klass;
+
+    $.map(obj, function(value, key) {
+        if (typeof  value == "function") {
+            obj[key] = value.bind(obj);
+        }
+    });
+
+    return obj;
+}
+
+function extend(subClass, superClass) {
+    subClass.prototype = new superClass();
+}
+
+
+function PrintProperties(obj) {
+    console.log("----Object:---");
+
+    $.map(obj, function(value, key) {
+        console.log(key + ": " + typeof  value);
+        if (key == "find_or_create_by")
+            console.log( value);
+    });
+}
+
+/**
+ *
+ *
+ * @param msg
+ */
+
 function log(msg) {
     $("#msg").prepend(msg+"<br/>");
 }

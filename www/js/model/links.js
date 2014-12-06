@@ -1,3 +1,5 @@
+"use strict";
+
 ang
 
     .factory('Link', function($q) {
@@ -5,12 +7,8 @@ ang
         return Link;
     });
 
-
-Link.prototype = new ActiveRecord();
+extend(Link, ActiveRecord);
 function Link (linkId) {
     this.table = "links";
 }
 
-
-var n = new Link();
-n.test();

@@ -23,9 +23,10 @@ function ActiveRecord () {
                 self.id = result.insertId;
                 callback();
             });
-    }
+    };
 
     this.test = function () {
         console.log("table is : "+ this.table);
     }
 };
+

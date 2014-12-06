@@ -1,4 +1,4 @@
-function sync($http, host) {
+function sync($http, host, Nodes) {
     var self = this;
     var db = $.WebSQL('mollect');
     this.nodes = null;
@@ -99,6 +99,7 @@ function sync($http, host) {
         ).fail(function (tx, err) {
                 throw new Error(err.message);
             }).done(function (version) {
+                Nodes.getIndexNodes();
                 return true;
             });
     }

@@ -9,13 +9,8 @@ ang
 
 function Nodes($q, $rootScope, Node) {
 
-    var db = $.WebSQL('mollect');
-    var self = this;
-    var test = "popa"+Math.ceil(Math.random()*100);
-
-    this.test = function() {
-        return test;
-    }
+    this.db = $.WebSQL('mollect');
+    var indexNodes = [];
 
     this.getNodeWithDetails = function(nodeId) {
         var node = new Node(nodeId);
@@ -38,16 +33,17 @@ function Nodes($q, $rootScope, Node) {
     };
 
     this.getIndexNodes = function() {
-        var deferred = $q.defer();
-
-        db.query(
+        console.log("getIndexNodes");
+        indexNodes.length = 0;
+        this.db.query(
             "SELECT * FROM nodes;"
         ).fail(dbErrorHandler)
-            .done(function (nodes) {
-                deferred.resolve(nodes);
-            });
+        .done(function (nodes) {
+            indexNodes.push.apply(indexNodes, nodes);
+            $rootScope.$apply();
+        });
 
-        return deferred.promise;
+        return indexNodes;
     };
 
 };
@@ -99,9 +95,9 @@ function Node (nodeId) {
 
     this.linkTags = function(callback) {
         self.tags.forEach(function (tag) {
-            var tagRecord = new Node();
+            var tagRecord = newClass(Node);
             async.series([
-                async.apply(tagRecord.find_or_create_by.bind(tagRecord), {name: tag, category: "tag"}),
+                async.apply(tagRecord.find_or_create_by, {name: tag, category: "tag"}),
                 function (callback2) {
                     var l = new Link();
                     l.find_or_create_by.call( l,
@@ -123,7 +119,7 @@ function Node (nodeId) {
             .done(function (nodes) {
                 var node = nodes[0];
                 self.name = node.name;
-                slef.category = node.category;
+                self.category = node.category;
                 self.description = node.description;
                 callback();
             });
