@@ -19,9 +19,29 @@
 
 <div class="row" style="height: 50px">
     <div class="large-12 columns">
-        Tags: <tagger ng-model="tags" options="tags_list" style="width:600px"/>
+        Tags:
+        <angucomplete-alt id="tags"
+                          placeholder="Tags..."
+                          pause="100"
+                          clear-selected="true"
+                          override-suggestions="true"
+                          selected-object="selectedTag"
+                          local-data="tags_list"
+                          search-fields="name"
+                          title-field="name"
+                          minlength="1"/>
+        <br/>
     </div>
 </div>
+    <div class="row" style="height: 50px">
+        <div class="large-12 columns">
+            <ul class="inline-list">
+                <li ng-repeat="tag in tags"><span class="success radius label">
+                    {{tag}}
+                    <a ng-click="dropTag(tag)" class="close">&times;</a>
+                </span></li>
+        </div>
+    </div>
 
 <div class="row">
     <div class="large-12 columns">
@@ -29,6 +49,6 @@
     </div>
 </div>
 
-<button ng-click="save()" ng-disabled="myForm.$invalid" class="small round button">Save</button>
+<button type="button" ng-click="save()" ng-disabled="myForm.$invalid" class="small round button">Save</button>
 
 </form>

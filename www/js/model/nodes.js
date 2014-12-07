@@ -33,11 +33,11 @@ function Nodes($q, $rootScope, Node) {
             "SELECT name FROM nodes WHERE category='tag';"
         ).fail(dbErrorHandler)
             .done(function (tags) {
-                var tags_array = [];
+                /*var tags_array = [];
                 angular.forEach(tags, function(tag) {
                     this.push(String(tag.name));
-                }, tags_array);
-                deferred.resolve(tags_array);
+                }, tags_array);*/
+                deferred.resolve(tags);
             });
 
         return deferred.promise;

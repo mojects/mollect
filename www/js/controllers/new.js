@@ -1,4 +1,4 @@
-angular.module('mollect')
+ang
 
 .controller('NewCtrl', function($scope, $location, Nodes, Case, $routeParams) {
 
@@ -16,6 +16,20 @@ angular.module('mollect')
     $scope.error = function(err) {
         $scope.alert = err;
         $scope.$apply();
+    }
+
+    $scope.$watch('selectedTag', function(newValue, oldValue) {
+        if (newValue) {
+            var tag = newValue.originalObject;
+            if (typeof tag == 'object') tag = tag.name;
+            console.log("New tag: " + tag);
+            $scope.tags.push(tag);
+        }
+    });
+
+    $scope.dropTag = function(tag) {
+        console.log("Drop tag: " + tag);
+        $scope.tags.remove(tag);
     }
 
     $scope.save = function() {

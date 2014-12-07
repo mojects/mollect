@@ -1,4 +1,4 @@
-ang = angular.module('mollect', ['ngRoute', 'ngResource', 'tagger']);
+ang = angular.module('mollect', ['ngRoute', 'ngResource', 'angucomplete-alt']);
 
 if (document.URL.indexOf("http://localhost:8081") !== -1) {
     ang.constant('host', 'http://mollect-server:3001');

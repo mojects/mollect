@@ -5,3 +5,20 @@ button.small, .button.small {
     padding-left: 1.75rem;
     font-size: 0.7125rem;
 }
+
+.label a {
+    color: white;
+}
+.label .close {
+    font-size: 1.22222rem;
+    padding: 4px 0px 8px 10px;
+    line-height: 0;
+    color: #333333;
+    opacity: 0.3;
+    position: relative;
+    top: 2px;
+}
+
+.inline-list>li {
+    margin-left: 0.375rem;
+}
