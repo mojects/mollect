@@ -26,6 +26,23 @@ function Nodes($q, $rootScope, Node) {
         return node;
     };
 
+    this.tags = function() {
+        var deferred = $q.defer();
+
+        this.db.query(
+            "SELECT name FROM nodes WHERE category='tag';"
+        ).fail(dbErrorHandler)
+            .done(function (tags) {
+                var tags_array = [];
+                angular.forEach(tags, function(tag) {
+                    this.push(String(tag.name));
+                }, tags_array);
+                deferred.resolve(tags_array);
+            });
+
+        return deferred.promise;
+    };
+
     this.insertNode = function(inputNode) {
         var node = new Node(null);
         node.setFields(inputNode);
@@ -74,16 +91,17 @@ function Node (nodeId) {
             self.saveNode,
             self.linkTags
         ], function() {
-            deferred.resolve();
+            deferred.resolve(self.id);
         });
 
         return deferred.promise;
     };
 
     this.saveNode = function(callback) {
+        var sync = (self.isTemp ? "temp" : "new");
         self.db.query(
             "INSERT INTO nodes (name, category, description ,sync) "+
-            "VALUES (?,?,?,'new');",
+            "VALUES (?,?,?,'"+sync+"');",
             [self.name, self.category, self.description ]
         ).fail(dbErrorHandler)
             .done(function (result) {
@@ -116,7 +134,22 @@ function Node (nodeId) {
 
     this.linkChild = function(child) {
         var l = new Link();
+        l.isTemp = this.isTemp;
         l.find_or_create_by({parent_id: this.id, child_id: child.id});
+    }
+
+    this.findLastCase = function(callback) {
+        self.db.query(
+            "SELECT max(id) id FROM nodes WHERE category='case';"
+        ).fail(dbErrorHandler)
+            .done(function (nodes) {
+                if (nodes[0].id != null) {
+                    self.id = nodes[0].id;
+                    callback(true);
+                } else
+                    callback(false);
+            });
+
     }
 
     this.fillDetails = function(callback) {
@@ -146,7 +179,7 @@ function Node (nodeId) {
 
     this.getDirectChildren = function(callback) {
         self.sql(
-            "SELECT children.* "+
+            "SELECT DISTINCT children.* "+
             "FROM links l "+
             "JOIN nodes children ON (l.child_id=children.id) "+
             "WHERE l.parent_id=?;", self.id
@@ -157,7 +190,7 @@ function Node (nodeId) {
 
     this.getParentTagReactions = function(callback) {
         self.sql(
-            "SELECT reactions.* FROM links l "+
+            "SELECT DISTINCT reactions.* FROM links l "+
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
             "JOIN links link_p ON (parents.id=link_p.parent_id) "+
             "JOIN nodes reactions ON (link_p.child_id=reactions.id) " +

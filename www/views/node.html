@@ -1,6 +1,10 @@
 <div class="row">
+    <div class="small-6 large-4 columns"><h3>{{node.name}}</h3></div>
+    <div class="show-for-large-up large-4 columns">...</div>
+    <div class="small-6 large-4 columns"><a ng-href="#/new?isReaction=true" class="button">Новая реакция</a></div>
 
-    <h3>{{node.name}}</h3>
+
+
 
     <div ng-class="{hide: node.category=='tag'}">{{node.description}}</div>
 
@@ -19,6 +23,21 @@
     </ul>
 
 </div>
+
+<div class="row">
+
+    <hr>
+
+    Related:
+
+    <ul class="stack-for-small round secondary">
+        <li ng-repeat="node in relatedNodes">
+            <a ng-href="#/node/{{node.id}}" class="small button">{{node.name}}</a>
+        </li>
+    </ul>
+
+</div>
+
 
 <div class="row">
 {{relatedNodes}}

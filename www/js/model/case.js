@@ -11,15 +11,46 @@ function Case($q, $rootScope, Node) {
     this.createFreshCase = function() {
         var node = this.currentCaseNode = new Node();
         node.category='case';
+        node.isTemp = true;
         return node.save();
     }
 
-    this.attachNode = function(nodeId) {
-        this.currentStepNode = new Node(nodeId);
-        this.currentCaseNode.linkChild(this.currentStepNode);
-        return $q(function(resolve, reject) {
-                    resolve('Hello, ' + name + '!');
+    this.getRecentCase = function(callback) {
+        var node = new Node();
+        node.isTemp = true;
+        node.findLastCase(function(found) {
+            if (found) that.currentCaseNode = node;
+            callback(found);
         });
+    }
+
+    this.attachNode = function(nodeId) {
+        var deferred = $q.defer();
+
+        async.series([
+            function(callback) {
+                if (that.currentCaseNode) {
+                    callback();
+                    return;
+                }
+                that.getRecentCase(function (found) {
+                    if (found) {
+                        callback();
+                    } else {
+                        that.createFreshCase().then(callback);
+                    }
+                });
+
+            }, function(callback) {
+                that.currentStepNode = new Node(nodeId);
+                that.currentCaseNode.linkChild(that.currentStepNode);
+                callback();
+            }
+        ], function() {
+            deferred.resolve();
+        });
+
+        return deferred.promise;
     }
 
     this.getAttributesForNewReaction = function() {
@@ -34,12 +65,15 @@ function Case($q, $rootScope, Node) {
 
     this.getRelatedNodes = function() {
         var result = {};
-        async.parallel({
-                directChildren: this.currentStepNode.getDirectChildren,
-                parentTagReactions: this.currentStepNode.getParentTagReactions
-            },
+        async.parallel([
+                this.currentStepNode.getDirectChildren,
+                this.currentStepNode.getParentTagReactions
+            ],
         function (err, r) {
-            $.extend(result, r);
+            var merged_array = r.reduce(function(a, b) {
+                return a.concat(b);
+            });
+            $.extend(result, merged_array);
             $rootScope.$apply();
         });
 

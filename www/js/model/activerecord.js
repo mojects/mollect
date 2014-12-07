@@ -1,5 +1,5 @@
 function ActiveRecord () {
-
+    this.isTemp = false;
     this.db = $.WebSQL('mollect');
 
     this.find_or_create_by = function (obj, callback) {
@@ -29,9 +29,10 @@ function ActiveRecord () {
         });
 
         function insertNewRecord() {
+            var sync = (self.isTemp ? "temp" : "new");
             self.sql(
                 "INSERT INTO " + self.table + " (" + fields + ", sync) " +
-                "VALUES (" + placeholders + ",'new');",
+                "VALUES (" + placeholders + ",'"+sync+"');",
                 values
             ).done(function (result) {
                 self.id = result.insertId;

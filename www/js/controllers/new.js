@@ -1,17 +1,16 @@
 angular.module('mollect')
 
-.controller('NewCtrl', function($scope, $location, Nodes) {
+.controller('NewCtrl', function($scope, $location, Nodes, Case, $routeParams) {
+
+    if ($routeParams.isReaction) {
+        $scope.info = Case.currentCaseNode;
+    }
 
     $scope.thing = {category: "thing"};
     // Tags:
-        /*
-    var tags_objects = Nodes.tags(function() {
-        tags_array = [];
-        angular.forEach(tags_objects, function(tag) {
-            this.push(String(tag.name));
-        }, tags_array);
-        $scope.tags_list = tags_array;
-    });   */
+    var tags_objects = Nodes.tags().then(function(tags) {
+        $scope.tags_list = tags;
+    });
     $scope.tags = [];
 
     $scope.error = function(err) {
@@ -20,15 +19,15 @@ angular.module('mollect')
     }
 
     $scope.save = function() {
-
         $scope.thing.tags = $scope.tags;
 
         $scope.info = "";
         $scope.alert = "";
 
         Nodes.insertNode($scope.thing)
-            .then(function(){
+            .then(function(nodeId){
                 $scope.info = "Saved!";
+                location.href = "#/node/" + nodeId;
             });
 
                 /*

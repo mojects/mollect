@@ -15,7 +15,8 @@ function sync($http, host, Nodes) {
     }
     this.retrievePrerequisites = function(callback) {
         async.series([
-                self.selectNodes,
+                async.apply(self.retrieveEntriesForUpdate, "nodes"),
+                async.apply(self.retrieveEntriesForUpdate, "links"),
                 self.getClientVersion
             ],
             function(err, results) {
@@ -33,15 +34,15 @@ function sync($http, host, Nodes) {
             throw new Error(status);
         });
     }
-    this.selectNodes = function(callback) {
+    this.retrieveEntriesForUpdate = function(table, callback) {
         var db = $.WebSQL('mollect');
         db.query(
-            "UPDATE nodes SET sync='sent' WHERE sync='new';",
-            "SELECT * FROM nodes WHERE NOT sync IN ('ok', 'new');"
+            "UPDATE "+table+" SET sync='sent' WHERE sync='new';",
+            "SELECT * FROM "+table+" WHERE NOT sync IN ('original', 'new', 'temp');"
         ).fail(function (tx, err) {
                 throw new Error(err.message);
-            }).done(function (nodes) {
-                self.nodes = nodes;
+            }).done(function (rows) {
+                self[table] = rows;
                 callback(null, true);
             });
     }
