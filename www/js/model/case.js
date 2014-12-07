@@ -4,13 +4,22 @@ ang
 
 function Case($q, $rootScope, Node) {
 
-    this.current = null;
+    this.currentCaseNode = null;
+    this.currentStepNode = null;
     var that = this;
 
     this.createFreshCase = function() {
-        var node = this.current = new Node();
+        var node = this.currentCaseNode = new Node();
         node.category='case';
         return node.save();
+    }
+
+    this.attachNode = function(nodeId) {
+        this.currentStepNode = new Node(nodeId);
+        this.currentCaseNode.linkChild(this.currentStepNode);
+        return $q(function(resolve, reject) {
+                    resolve('Hello, ' + name + '!');
+        });
     }
 
     this.getAttributesForNewReaction = function() {
@@ -24,10 +33,10 @@ function Case($q, $rootScope, Node) {
     }
 
     this.getRelatedNodes = function() {
-        var result = {}
+        var result = {};
         async.parallel({
-                directChildren: this.current.getDirectChildren,
-                parentTagReactions: this.current.getParentTagReactions
+                directChildren: this.currentStepNode.getDirectChildren,
+                parentTagReactions: this.currentStepNode.getParentTagReactions
             },
         function (err, r) {
             $.extend(result, r);

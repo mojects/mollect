@@ -114,6 +114,10 @@ function Node (nodeId) {
         });
     };
 
+    this.linkChild = function(child) {
+        var l = new Link();
+        l.find_or_create_by({parent_id: this.id, child_id: child.id});
+    }
 
     this.fillDetails = function(callback) {
         self.db.query(
@@ -155,8 +159,10 @@ function Node (nodeId) {
         self.sql(
             "SELECT reactions.* FROM links l "+
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
-            "JOIN links reactions ON (parents.id=reactions.parent_id) "+
-            "WHERE parents.category='tag' AND l.child_id=?;", self.id
+            "JOIN links link_p ON (parents.id=link_p.parent_id) "+
+            "JOIN nodes reactions ON (link_p.child_id=reactions.id) " +
+            "WHERE parents.category='tag' AND l.child_id=? AND reactions.id!=?;",
+            [self.id, self.id]
         ).done(function (reactions) {
                 callback(null, reactions);
             });

@@ -22,7 +22,7 @@ function ActiveRecord () {
         ).done(function (result) {
             if (result.length>0)  {
                 self.id = result[0].id;
-                callback();
+                if (callback) callback();
             } else {
                 insertNewRecord();
             }
@@ -35,7 +35,7 @@ function ActiveRecord () {
                 values
             ).done(function (result) {
                 self.id = result.insertId;
-                callback();
+                if (callback) callback();
             });
         }
     };

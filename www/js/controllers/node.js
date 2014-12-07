@@ -7,6 +7,8 @@ angular.module('mollect')
 
         Case.createFreshCase()
             .then(function () {
+                Case.attachNode($routeParams.nodeId);
+            }).then(function () {
                 $scope.relatedNodes = Case.getRelatedNodes();
             });
 
