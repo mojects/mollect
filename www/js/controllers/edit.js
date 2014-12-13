@@ -17,7 +17,9 @@ ang
         $scope.node = {category: "thing"};
         $scope.node.tags = [];
         if ($routeParams.isReaction) {
-            $scope.suggestedTags =  Case.getAttributesForNewReaction();
+            var relatedTags = Case.getAttributesForNewReaction();
+            $scope.suggestedTags = relatedTags.unselected;
+            $scope.node.tags = relatedTags.selected;
         }
     }
 
