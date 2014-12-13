@@ -56,9 +56,30 @@ function Case($q, $rootScope, Node) {
     }
 
     this.getAttributesForNewReaction = function() {
-        // 1. Текущая ситуация (то, что как бы из нее прямо вытекает) - не поставлено по умолчанию.
+        // 1. Текущая нода (то, что как бы из нее прямо вытекает)
+        //    - не поставлено по умолчанию.
+        // 3. Тэги текущего нода
         // 2. Тэги текущей ситуации (Пока что все)
+        var r = {selected: null, unselected: null};
+        r.selected = [];
+        r.ubselected = [];
+        r.unselected.push(this.currentStepNode.name);
 
+        async.parallel({
+                setpParentTags: this.currentStepNode.fillParentTags,
+                caseChildTags: this.currentCaseNode.getChildTags
+            },
+            function (err, rows) {
+                merge_into(r.selected, this.currentStepNode.tags);
+
+                rows.caseChildTags.forEach(function(row) {
+                    r.selected.push(row["name"]);
+                });
+
+                $rootScope.$apply();
+            });
+
+        return result;
     };
 
     this.addTag = function() {
@@ -71,13 +92,14 @@ function Case($q, $rootScope, Node) {
                 this.currentStepNode.getDirectChildren,
                 this.currentStepNode.getParentTagReactions
             ],
-        function (err, r) {
-            var merged_array = r.reduce(function(a, b) {
-                return a.concat(b);
+            function (err, r) {
+                // Вытащить многомерный массив в плоский:
+                var merged_array = r.reduce(function(a, b) {
+                    return a.concat(b);
+                });
+                $.extend(result, merged_array);
+                $rootScope.$apply();
             });
-            $.extend(result, merged_array);
-            $rootScope.$apply();
-        });
 
         return result;
     }

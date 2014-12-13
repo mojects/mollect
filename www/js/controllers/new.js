@@ -3,7 +3,7 @@ ang
 .controller('NewCtrl', function($scope, $location, Nodes, Case, $routeParams) {
 
     if ($routeParams.isReaction) {
-        $scope.info = Case.currentCaseNode;
+        $scope.suggestedTags =  Case.getAttributesForNewReaction();
     }
 
     $scope.thing = {category: "thing"};

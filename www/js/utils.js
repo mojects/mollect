@@ -63,6 +63,10 @@ Array.prototype.remove = function() {
     return this;
 };
 
+function merge_into(into, chunk) {
+    into.push.apply(into, chunk);
+}
+
 
 // For todays date;
 Date.prototype.today = function () {
