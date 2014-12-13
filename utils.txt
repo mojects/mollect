@@ -1,3 +1,10 @@
+Start server:
+sudo service nginx start
+cd www/
+npm start
+
+*------------------------*
+
 
 `rails generate scaffold post title body:text published:boolean`
 `rails generate scaffold purchase amount:decimal tracking_id:integer:uniq`

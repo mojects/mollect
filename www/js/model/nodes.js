@@ -1,7 +1,7 @@
 ang
 
-   .service('Nodes', Nodes)
-   .factory('Node', function($q, Link) {
+    .service('Nodes', Nodes)
+    .factory('Node', function($q, Link) {
         Node.prototype.$q = $q;
         Node.prototype.Link = Link;
         return Node;
@@ -34,9 +34,9 @@ function Nodes($q, $rootScope, Node) {
         ).fail(dbErrorHandler)
             .done(function (tags) {
                 /*var tags_array = [];
-                angular.forEach(tags, function(tag) {
-                    this.push(String(tag.name));
-                }, tags_array);*/
+                 angular.forEach(tags, function(tag) {
+                 this.push(String(tag.name));
+                 }, tags_array);*/
                 deferred.resolve(tags);
             });
 
@@ -55,10 +55,10 @@ function Nodes($q, $rootScope, Node) {
         this.db.query(
             "SELECT * FROM nodes;"
         ).fail(dbErrorHandler)
-        .done(function (nodes) {
-            indexNodes.push.apply(indexNodes, nodes);
-            $rootScope.$apply();
-        });
+            .done(function (nodes) {
+                indexNodes.push.apply(indexNodes, nodes);
+                $rootScope.$apply();
+            });
 
         return indexNodes;
     };
@@ -96,6 +96,19 @@ function Node (nodeId) {
 
         return deferred.promise;
     };
+
+    this.delete = function() {
+        var deferred = this.$q.defer();
+
+        self.sql(
+            "DELETE FROM nodes "+
+            "WHERE id=?;", self.id
+        ).done(function () {
+                deferred.resolve();
+            });
+
+        return deferred.promise;
+    }
 
     this.saveNode = function(callback) {
         self.find_or_create_by(
@@ -169,12 +182,23 @@ function Node (nodeId) {
             });
     }
 
+    this.getChildTags = function(callback) {
+        this.getChildren("tag", callback);
+    }
+
     this.getDirectChildren = function(callback) {
+        this.getChildren(false, callback);
+    }
+
+    this.getChildren = function(type, callback) {
+        var where = "";
+        if (type)
+            where += " AND children.category='"+type+"'";
         self.sql(
             "SELECT DISTINCT children.* "+
             "FROM links l "+
             "JOIN nodes children ON (l.child_id=children.id) "+
-            "WHERE l.parent_id=?;", self.id
+            "WHERE l.parent_id=? "+where+";", self.id
         ).done(function (children) {
                 callback(null, children);
             });
@@ -193,4 +217,3 @@ function Node (nodeId) {
             });
     }
 };
-
