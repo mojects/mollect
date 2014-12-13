@@ -13,7 +13,7 @@
 
 
     <div class="large-12 columns">
-        <input type="text" ng-model="thing.name"  placeholder="Thing..." />
+        <input type="text" ng-model="node.name"  placeholder="Thing..." />
     </div>
 </div>
 
@@ -43,7 +43,7 @@
     <div class="row" style="height: 50px">
         <div class="large-12 columns">
             <ul class="inline-list">
-                <li ng-repeat="tag in tags"><span class="success radius label">
+                <li ng-repeat="tag in node.tags"><span class="success radius label">
                     {{tag}}
                     <a ng-click="dropTag(tag)" class="close">&times;</a>
                 </span></li>
@@ -52,7 +52,7 @@
 
 <div class="row">
     <div class="large-12 columns">
-        <textarea ng-model="thing.description" placeholder="Comment"></textarea>
+        <textarea ng-model="node.description" placeholder="Comment"></textarea>
     </div>
 </div>
 
