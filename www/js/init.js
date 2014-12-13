@@ -10,21 +10,21 @@ if (document.URL.indexOf("http://localhost:8081") !== -1) {
 ang
     .config(function($routeProvider) {
         $routeProvider
-            .when('/', {
-                controller:'IndexCtrl',
+            .when('', {
+                controller:'HomeCtrl',
                 templateUrl:'views/home.html'
             })
-         /*   .when('/edit/:projectId', {
+            .when('/edit/:nodeId', {
                 controller:'EditCtrl',
-                templateUrl:'detail.html'
-            })                         */
+                templateUrl:'views/edit.html'
+            })                         
             .when('/new', {
-                controller:'NewCtrl',
-                templateUrl:'views/new.html'
+                controller:'EditCtrl',
+                templateUrl:'views/edit.html'
             })
             .when('/node/:nodeId', {
-                controller:'NodeCtrl',
-                templateUrl:'views/node.html'
+                controller:'ShowCtrl',
+                templateUrl:'views/show.html'
             })
 
             .when('/stuff', {

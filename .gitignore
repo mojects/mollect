@@ -1,4 +1,5 @@
 .idea/
+.c9/
 www/node_modules/
 www/http-server/
 www/npm-debug.log
