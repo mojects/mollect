@@ -1,17 +1,21 @@
 ang
 
-.controller('NewCtrl', function($scope, $location, Nodes, Case, $routeParams) {
+.controller('EditCtrl', function($scope, $location, Nodes, Case, $routeParams) {
 
-    if ($routeParams.isReaction) {
-        $scope.suggestedTags =  Case.getAttributesForNewReaction();
-    }
-
-    $scope.thing = {category: "thing"};
-    // Tags:
+    // All possible tags:
     var tags_objects = Nodes.tags().then(function(tags) {
         $scope.tags_list = tags;
     });
-    $scope.tags = [];
+
+   
+    // New:
+    $scope.initNew = function() {
+        $scope.thing = {category: "thing"};
+        $scope.tags = [];
+        if ($routeParams.isReaction) {
+            $scope.suggestedTags =  Case.getAttributesForNewReaction();
+        }
+    }
 
     // ERROR
     $scope.error = function(err) {
