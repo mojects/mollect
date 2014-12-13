@@ -17,6 +17,10 @@ ang
         $scope.node = {category: "thing"};
         $scope.node.tags = [];
         if ($routeParams.isReaction) {
+            if (Case.currentStepNode == null) {
+                $scope.alert = "currentStepNode missing";
+                return;
+            }
             var relatedTags = Case.getAttributesForNewReaction();
             $scope.suggestedTags = relatedTags.unselected;
             $scope.node.tags = relatedTags.selected;
@@ -38,19 +42,30 @@ ang
         if (newValue) {
             var tag = newValue.originalObject;
             if (typeof tag == 'object') tag = tag.name;
-            console.log("New tag: " + tag);
-            $scope.node.tags.push(tag);
+            $scope.addTag(tag);
         }
     });
 
+    $scope.tagInputChanged = function(tag) {
+        $scope.inputTag = tag;
+    }
+
+    $scope.addTag = function(tag) {
+        console.log("New tag: " + tag);
+        $scope.node.tags.pushUnique({ name: tag });
+    }
+
     $scope.dropTag = function(tag) {
         console.log("Drop tag: " + tag);
-        $scope.node.tags.remove(tag);
+        $scope.node.tags.removeByName(tag);
     }
 
     $scope.save = function() {
         $scope.info = "";
         $scope.alert = "";
+
+        if ($scope.inputTag)
+            $scope.addTag($scope.inputTag);
 
         Nodes.insertNode($scope.node)
             .then(function(nodeId){

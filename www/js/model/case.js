@@ -62,24 +62,28 @@ function Case($q, $rootScope, Node) {
         // 2. Тэги текущей ситуации (Пока что все)
         var r = {selected: null, unselected: null};
         r.selected = [];
-        r.ubselected = [];
-        r.unselected.push(this.currentStepNode.name);
+        r.unselected = [];
+        self.currentStepNode.getName(function(name){
+            r.unselected.push(self.currentStepNode);
+        });
 
         async.parallel({
-                setpParentTags: this.currentStepNode.fillParentTags,
-                caseChildTags: this.currentCaseNode.getChildTags
+                stepParentTags: self.currentStepNode.fillParentTags,
+                caseChildTags: self.currentCaseNode.getChildTags
             },
             function (err, rows) {
-                merge_into(r.selected, this.currentStepNode.tags);
+                self.currentStepNode.tags.forEach(function(row) {
+                    r.selected.pushUnique(row);
+                });
 
                 rows.caseChildTags.forEach(function(row) {
-                    r.selected.push(row["name"]);
+                    r.selected.pushUnique(row);
                 });
 
                 $rootScope.$apply();
             });
 
-        return result;
+        return r;
     };
 
     this.addTag = function() {
@@ -87,7 +91,7 @@ function Case($q, $rootScope, Node) {
     }
 
     this.getRelatedNodes = function() {
-        var result = {};
+        var result = [];
         async.parallel([
                 this.currentStepNode.getDirectChildren,
                 this.currentStepNode.getParentTagReactions

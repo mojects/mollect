@@ -19,7 +19,7 @@ function ActiveRecord () {
         var fields = [ 'id' ];
         var values = [ lastId ];
         var insertPlaceholders = [ '?' ];
-        var whereCondition = "WHERE 1";
+        var whereCondition = "WHERE is_deleted=0";
         var whereValues = [];
 
         $.map(obj, function(value, key) {

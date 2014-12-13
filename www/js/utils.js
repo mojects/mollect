@@ -63,8 +63,33 @@ Array.prototype.remove = function() {
     return this;
 };
 
-function merge_into(into, chunk) {
-    into.push.apply(into, chunk);
+Array.prototype.removeByName = function(name) {
+    var self = this;
+    this.forEach(function(item, i){
+         if(item['name'] == name)
+             self.splice(i, 1);
+    });
+    return this;
+};
+
+Array.prototype.pushUnique = function(item) {
+    var skip = false;
+    if (typeof item == "object") {
+        this.forEach(function(i){
+            if(i['name'] == item.name)
+                skip = true;
+        });
+        if (!skip)
+            this.push(item);
+    } else {
+        if (this.indexOf(item) == -1)
+            this.push(item);
+    }
+    return this;
+};
+
+Array.prototype.merge = function(chunk) {
+    this.push.apply(this, chunk);
 }
 
 

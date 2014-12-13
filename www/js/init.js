@@ -10,7 +10,7 @@ if (document.URL.indexOf("http://localhost:8081") !== -1) {
 ang
     .config(function($routeProvider) {
         $routeProvider
-            .when('', {
+            .when('/', {
                 controller:'HomeCtrl',
                 templateUrl:'views/home.html'
             })
@@ -21,6 +21,10 @@ ang
             .when('/new', {
                 controller:'EditCtrl',
                 templateUrl:'views/edit.html'
+            })
+            .when('/delete/:nodeId', {
+                controller:'DeleteCtrl',
+                templateUrl:'views/show.html'
             })
             .when('/node/:nodeId', {
                 controller:'ShowCtrl',

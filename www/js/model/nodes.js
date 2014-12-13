@@ -30,7 +30,7 @@ function Nodes($q, $rootScope, Node) {
         var deferred = $q.defer();
 
         this.db.query(
-            "SELECT name FROM nodes WHERE category='tag';"
+            "SELECT name FROM nodes WHERE is_deleted=0 AND category='tag';"
         ).fail(dbErrorHandler)
             .done(function (tags) {
                 /*var tags_array = [];
@@ -53,7 +53,7 @@ function Nodes($q, $rootScope, Node) {
         console.log("getIndexNodes");
         indexNodes.length = 0;
         this.db.query(
-            "SELECT * FROM nodes;"
+            "SELECT * FROM nodes WHERE is_deleted=0 AND category!='case';"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 indexNodes.push.apply(indexNodes, nodes);
@@ -101,8 +101,9 @@ function Node (nodeId) {
         var deferred = this.$q.defer();
 
         self.sql(
-            "DELETE FROM nodes "+
-            "WHERE id=?;", self.id
+            "UPDATE nodes SET is_deleted=1, sync='new' WHERE id=?;", self.id,
+            "UPDATE links SET is_deleted=1, sync='new' WHERE parent_id=?;", self.id,
+            "UPDATE links SET is_deleted=1, sync='new' WHERE child_id=?;", self.id
         ).done(function () {
                 deferred.resolve();
             });
@@ -125,7 +126,7 @@ function Node (nodeId) {
     this.linkTag = function (tag, callback) {
         var tagRecord = newClass(Node);
         async.series([
-            async.apply(tagRecord.find_or_create_by, {name: tag, category: "tag"}),
+            async.apply(tagRecord.find_or_create_by, {name: tag.name, category: "tag"}),
             function (callback2) {
                 var l = new Link();
                 l.find_or_create_by.call( l,
@@ -145,7 +146,7 @@ function Node (nodeId) {
 
     this.findLastCase = function(callback) {
         self.db.query(
-            "SELECT max(id) id FROM nodes WHERE category='case';"
+            "SELECT max(id) id FROM nodes WHERE is_deleted=0 AND  category='case';"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 if (nodes[0].id != null) {
@@ -155,6 +156,16 @@ function Node (nodeId) {
                     callback(false);
             });
 
+    };
+
+    this.getName = function(callback) {
+        if (self.name) {
+            callback(self.name);
+        } else {
+            self.fillDetails(function() {
+                callback(self.name);
+            });
+        }
     }
 
     this.fillDetails = function(callback) {
@@ -174,21 +185,22 @@ function Node (nodeId) {
         self.db.query(
             "SELECT parents.* FROM links l "+
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
-            "WHERE parents.category='tag' AND l.child_id=?;", [self.id]
+            "WHERE l.is_deleted=0 AND parents.is_deleted=0 AND "+
+                "parents.category='tag' AND l.child_id=?;", [self.id]
         ).fail(dbErrorHandler)
             .done(function (tags) {
                 self.tags = tags;
                 callback();
             });
-    }
+    };
 
     this.getChildTags = function(callback) {
-        this.getChildren("tag", callback);
-    }
+        self.getChildren("tag", callback);
+    };
 
     this.getDirectChildren = function(callback) {
-        this.getChildren(false, callback);
-    }
+        self.getChildren(false, callback);
+    };
 
     this.getChildren = function(type, callback) {
         var where = "";
@@ -198,7 +210,8 @@ function Node (nodeId) {
             "SELECT DISTINCT children.* "+
             "FROM links l "+
             "JOIN nodes children ON (l.child_id=children.id) "+
-            "WHERE l.parent_id=? "+where+";", self.id
+            "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
+                "AND l.parent_id=? "+where+";", self.id
         ).done(function (children) {
                 callback(null, children);
             });
@@ -210,7 +223,8 @@ function Node (nodeId) {
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
             "JOIN links link_p ON (parents.id=link_p.parent_id) "+
             "JOIN nodes reactions ON (link_p.child_id=reactions.id) " +
-            "WHERE parents.category='tag' AND l.child_id=? AND reactions.id!=?;",
+            "WHERE l.is_deleted=0 AND parents.is_deleted=0 AND link_p.is_deleted=0 AND reactions.is_deleted=0 " +
+                "AND parents.category='tag' AND l.child_id=? AND reactions.id!=?;",
             [self.id, self.id]
         ).done(function (reactions) {
                 callback(null, reactions);

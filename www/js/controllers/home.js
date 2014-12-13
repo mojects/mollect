@@ -1,7 +1,7 @@
 angular.module('mollect')
 
-.controller('IndexCtrl', function($scope, Nodes, sync) {
-    console.log('IndexCtrl');
+.controller('HomeCtrl', function($scope, Nodes, sync) {
+    console.log('HomeCtrl');
 
     $scope.nodes = Nodes.getIndexNodes();
 
