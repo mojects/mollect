@@ -6,10 +6,12 @@ function Case($q, $rootScope, Node) {
 
     this.currentCaseNode = null;
     this.currentStepNode = null;
-    var that = this;
+    var self = this;
 
     this.createFreshCase = function() {
         var node = this.currentCaseNode = new Node();
+        node.name = "case";
+        node.description = currentDateTime();
         node.category='case';
         node.isTemp = true;
         return node.save();
@@ -19,7 +21,7 @@ function Case($q, $rootScope, Node) {
         var node = new Node();
         node.isTemp = true;
         node.findLastCase(function(found) {
-            if (found) that.currentCaseNode = node;
+            if (found) self.currentCaseNode = node;
             callback(found);
         });
     }
@@ -29,24 +31,24 @@ function Case($q, $rootScope, Node) {
 
         async.series([
             function(callback) {
-                if (that.currentCaseNode) {
+                if (self.currentCaseNode) {
                     callback();
                     return;
                 }
-                that.getRecentCase(function (found) {
+                self.getRecentCase(function (found) {
                     if (found) {
                         callback();
                     } else {
-                        that.createFreshCase().then(callback);
+                        self.createFreshCase().then(function(){ callback(); });
                     }
                 });
 
             }, function(callback) {
-                that.currentStepNode = new Node(nodeId);
-                that.currentCaseNode.linkChild(that.currentStepNode);
+                self.currentStepNode = new Node(nodeId);
+                self.currentCaseNode.linkChild(self.currentStepNode);
                 callback();
             }
-        ], function() {
+        ], function(err, results) {
             deferred.resolve();
         });
 

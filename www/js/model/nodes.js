@@ -80,7 +80,7 @@ function Node (nodeId) {
     this.setFields = function(node) {
         self.name = node.name;
         self.category = node.category;
-        self.description = node.description;
+        self.description = node.description || "";
         self.tags = node.tags;
     };
 
@@ -98,17 +98,9 @@ function Node (nodeId) {
     };
 
     this.saveNode = function(callback) {
-        var sync = (self.isTemp ? "temp" : "new");
-        self.db.query(
-            "INSERT INTO nodes (name, category, description ,sync) "+
-            "VALUES (?,?,?,'"+sync+"');",
-            [self.name, self.category, self.description ]
-        ).fail(dbErrorHandler)
-            .done(function (result) {
-                self.id = result.insertId;
-                callback();
-            });
-
+        self.find_or_create_by(
+            { name: self.name, category: self.category, description: self.description },
+            callback);
     }
 
     this.linkTags = function(callback) {

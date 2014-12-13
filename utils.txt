@@ -1,0 +1,31 @@
+
+`rails generate scaffold post title body:text published:boolean`
+`rails generate scaffold purchase amount:decimal tracking_id:integer:uniq`
+
+
+drop table nodes;
+drop table links;
+
+DELETE FROM nodes WHERE category='case';
+
+
+update links set sync='new', parent_id=1, child_id=id where id in (24,25,26)
+
+ SELECT reactions.* 
+FROM links l JOIN nodes parents ON (l.parent_id=parents.id) JOIN links reactions ON (parents.id=reactions.parent_id)
+WHERE parents.category='tag' AND l.child_id=246
+
+
+ SELECT * 
+FROM links l 
+WHERE l.child_id=246
+
+
+Date.now().toString(36);
+btoa(Date.now().toString(36))
+
+(Time.now.utc.to_i * 1000).to_i.to_s(36)
+
+
+
+affiliatessid	s%3ApPK92R2pMTYRV4Rd2zWScirlC-pp-8oc.mfgEockiEexv8UYwELsdlC8XqbjbF4GwOzinQijze%2Fg	affiliates-on-elasticsearch.herokuapp.com	/	2014-12-16T06:27:24.227Z	95	✓		

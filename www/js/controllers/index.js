@@ -5,6 +5,7 @@ angular.module('mollect')
 
     $scope.nodes = Nodes.getIndexNodes();
 
+        $scope.clientVersion =     settings.client_version          ;
 
     $scope.sync = function() {
         sync.run();

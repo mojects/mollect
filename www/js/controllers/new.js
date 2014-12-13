@@ -13,6 +13,7 @@ ang
     });
     $scope.tags = [];
 
+    // ERROR
     $scope.error = function(err) {
         $scope.alert = err;
         $scope.$apply();

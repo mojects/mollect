@@ -1,15 +1,17 @@
 <div class="row">
-    <h3>Status: {{info}}</h3>
+    <h3>Status: {{info}} Version: {{clientVersion}}</h3>
     <div class="large-12 columns">
-        <a href="#/new" class="small round button">New thing</a>
-        <a href="#/stuff" class="small round button">HTML Components</a>
-        <button ng-click="sync()" class="small round button">Sync</button>
+        <a href="#/new" class="round button">New thing</a>
+        <a href="#/stuff" class="round button">HTML Components</a>
+        <button ng-click="sync()" class="round button">Sync</button>
 
         <div>
             <ul>
                 <li ng-repeat="node in nodes"><a ng-href="#/node/{{node.id}}">{{node.name}}</a></li>
             </ul>
         </div>
+
+
 
     </div>
 

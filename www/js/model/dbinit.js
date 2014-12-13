@@ -1,9 +1,46 @@
-function sync($http, host, Nodes) {
+ang
+    .service('sync', sync)
+
+    .factory('dbInitializer', function (sync, host) {
+        log(host);
+        var db = $.WebSQL('mollect');
+        db.query(
+            'CREATE TABLE IF NOT EXISTS ' +
+            'nodes (id VARCHAR(15) PRIMARY KEY, name VARCHAR, description TEXT, category VARCHAR(10),'+
+            'sync VARCHAR(10), is_deleted INT);',
+
+            'CREATE TABLE IF NOT EXISTS ' +
+            'links (id VARCHAR(15) PRIMARY KEY, parent_id VARCHAR(15), child_id VARCHAR(15), weight INT,'+
+            'sync VARCHAR(10), is_deleted INT);',
+
+            'CREATE TABLE IF NOT EXISTS settings (key VARCHAR, value VARCHAR);',
+
+            'INSERT INTO settings (key, value) '+
+            'SELECT "client_version", 1 '+
+            'WHERE (SELECT count(0) FROM settings WHERE key="client_version")=0;',
+
+            'INSERT INTO settings (key, value) '+
+            'SELECT "client_code", null '+
+            'WHERE (SELECT count(0) FROM settings WHERE key="client_code")=0;'
+        ).fail(function (tx, err) {
+                throw new Error(err.message);
+            }).done(function (products) {
+                sync.run();
+            });
+        return true;
+        /*
+         To clean DB:
+         DROP TABLE IF EXISTS nodes;
+         DROP TABLE IF EXISTS links;
+         DROP TABLE IF EXISTS  client_version
+         */
+    })
+
+function sync($http, host, Nodes, settingsManager) {
     var self = this;
     var db = $.WebSQL('mollect');
     this.nodes = null;
     this.links = null;
-    this.clientVersion = null;
     this.run = function() {
         // this.retrievePrerequisites();
         async.series([
@@ -17,7 +54,7 @@ function sync($http, host, Nodes) {
         async.series([
                 async.apply(self.retrieveEntriesForUpdate, "nodes"),
                 async.apply(self.retrieveEntriesForUpdate, "links"),
-                self.getClientVersion
+                settingsManager.getClientSettings
             ],
             function(err, results) {
                 callback(null, true);
@@ -66,6 +103,9 @@ function sync($http, host, Nodes) {
         // Те записи, что успели стать new, убираем из очереди обновления и
 
 
+        if (data.client_code)
+            settingsManager.setClientSetting("client_code", data.client_code);
+
         // Transform to array which SQL will like
         var nodes = [];
         data.nodes.forEach(
@@ -74,6 +114,7 @@ function sync($http, host, Nodes) {
             }
         );
         // Update nodes in local storage
+        if (nodes.length > 0)
         db.query(
             "INSERT OR REPLACE INTO nodes (id, name, description, category, sync, is_deleted) " +
             "VALUES (?, ?, ?, ?, 'original', 0)",
@@ -93,6 +134,7 @@ function sync($http, host, Nodes) {
             }
         );
         // Update nodes in local storage
+        if (links.length > 0)
         db.query(
             "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, sync, is_deleted) " +
             "VALUES (?, ?, ?, ?, 'original', 0)",
@@ -106,63 +148,11 @@ function sync($http, host, Nodes) {
     }
     this.buildDataForServer = function() {
         var data = {};
-        data.client_version = this.clientVersion;
+        data.client_version = settings.client_version;
+        data.client_code = settings.client_code;
         data.nodes = this.nodes;
         data.links = this.links;
         return data;
     }
-    this.getClientVersion = function(callback) {
-        db.query(
-            "SELECT version FROM client_version;"
-        ).fail(function (tx, err) {
-                throw new Error(err.message);
-            }).done(function (version) {
-                self.clientVersion = version[0].version
-                callback(null, true);
-            });
-    }
-    this.setClientVersion = function(version) {
-        var db = $.WebSQL('mollect');
-        db.query(
-            "UPDATE client_version SET version="+version+";"
-        ).fail(function (tx, err) {
-                throw new Error(err.message);
-            }).done(function (version) {
-                return true;
-            });
-    }
+
 }
-
-ang
-
-    .service('sync', sync)
-
-    .factory('dbInitializer', function (sync, host) {
-        log(host);
-        var db = $.WebSQL('mollect');
-        db.query(
-            'CREATE TABLE IF NOT EXISTS ' +
-            'nodes (id INTEGER PRIMARY KEY, name VARCHAR, description TEXT, category VARCHAR(10),'+
-            'sync VARCHAR(10), is_deleted INT);',
-
-            'CREATE TABLE IF NOT EXISTS ' +
-            'links (id INTEGER PRIMARY KEY, parent_id INT, child_id INT, weight INT,'+
-            'sync VARCHAR(10), is_deleted INT);',
-
-            'CREATE TABLE IF NOT EXISTS client_version (version INT);',
-
-            'INSERT INTO client_version (version) '+
-            'SELECT 1 FROM (SELECT 1) s WHERE (SELECT count(0) FROM client_version)=0;'
-        ).fail(function (tx, err) {
-                throw new Error(err.message);
-            }).done(function (products) {
-                sync.run();
-            });
-        return true;
-        /*
-         To clean DB:
-         DROP TABLE IF EXISTS nodes;
-         DROP TABLE IF EXISTS links;
-         DROP TABLE IF EXISTS  client_version
-         */
-    })
