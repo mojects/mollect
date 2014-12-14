@@ -7,6 +7,10 @@ ang
                 controller:'HomeCtrl',
                 templateUrl:'views/home.html'
             })
+            .when('/obstacles', {
+                controller:'HomeCtrl',
+                templateUrl:'views/home.html'
+            })
             .when('/edit/:nodeId', {
                 controller:'EditCtrl',
                 templateUrl:'views/edit.html'

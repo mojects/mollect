@@ -20,6 +20,14 @@ button.small, .button.small {
 .label a {
     color: white;
 }
+
+.label.big {
+    margin: 0.21rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 8px;
+}
+
 .label .close {
     font-size: 1.22222rem;
     padding: 4px 0px 8px 10px;

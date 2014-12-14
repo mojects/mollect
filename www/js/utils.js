@@ -92,6 +92,15 @@ Array.prototype.merge = function(chunk) {
     this.push.apply(this, chunk);
 }
 
+Array.prototype.byID = function(id) {
+    var result = null;
+    this.some(function(item){
+        if(item['id'] == id) {
+            return result = item;
+        }
+    });
+    return result;
+};
 
 // For todays date;
 Date.prototype.today = function () {

@@ -6,9 +6,14 @@
         <a href="#/stuff" class="round button">HTML Components</a>
         <button ng-click="sync()" class="round button">Sync</button>
 
-        <div>
-            <ul>
-                <li ng-repeat="node in nodes"><a ng-href="#/node/{{node.id}}">{{node.name}}</a></li>
+        <div ng-repeat="(key, nodes) in nodeGroups">
+            {{key}}:
+            <ul class="inline-list">
+                <li ng-repeat="node in nodes">
+                    <a ng-href="#/node/{{node.id}}">
+                        <span class="radius label big" ng-class="{success: isActive(node.name)}">
+                   {{node.name}}
+                </span></a></li>
             </ul>
         </div>
 

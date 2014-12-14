@@ -10,7 +10,6 @@ ang
 function Nodes($q, $rootScope, Node) {
 
     this.db = $.WebSQL('mollect');
-    var indexNodes = [];
 
     this.getNodeWithDetails = function(nodeId) {
         var node = new Node(nodeId);
@@ -49,18 +48,42 @@ function Nodes($q, $rootScope, Node) {
         return node.save();
     };
 
-    this.getIndexNodes = function() {
+    this.getIndexNodes = function(obstacles) {
         console.log("getIndexNodes");
-        indexNodes.length = 0;
+        var r = {};
+
+        var parent_where = "";
+        var children_where = "";
+        if (obstacles) {
+            parent_where = "AND p.name='obstacles'"
+            children_where = "AND parent_id IS NOT NULL";
+        }
         this.db.query(
-            "SELECT * FROM nodes WHERE is_deleted=0 AND category='tag';"
+            "SELECT n.*, parents.parent_id FROM nodes n " +
+            "LEFT JOIN (SELECT child_id, parent_id " +
+                "FROM links l JOIN nodes p ON (parent_id=p.id)" +
+                "WHERE l.is_deleted=0 and p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
+                ") parents ON (n.id=child_id)" +
+            "WHERE n.is_deleted=0 AND category='tag' "+children_where+";"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
-                indexNodes.push.apply(indexNodes, nodes);
+
+                console.log(nodes.byID("i3nsflkh-ini"));
+
+                nodes.forEach(function(node){
+                    var key = "Other", n;
+                    if (node.parent_id && (n = nodes.byID(node.parent_id)))
+                        key = n.name;
+
+                    if (typeof r[key] == "undefined")  r[key] = [];
+                    r[key].push(node);
+                })
+
+                // indexNodes.push.apply(indexNodes, nodes);
                 $rootScope.$apply();
             });
 
-        return indexNodes;
+        return r;
     };
 
 };
