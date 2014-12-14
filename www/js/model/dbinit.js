@@ -110,14 +110,14 @@ function sync($http, host, Nodes, settingsManager) {
         var nodes = [];
         data.nodes.forEach(
             function(node) {
-                nodes.push([node.id, node.name, node.description, node.category]);
+                nodes.push([node.id, node.name, node.description, node.category, to01(node.is_deleted)]);
             }
         );
         // Update nodes in local storage
         if (nodes.length > 0)
         db.query(
-            "INSERT OR REPLACE INTO nodes (id, name, description, category, sync, is_deleted) " +
-            "VALUES (?, ?, ?, ?, 'original', 0)",
+            "INSERT OR REPLACE INTO nodes (id, name, description, category, is_deleted, sync) " +
+            "VALUES (?, ?, ?, ?, ?, 'original')",
             nodes
         ).fail(function (tx, err) {
                 throw new Error(err.message);
@@ -130,14 +130,14 @@ function sync($http, host, Nodes, settingsManager) {
         var links = [];
         data.links.forEach(
             function(link) {
-                links.push([link.id, link.parent_id, link.child_id, link.child_id]);
+                links.push([link.id, link.parent_id, link.child_id, link.weight, to01(link.is_deleted)]);
             }
         );
         // Update nodes in local storage
         if (links.length > 0)
         db.query(
-            "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, sync, is_deleted) " +
-            "VALUES (?, ?, ?, ?, 'original', 0)",
+            "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, is_deleted, sync) " +
+            "VALUES (?, ?, ?, ?, ?, 'original')",
             links
         ).fail(function (tx, err) {
                 throw new Error(err.message);

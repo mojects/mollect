@@ -35,4 +35,7 @@ btoa(Date.now().toString(36))
 
 
 
-affiliatessid	s%3ApPK92R2pMTYRV4Rd2zWScirlC-pp-8oc.mfgEockiEexv8UYwELsdlC8XqbjbF4GwOzinQijze%2Fg	affiliates-on-elasticsearch.herokuapp.com	/	2014-12-16T06:27:24.227Z	95	✓		
+
+UPDATE l SET is_deleted=1, sync='new'
+FROM links l
+ WHERE category='tag' AND child_id=1  ;

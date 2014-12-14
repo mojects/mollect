@@ -53,7 +53,7 @@ function Nodes($q, $rootScope, Node) {
         console.log("getIndexNodes");
         indexNodes.length = 0;
         this.db.query(
-            "SELECT * FROM nodes WHERE is_deleted=0 AND category!='case';"
+            "SELECT * FROM nodes WHERE is_deleted=0 AND category='tag';"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 indexNodes.push.apply(indexNodes, nodes);
@@ -78,6 +78,7 @@ function Node (nodeId) {
     var self = this;
 
     this.setFields = function(node) {
+        self.id = node.id;
         self.name = node.name;
         self.category = node.category;
         self.description = node.description || "";
@@ -112,14 +113,15 @@ function Node (nodeId) {
     }
 
     this.saveNode = function(callback) {
-        self.find_or_create_by(
-            { name: self.name, category: self.category, description: self.description },
+        self.update_or_create(
+            { id: self.id, name: self.name, category: self.category, description: self.description },
             callback);
     }
 
     this.linkTags = function(callback) {
         async.map(self.tags, self.linkTag, function(err, results){
-            callback();
+            self.unlinkAbsentTags(results)
+                .then(function(){callback();});
         });
     }
 
@@ -128,15 +130,36 @@ function Node (nodeId) {
         async.series([
             async.apply(tagRecord.find_or_create_by, {name: tag.name, category: "tag"}),
             function (callback2) {
-                var l = new Link();
-                l.find_or_create_by.call( l,
+                var l = newClass(Link);
+                l.find_or_create_by(
                     {parent_id: tagRecord.id, child_id: self.id},
                     callback2);
             }
         ], function() {
-            callback();
+            callback(null, tagRecord.id);
         });
     };
+
+    this.unlinkAbsentTags = function(presentTags) {
+        var deferred = this.$q.defer();
+        var where = "";
+
+        if (presentTags.length>0) {
+            var placeholders = Array(presentTags.length).join("?,") + "?";
+            where = "AND NOT parent_id IN ("+placeholders+")";
+        }
+        presentTags.unshift(self.id)
+        self.sql(
+            "UPDATE links SET is_deleted=1, sync='new' " +
+            "WHERE (SELECT category FROM nodes WHERE nodes.id=links.parent_id)='tag'" +
+            " AND child_id=? "+where+" ;",
+            presentTags
+        ).done(function () {
+                deferred.resolve();
+            });
+
+        return deferred.promise;
+    }
 
     this.linkChild = function(child) {
         var l = new Link();

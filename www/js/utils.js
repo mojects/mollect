@@ -107,7 +107,13 @@ function currentDateTime() {
     return new Date().today() + " " + new Date().timeNow();
 }
 
-
+// ---
+function to01(x) {
+    if (x == true)
+        return 1
+    else
+        return 0
+}
 
 // ------------------
 

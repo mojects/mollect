@@ -423,6 +423,8 @@ angular.module('angucomplete-alt', [] )
       function clearResults() {
         scope.showDropdown = false;
         scope.results = [];
+        if (scope.inputChanged)
+           scope.inputChanged("");
         if (dd) {
           dd.scrollTop = 0;
         }
