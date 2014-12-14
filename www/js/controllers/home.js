@@ -10,7 +10,7 @@ angular.module('mollect')
         $scope.clientVersion =     settings.client_version          ;
 
     $scope.sync = function() {
-        sync.run();
+        sync.run(function(){});
     }
 
         $scope.isActive = function(arg) {

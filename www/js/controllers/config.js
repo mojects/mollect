@@ -1,6 +1,6 @@
 ang
 
-.controller('ConfigCtrl', function($scope, settingsManager, sync) {
+.controller('ConfigCtrl', function($scope, $rootScope, settingsManager, sync) {
 
         if(!settings.client_code) {
             $scope.alert = "Settings is not initialized";
@@ -14,8 +14,9 @@ ang
       };
 
 
-        $scope.code =         settings.client_code  ;
+    $scope.code =         settings.client_code  ;
     $scope.server =         settings.server  ;
+    $scope.isInitialized = $scope.server && $scope.code;
 
     $scope.save = function() {
         $scope.info = "";
@@ -35,7 +36,8 @@ ang
            if (err)
                $scope.alert = err;
             else
-               $scope.info = "Теперь ты чист как жопа младенца!";
+               $scope.info = "Теперь ты чист как жьопа младенца!";
+            $rootScope.$apply();
         });
     }
 
