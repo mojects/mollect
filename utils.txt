@@ -9,9 +9,10 @@ npm start
 `rails generate scaffold post title body:text published:boolean`
 `rails generate scaffold purchase amount:decimal tracking_id:integer:uniq`
 
+delete from nodes where cast(id as integer)> 0;
+update nodes set sync='new';
+update links set sync='new';
 
-drop table nodes;
-drop table links;
 
 DELETE FROM nodes WHERE category='case';
 

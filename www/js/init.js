@@ -1,12 +1,5 @@
 ang = angular.module('mollect', ['ngRoute', 'ngResource', 'angucomplete-alt']);
 
-if (document.URL.indexOf("http://localhost:8081") !== -1) {
-    ang.constant('host', 'http://mollect-server:3001');
-    //ang.constant('host', 'http://mollect-server.herokuapp.com');
-} else {
-    ang.constant('host', 'http://mollect-server.herokuapp.com');
-}
-
 ang
     .config(function($routeProvider) {
         $routeProvider
@@ -30,9 +23,16 @@ ang
                 controller:'ShowCtrl',
                 templateUrl:'views/show.html'
             })
+            .when('/config', {
+                controller:'ConfigCtrl',
+                templateUrl:'views/config.html'
+            })
 
             .when('/stuff', {
                 templateUrl:'views/stuff.html'
+            })
+            .when('/icons', {
+                templateUrl:'css/icons/demo-in.html'
             })
             .when('/error', {
                 templateUrl:'views/error.html'

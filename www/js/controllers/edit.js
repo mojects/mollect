@@ -14,8 +14,13 @@ ang
    
     // NEW:
     function initNew() {
-        $scope.node = {category: "thing"};
+        if ($routeParams.type)
+            $scope.node = {category: $routeParams.type};
+        else
+            $scope.node = {category: "thing"};
+
         $scope.node.tags = [];
+
         if ($routeParams.isReaction) {
             if (Case.currentStepNode == null) {
                 $scope.alert = "currentStepNode missing";

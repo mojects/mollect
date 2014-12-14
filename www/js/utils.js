@@ -128,7 +128,26 @@ $(document).foundation({
 
 jQuery( document ).ready(function( $ ) {
    log("Document ready");
-
 });
+
+function stickyFooter() {
+    var footer = $("#footer");
+    var content = $("#content");
+    var pos = footer.position();
+    var height = $(window).height();
+    height = height - pos.top;
+    height = height - footer.height();
+    if (height > 0) {
+        footer.css({
+            'margin-top': height + 'px'
+        });
+        content.css({
+            'min-height': $(window).height() + 'px'
+        });
+    }
+}
+
+$(window).bind("resize", stickyFooter);
+$(window).bind("load", stickyFooter);
 
 phonegap.initialize();

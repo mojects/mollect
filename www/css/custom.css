@@ -6,6 +6,17 @@ button.small, .button.small {
     font-size: 0.7125rem;
 }
 
+.tab-bar-section button, .tab-bar-section .button {
+    padding-top: 0.475rem;
+    padding-right: 1rem;
+    padding-bottom: 0.5375rem;
+    padding-left: 1rem;
+    font-size: 1.3125rem;
+    margin-left: -1px;
+    background-color: #333333;
+}
+
+
 .label a {
     color: white;
 }

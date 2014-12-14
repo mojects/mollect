@@ -17,23 +17,35 @@
 
     <div id="menu" class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
+
+        <div class="sticky fixed" id="footer">
         <nav class="tab-bar">
           <section class="left-small">
             <a class="left-off-canvas-toggle menu-icon"><span></span></a>
           </section>
           <section class="middle tab-bar-section">
-            <h1 class="title">Mollecto</h1>
+
+            <ul class="button-group left">
+              <li><a href="#/" class="button"><i class="foundicon-home"></i></a></li>
+              <li><a href="#/new" class="button"><i class="foundicon-add-doc"></i></a></a></li>
+              <li><a href="#/config" class="button"><i class="foundicon-settings"></i></a></a></li>
+              <li><a href="#/" class="button"><i class="foundicon-lock"></i></a></a></li>
+              <li><a href="#/icons" class="button"><i class="foundicon-paper-clip"></i></a></a></li>
+            </ul>
+
           </section>
           <section class="right-small">
             <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
           </section>
         </nav>
+        </div>
 
         <aside class="left-off-canvas-menu">
           <ul class="off-canvas-list">
             <li><label>Foundation</label></li>
             <li><a href="#/new">Новая запись</a></li>
             <li><a href="#/">Home</a></li>
+            <li><a href="#/config">Config</a></li>
             <li><a href="phonegap.html">Phongedada</a></li>
           </ul>
           <div id="msg" style="color: gray; font-size: 10px">Log:</div>
@@ -62,8 +74,8 @@
           </ul>
         </aside>
 
-        <section class="main-section">
-          <div ng-view style="padding-top: 15px;"></div>
+        <section id="content" class="main-section">
+          <div ng-view style="padding-top: 5px; padding-bottom: 50px;"></div>
         </section>
 
         <a class="exit-off-canvas"></a>
@@ -92,6 +104,7 @@
     <script src="js/controllers/edit.js"></script>
     <script src="js/controllers/show.js"></script>
     <script src="js/controllers/delete.js"></script>
+    <script src="js/controllers/config.js"></script>
     <script src="js/model/activerecord.js"></script>
     <script src="js/model/dbinit.js"></script>
     <script src="js/model/nodes.js"></script>

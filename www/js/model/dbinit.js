@@ -1,8 +1,7 @@
 ang
     .service('sync', sync)
 
-    .factory('dbInitializer', function (sync, host) {
-        log(host);
+    .factory('dbInitializer', function (sync, settingsManager) {
         var db = $.WebSQL('mollect');
         db.query(
             'CREATE TABLE IF NOT EXISTS ' +
@@ -21,11 +20,18 @@ ang
 
             'INSERT INTO settings (key, value) '+
             'SELECT "client_code", null '+
-            'WHERE (SELECT count(0) FROM settings WHERE key="client_code")=0;'
+            'WHERE (SELECT count(0) FROM settings WHERE key="client_code")=0;',
+
+            'INSERT INTO settings (key, value) '+
+            'SELECT "server", "http://mollect-server.herokuapp.com" '+
+            'WHERE (SELECT count(0) FROM settings WHERE key="server")=0;'
         ).fail(function (tx, err) {
                 throw new Error(err.message);
             }).done(function (products) {
-                sync.run();
+                async.series([
+                    settingsManager.getClientSettings,
+                    sync.run
+                ]);
             });
         return true;
         /*
@@ -36,25 +42,24 @@ ang
          */
     })
 
-function sync($http, host, Nodes, settingsManager) {
+function sync($http, Nodes, settingsManager) {
     var self = this;
     var db = $.WebSQL('mollect');
     this.nodes = null;
     this.links = null;
-    this.run = function() {
+    this.run = function(callback) {
         // this.retrievePrerequisites();
         async.series([
-            this.pingServer,
-            this.retrievePrerequisites,
-            this.sendRequestToServer
+            self.pingServer,
+            self.retrievePrerequisites,
+            self.sendRequestToServer
         ]);
-
+        callback(null, true);
     }
     this.retrievePrerequisites = function(callback) {
         async.series([
                 async.apply(self.retrieveEntriesForUpdate, "nodes"),
-                async.apply(self.retrieveEntriesForUpdate, "links"),
-                settingsManager.getClientSettings
+                async.apply(self.retrieveEntriesForUpdate, "links")
             ],
             function(err, results) {
                 callback(null, true);
@@ -63,7 +68,7 @@ function sync($http, host, Nodes, settingsManager) {
     this.pingServer = function(callback) {
         var req = {
             method: 'OPTIONS',
-            url: host+'/sync'
+            url: settings.server+'/sync'
         }
         $http(req).success(function(data, status, headers, config){
             callback(null, true);
@@ -86,7 +91,7 @@ function sync($http, host, Nodes, settingsManager) {
     this.sendRequestToServer = function(callback) {
         var req = {
             method: 'POST',
-            url: host+'/sync.json',
+            url: settings.server+'/sync.json',
             data: self.buildDataForServer()
         }
 
@@ -153,6 +158,17 @@ function sync($http, host, Nodes, settingsManager) {
         data.nodes = this.nodes;
         data.links = this.links;
         return data;
+    };
+
+    this.cleanLocal = function(callback) {
+        db.query(
+            "drop table nodes;",
+            "drop table links;"
+        ).fail(function (tx, err) {
+                callback(err.message);
+            }).done(function () {
+                callback();
+            });
     }
 
 }

@@ -1,0 +1,40 @@
+<form name="myForm">
+
+    <div class="row">
+
+        <div data-alert class="alert-box alert round" ng-class="{hide: !alert}">
+            <span>{{alert}}</span>
+            <a href="#" class="close">&times;</a>
+        </div>
+        <div data-alert class="alert-box success round" ng-class="{hide: !info}">
+            <span>{{info}}</span>
+            <a href="#" class="close">&times;</a>
+        </div>
+    </div>
+
+
+<div class="row" ng-class="{hide: !code}">
+
+    <div class="large-12 columns">
+        <label>Client code:
+            <input type="text" ng-model="code" />
+        </label>
+    </div>
+
+    <div class="large-12 columns">
+        <label>Server:</label>
+        <span ng-repeat="(key, host) in servers">
+            <input
+                type="radio" ng-model="$parent.server" name="srv" ng-value="host" id="{{key}}"/><label for="{{key}}">{{key}}</label>
+        </span>
+    </div>
+
+    <button type="button" ng-click="save()" ng-disabled="myForm.$invalid" class="round button">Save</button>
+
+</div>
+
+    <button type="button" ng-click="cleanLocal()" ng-disabled="myForm.$invalid" class="round button">Clean local data</button>
+
+
+
+</form>
