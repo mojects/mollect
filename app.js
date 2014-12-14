@@ -3,7 +3,9 @@ winston.info('Starting');
 
 var http = require('http'),
     fs = require('fs'),
-    mime = require('mime');;
+    mime = require('mime');
+
+var port = process.env.PORT || 5000;
 
 http.createServer(function(request, response) {
     winston.info(request.url);
@@ -11,7 +13,7 @@ http.createServer(function(request, response) {
         outputFile('www/index.html', response);
     else
         outputFile('www' + request.url, response);
-}).listen(80);
+}).listen(port);
 
 
 function outputFile(path, response) {
