@@ -11,7 +11,7 @@ http.createServer(function(request, response) {
         outputFile('www/index.html', response);
     else
         outputFile('www' + request.url, response);
-}).listen(8181);
+}).listen(80);
 
 
 function outputFile(path, response) {
