@@ -9,7 +9,9 @@ ang
 
 function Nodes($q, $rootScope, Node) {
 
+    var self = this;
     this.db = $.WebSQL('mollect');
+    this.indexNodes = {};
 
     this.getNodeWithDetails = function(nodeId) {
         var node = new Node(nodeId);
@@ -50,7 +52,9 @@ function Nodes($q, $rootScope, Node) {
 
     this.getIndexNodes = function(obstacles) {
         console.log("getIndexNodes");
-        var r = {};
+
+        for (var key in self.indexNodes)
+            delete self.indexNodes[key];
 
         var parent_where = "";
         var children_where = "";
@@ -67,23 +71,18 @@ function Nodes($q, $rootScope, Node) {
             "WHERE n.is_deleted=0 AND category='tag' "+children_where+";"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
-
-                console.log(nodes.byID("i3nsflkh-ini"));
-
                 nodes.forEach(function(node){
                     var key = "Other", n;
                     if (node.parent_id && (n = nodes.byID(node.parent_id)))
                         key = n.name;
 
-                    if (typeof r[key] == "undefined")  r[key] = [];
-                    r[key].push(node);
+                    if (typeof self.indexNodes[key] == "undefined")  self.indexNodes[key] = [];
+                    self.indexNodes[key].push(node);
                 })
-
-                // indexNodes.push.apply(indexNodes, nodes);
                 $rootScope.$apply();
             });
 
-        return r;
+        return self.indexNodes;
     };
 
 };

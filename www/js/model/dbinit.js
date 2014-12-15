@@ -53,8 +53,10 @@ function sync($http, Nodes, settingsManager) {
             self.pingServer,
             self.retrievePrerequisites,
             self.sendRequestToServer
-        ]);
-        callback(null, true);
+        ], function(err) {
+            callback(err);
+        });
+
     }
     this.retrievePrerequisites = function(callback) {
         async.series([
@@ -62,7 +64,7 @@ function sync($http, Nodes, settingsManager) {
                 async.apply(self.retrieveEntriesForUpdate, "links")
             ],
             function(err, results) {
-                callback(null, true);
+                callback(err);
             });
     }
     this.pingServer = function(callback) {
@@ -82,7 +84,7 @@ function sync($http, Nodes, settingsManager) {
             "UPDATE "+table+" SET sync='sent' WHERE sync='new';",
             "SELECT * FROM "+table+" WHERE NOT sync IN ('original', 'new', 'temp');"
         ).fail(function (tx, err) {
-                throw new Error(err.message);
+                callback(err.message);
             }).done(function (rows) {
                 self[table] = rows;
                 callback(null, true);
@@ -148,7 +150,7 @@ function sync($http, Nodes, settingsManager) {
                 throw new Error(err.message);
             }).done(function (version) {
                 Nodes.getIndexNodes();
-                return true;
+                callback();
             });
     }
     this.buildDataForServer = function() {

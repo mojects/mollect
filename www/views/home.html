@@ -5,6 +5,8 @@
         <a href="#/new?type=tag" class="round button">New tag</a>
         <a href="#/stuff" class="round button">HTML Components</a>
         <button ng-click="sync()" class="round button">Sync</button>
+        <button ng-click="test('Test error!')" class="round button">1</button>
+        <button ng-click="test()" class="round button">2</button>
 
         <div ng-repeat="(key, nodes) in nodeGroups">
             {{key}}:
