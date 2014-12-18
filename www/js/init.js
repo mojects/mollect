@@ -1,5 +1,7 @@
 ang = angular.module('mollect', ['ngRoute', 'ngResource', 'angucomplete-alt']);
 
+var $$q = null;
+
 ang
     .config(function($routeProvider) {
         $routeProvider
@@ -29,24 +31,28 @@ ang
             })
             .when('/config', {
                 controller:'ConfigCtrl',
-                templateUrl:'views/config.html'
+                templateUrl:'views/utils/config.html'
+            })
+            .when('/dump', {
+                controller:'DumpCtrl',
+                templateUrl:'views/utils/dump.html'
             })
 
             .when('/stuff', {
-                templateUrl:'views/stuff.html'
+                templateUrl:'views/utils/stuff.html'
             })
             .when('/icons', {
                 templateUrl:'css/icons/demo-in.html'
             })
             .when('/error', {
-                templateUrl:'views/error.html'
+                templateUrl:'views/utils/error.html'
             })
             .otherwise({
-                templateUrl:'views/error.html'
+                templateUrl:'views/utils/error.html'
             });
     })
 
-    .run(function($window, $rootScope, dbInitializer) {
+    .run(function($window, $rootScope, $q) {
         $rootScope.online = navigator.onLine;
         $window.addEventListener("offline", function () {
             $rootScope.$apply(function() {
@@ -58,6 +64,8 @@ ang
                 $rootScope.online = true;
             });
         }, false);
+
+        $$q = $q;
 
         log(document.URL);
     })

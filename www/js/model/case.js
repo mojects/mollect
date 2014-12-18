@@ -6,6 +6,7 @@ function Case($q, $rootScope, Node) {
 
     this.currentCaseNode = null;
     this.currentStepNode = null;
+    this.selectedTags = [];
     var self = this;
 
     this.createFreshCase = function() {
@@ -24,6 +25,24 @@ function Case($q, $rootScope, Node) {
             if (found) self.currentCaseNode = node;
             callback(found);
         });
+    }
+
+    this.getFilteredNodes = function() {
+        return $$q(function(resolve) {
+            var ids = [];
+            self.selectedTags.forEach(function(item, key){
+                ids.push(key);
+            });
+            Node.getChildren(ids, false, function(nodes) {
+                resolve(nodes);
+            })
+        });
+
+    }
+
+    this.addTag = function(tag) {
+        self.selectedTags[tag.id] = tag;
+        self.attachNode(tag.id);
     }
 
     this.attachNode = function(nodeId) {
@@ -102,7 +121,7 @@ function Case($q, $rootScope, Node) {
                     return a.concat(b);
                 });
                 $.extend(result, merged_array);
-                $rootScope.$apply();
+                // $rootScope.$apply();
             });
 
         return result;

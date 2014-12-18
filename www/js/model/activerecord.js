@@ -41,7 +41,7 @@ function sqlWiz(){
         model.sql(
             "SELECT id FROM "+model.table+" "+ self.whereCondition,
             self.whereValues
-        ).done(function (result) {
+        ).then(function (result) {
                 if (result.length>0)  {
                     model.id = result[0].id;
                     if (callbackSuccess) callbackSuccess();
@@ -54,13 +54,14 @@ function sqlWiz(){
 
     this.insertNewRecord = function (callback) {
         var sync = (model.isTemp ? "temp" : "new");
-        model.sql(
+        model.sqlSafe(
             "INSERT INTO " + model.table + " (" + self.insertFields + ", sync, is_deleted) " +
             "VALUES (" + self.insertPlaceholders + ",'"+self.sync+"', 0);",
             self.insertValues
-        ).done(function () {
+        ).catch(callback)
+            .then(function(result){
                 model.id = self.lastId;
-                if (callback) callback();
+                callback(null, result)
             });
     };
 
@@ -75,7 +76,7 @@ function sqlWiz(){
             " SET " + self.updateFields.join(",") +
             " WHERE id=?;",
             self.updateValues
-        ).done(function () {
+        ).then(function () {
                 if (callback) callback();
             });
     };
@@ -92,6 +93,12 @@ function ActiveRecord () {
     var self = this;
     this.isTemp = false;
     this.db = $.WebSQL('mollect');
+
+    this.all = function() {
+        return self.sql(
+            "SELECT * FROM "+self.table+";"
+        );
+    }
 
     this.create = function (obj, callback) {
         var wiz = newClass(sqlWiz);
@@ -120,12 +127,27 @@ function ActiveRecord () {
             });
     };
 
-    this.sql = function(sql, params) {
+    this.sqlSafe = function(sql, params) {
+        var deferred = $$q.defer();
+
         console.log(sql + params);
         if (typeof params != 'array' && typeof params != 'undefined') params = [params];
-        return this.db.query(sql, params)
+
+        this.db.query(sql, params)
             .fail(function dbErrorHandler (tx, err) {
-                throw new Error(err.message + " In sql: " + sql);
+                deferred.reject(err.message + " In sql: " + sql);
+            })
+            .done(function (result) {
+                deferred.resolve(result);
+            });
+
+        return deferred.promise;
+    };
+
+    this.sql = function(sql, params) {
+        return self.sqlSafe(sql, params)
+            .catch(function (err) {
+                throw new Error(err);
             });
     };
 
@@ -134,4 +156,3 @@ function ActiveRecord () {
         console.log("table is : "+ this.table);
     };
 }
-

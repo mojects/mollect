@@ -13,7 +13,7 @@
             <ul class="inline-list">
                 <li ng-repeat="node in nodes">
                     <a ng-href="#/node/{{node.id}}">
-                        <span class="radius label big" ng-class="{success: isActive(node.name)}">
+                        <span class="radius label big" ng-class="{success: selectedTags[node.id]}">
                    {{node.name}}
                 </span></a></li>
             </ul>

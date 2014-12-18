@@ -65,9 +65,9 @@ function Nodes($q, $rootScope, Node) {
         this.db.query(
             "SELECT n.*, parents.parent_id FROM nodes n " +
             "LEFT JOIN (SELECT child_id, parent_id " +
-                "FROM links l JOIN nodes p ON (parent_id=p.id)" +
-                "WHERE l.is_deleted=0 and p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
-                ") parents ON (n.id=child_id)" +
+            "FROM links l JOIN nodes p ON (parent_id=p.id)" +
+            "WHERE l.is_deleted=0 and p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
+            ") parents ON (n.id=child_id)" +
             "WHERE n.is_deleted=0 AND category='tag' "+children_where+";"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
@@ -84,6 +84,22 @@ function Nodes($q, $rootScope, Node) {
 
         return self.indexNodes;
     };
+
+    this.getConstantNodes = function(callback) {
+
+        if (self.scores) return callback();
+
+        self.sql(
+            "SELECT id, name FROM nodes " +
+            "WHERE name IN ('scores', 'avg_score')")
+            .then(function(rows){
+                rows.forEach(function(row) {
+                    self[row.name] = row.id;
+                });
+                callback();
+            });
+
+    }
 
 };
 
@@ -107,6 +123,17 @@ function Node (nodeId) {
         self.tags = node.tags;
     };
 
+    this.rate = function(rate, callback) {
+        Nodes.getConstantNodes(doLinkage);
+        function doLinkage() {
+            self.create({child_id: self.id,
+                    parent_id: Nodes['scores'],
+                    weigth: rate},
+                callback);
+        }
+
+    }
+
     this.save = function() {
         var deferred = this.$q.defer();
 
@@ -127,7 +154,7 @@ function Node (nodeId) {
             "UPDATE nodes SET is_deleted=1, sync='new' WHERE id=?;", self.id,
             "UPDATE links SET is_deleted=1, sync='new' WHERE parent_id=?;", self.id,
             "UPDATE links SET is_deleted=1, sync='new' WHERE child_id=?;", self.id
-        ).done(function () {
+        ).then(function () {
                 deferred.resolve();
             });
 
@@ -176,7 +203,7 @@ function Node (nodeId) {
             "WHERE (SELECT category FROM nodes WHERE nodes.id=links.parent_id)='tag'" +
             " AND child_id=? "+where+" ;",
             presentTags
-        ).done(function () {
+        ).then(function () {
                 deferred.resolve();
             });
 
@@ -231,7 +258,7 @@ function Node (nodeId) {
             "SELECT parents.* FROM links l "+
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
             "WHERE l.is_deleted=0 AND parents.is_deleted=0 AND "+
-                "parents.category='tag' AND l.child_id=?;", [self.id]
+            "parents.category='tag' AND l.child_id=?;", [self.id]
         ).fail(dbErrorHandler)
             .done(function (tags) {
                 self.tags = tags;
@@ -240,15 +267,19 @@ function Node (nodeId) {
     };
 
     this.getChildTags = function(callback) {
-        self.getChildren("tag", callback);
+        self.getChildren(self.id, "tag", callback);
     };
 
     this.getDirectChildren = function(callback) {
-        self.getChildren(false, callback);
+        self.getChildren(self.id, false, callback);
     };
 
-    this.getChildren = function(type, callback) {
+    this.getChildren = function(parent_ids, type, callback) {
         var where = "";
+        if (typeof parent_ids != "Array") parent_ids = [parent_ids];
+
+        var placeholders = (new Array(parent_ids.length)).join("?,") + "?";
+
         if (type)
             where += " AND children.category='"+type+"'";
         self.sql(
@@ -256,8 +287,8 @@ function Node (nodeId) {
             "FROM links l "+
             "JOIN nodes children ON (l.child_id=children.id) "+
             "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
-                "AND l.parent_id=? "+where+";", self.id
-        ).done(function (children) {
+            "AND l.parent_id IN ("+placeholders+") "+where+";", parent_ids
+        ).then(function (children) {
                 callback(null, children);
             });
     }
@@ -269,9 +300,9 @@ function Node (nodeId) {
             "JOIN links link_p ON (parents.id=link_p.parent_id) "+
             "JOIN nodes reactions ON (link_p.child_id=reactions.id) " +
             "WHERE l.is_deleted=0 AND parents.is_deleted=0 AND link_p.is_deleted=0 AND reactions.is_deleted=0 " +
-                "AND parents.category='tag' AND l.child_id=? AND reactions.id!=?;",
+            "AND parents.category='tag' AND l.child_id=? AND reactions.id!=?;",
             [self.id, self.id]
-        ).done(function (reactions) {
+        ).then(function (reactions) {
                 callback(null, reactions);
             });
     }

@@ -45,6 +45,7 @@
             <li><a href="#/new">Новая запись</a></li>
             <li><a href="#/">Home</a></li>
             <li><a href="#/config">Config</a></li>
+            <li><a href="#/dump">Dump</a></li>
             <li><a href="phonegap.html">Phongedada</a></li>
           </ul>
           <div id="msg" style="color: gray; font-size: 10px">Log:</div>
@@ -78,11 +79,11 @@
           <div ng-controller="DeskCtrl" class="row" style="margin-top: 5px;">
             <div data-alert class="alert-box alert hide round" ng-class="{hide: !desk.alert}">
               <span>{{desk.alert}}</span>
-              <a href="#" class="close">&times;</a>
+              <a class="close">&times;</a>
             </div>
             <div data-alert class="alert-box success hide round" ng-class="{hide: !desk.info}">
               <span>{{desk.info}}</span>
-              <a href="#" class="close">&times;</a>
+              <a class="close">&times;</a>
             </div>
           </div>
 
@@ -112,12 +113,14 @@
 
     <script src="js/utils.js"></script>
     <script src="js/init.js"></script>
+    <script src="js/rating.js"></script>
     <script src="js/controllers/home.js"></script>
     <script src="js/controllers/edit.js"></script>
     <script src="js/controllers/show.js"></script>
     <script src="js/controllers/delete.js"></script>
     <script src="js/controllers/desk.js"></script>
     <script src="js/controllers/config.js"></script>
+    <script src="js/controllers/dump.js"></script>
     <script src="js/model/activerecord.js"></script>
     <script src="js/model/dbinit.js"></script>
     <script src="js/model/nodes.js"></script>
