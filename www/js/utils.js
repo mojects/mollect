@@ -4,8 +4,8 @@
  *
  */
 
-function newClass(klass) {
-    var obj = new klass;
+function newClass(klass, param1) {
+    var obj = new klass(param1);
 
     $.map(obj, function(value, key) {
         if (typeof  value == "function") {

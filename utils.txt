@@ -5,6 +5,44 @@ npm start
 
 *------------------------*
 
+heroku config:set ELASTICSEARCH="{user:oyobax3z, password:nmhi9lqy85txvr6g, host:azalea-6024853.eu-west-1.bonsai.io, port: 443}" -a aff-prod-es-proxy
+
+
+heroku config:set 'ELASTICSEARCH="ELASTICSEARCH:        {
+    "https": true,
+    "user": "t3gnl1nk",
+    "password": "4ec81p8p3fjaidvx",
+    "host": "redwood-3789584.eu-west-1.bonsai.io",
+    "port": 443
+}' -a affiliates-on-elasticsearch;
+
+
+curl -XPUT "https://t3gnl1nk:4ec81p8p3fjaidvx@redwood-3789584.eu-west-1.bonsai.io:443/affiliates" -d '{
+  "mappings": {
+    "affiliates" : {
+        "properties" : {
+            "user" : {"type" : "string", "index" : "not_analyzed"},
+            "project" : {"type" : "string",  "index" : "not_analyzed"},
+            "issue_id": {"type" : "integer"},
+            "issue_title": {"type" : "string", "index" : "not_analyzed"},
+            "comment": {"type" : "string", "index" : "analyzed"},
+            "hours": {"type" : "float"},
+            "human_hours": {"type" : "string", "index" : "not_analyzed"},
+            "client_id": {"type" : "string", "index" : "not_analyzed"},
+            "cost": {"type" : "float"},
+            "date" : {"type" : "date", "format": "yyyy-MM-dd"},
+            "timestamp" : { "format" : "yyyy-MM-dd", "type" : "date" }
+        }
+    }
+   }
+}'
+
+
+
+INSERT INTO `heroku_4513d805c9c6cbd`.`nodes` (`id`, `name`, `category`, `version`) VALUES ('scores', 'scores', 'system', '4');
+INSERT INTO `heroku_4513d805c9c6cbd`.`nodes` (`id`, `name`, `category`, `version`) VALUES ('avg_score', 'avg_score', 'system', '4');
+
+
 
 `rails generate scaffold post title body:text published:boolean`
 `rails generate scaffold purchase amount:decimal tracking_id:integer:uniq`

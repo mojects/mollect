@@ -1,7 +1,7 @@
 angular.module('mollect')
 
-    .controller('ShowCtrl', function($scope, Nodes, Case, $routeParams) {
-        $scope.node = Nodes.getNodeWithDetails($routeParams.nodeId)
+    .controller('ShowCtrl', function($scope, NodesFactory, Case, $routeParams) {
+        $scope.node = NodesFactory.getNodeWithDetails($routeParams.nodeId)
 
         $scope.rating = -1;
 

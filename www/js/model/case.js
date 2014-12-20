@@ -33,9 +33,8 @@ function Case($q, $rootScope, Node) {
             self.selectedTags.forEach(function(item, key){
                 ids.push(key);
             });
-            Node.getChildren(ids, false, function(nodes) {
-                resolve(nodes);
-            })
+            newClass(NodesCollection, ids)
+                .getChildrenRecursive(resolve);
         });
 
     }

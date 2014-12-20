@@ -1,11 +1,11 @@
 angular.module('mollect')
 
-    .controller('HomeCtrl', function($scope, desk, $location, Nodes, sync) {
+    .controller('HomeCtrl', function($scope, desk, $location, NodesFactory, sync) {
         console.log('HomeCtrl');
 
         var obstacles = $location.path() == "/obstacles";
 
-        $scope.nodeGroups = Nodes.getIndexNodes(obstacles);
+        $scope.nodeGroups = NodesFactory.getIndexNodes(obstacles);
         $scope.selectedTags = Case.selectedTags;
 
         $scope.clientVersion =     settings.client_version          ;

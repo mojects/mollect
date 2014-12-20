@@ -42,7 +42,7 @@ ang
          */
     })
 
-function sync($http, Nodes, settingsManager) {
+function sync($http, NodesFactory, settingsManager) {
     var self = this;
     var db = $.WebSQL('mollect');
     this.nodes = null;
@@ -149,7 +149,7 @@ function sync($http, Nodes, settingsManager) {
         ).fail(function (tx, err) {
                 throw new Error(err.message);
             }).done(function (version) {
-                Nodes.getIndexNodes();
+                NodesFactory.getIndexNodes();
                 callback();
             });
     }

@@ -1,9 +1,9 @@
 ang
 
-.controller('EditCtrl', function($scope, $location, Nodes, Case, $routeParams) {
+.controller('EditCtrl', function($scope, $location, NodesFactory, Case, $routeParams) {
 
     // All possible tags:
-    var tags_objects = Nodes.tags().then(function(tags) {
+    NodesFactory.tags().then(function(tags) {
         $scope.tags_list = tags;
     });
 
@@ -34,7 +34,7 @@ ang
 
     // EDIT:
     function initEdit() {
-        $scope.node = Nodes.getNodeWithDetails($routeParams.nodeId);
+        $scope.node = NodesFactory.getNodeWithDetails($routeParams.nodeId);
     }
 
     // ERROR
@@ -72,7 +72,7 @@ ang
         if ($scope.inputTag)
             $scope.addTag($scope.inputTag);
 
-        Nodes.insertNode($scope.node)
+        NodesFactory.insertNode($scope.node)
             .then(function(nodeId){
                 $scope.info = "Saved!";
                 location.href = "#/node/" + nodeId;
