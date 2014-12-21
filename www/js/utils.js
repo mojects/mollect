@@ -17,7 +17,10 @@ function newClass(klass, param1) {
 }
 
 function extend(subClass, superClass) {
-    subClass.prototype = new superClass();
+    var inst = new superClass();
+
+    for (var prop in inst)
+        subClass.prototype[prop] = inst[prop]
 }
 
 

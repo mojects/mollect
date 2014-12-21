@@ -2,8 +2,7 @@
 
 ang
 
-    .factory('Link', function($q) {
-        Link.prototype.$q = $q;
+    .factory('Link', function() {
         return Link;
     });
 

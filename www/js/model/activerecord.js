@@ -56,7 +56,7 @@ function sqlWiz(){
         var sync = (model.isTemp ? "temp" : "new");
         model.sqlSafe(
             "INSERT INTO " + model.table + " (" + self.insertFields + ", sync, is_deleted) " +
-            "VALUES (" + self.insertPlaceholders + ",'"+self.sync+"', 0);",
+            "VALUES (" + self.insertPlaceholders + ",'"+sync+"', 0);",
             self.insertValues
         ).catch(callback)
             .then(function(result){
@@ -133,7 +133,13 @@ function ActiveRecord () {
         console.log(sql + params);
         if (typeof params != 'array' && typeof params != 'undefined') params = [params];
 
-        this.db.query(sql, params)
+        var call;
+        if (typeof params == 'undefined')
+             call = this.db.query(sql);
+        else
+            call = this.db.query(sql, params);
+
+        call
             .fail(function dbErrorHandler (tx, err) {
                 deferred.reject(err.message + " In sql: " + sql);
             })

@@ -12,7 +12,11 @@ ang
  * @extends ActiveRecord
  **/
 Node.prototype = new ActiveRecord();
-angular.extend(Node, NodeRelations);
+extend(Node, NodeRelations);
+
+var n = newClass(Node);
+console.log("BoooOOO:", n.linkTags);
+console.log("Booo111:", n.sqlSafe);
 
 function Node (nodeId) {
     this.table = "nodes";

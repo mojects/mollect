@@ -1,14 +1,14 @@
 ang
     .service('NodesFactory', NodesFactory)
 
-function NodesFactory($q, $rootScope, Node) {
+function NodesFactory($rootScope, Node) {
 
     var self = this;
     this.db = $.WebSQL('mollect');
     this.indexNodes = {};
 
     this.getNodeWithDetails = function(nodeId) {
-        var node = new Node(nodeId);
+        var node = newClass(Node, nodeId);
         node.name = "Loading...";
 
 
@@ -23,7 +23,7 @@ function NodesFactory($q, $rootScope, Node) {
     };
 
     this.tags = function() {
-        var deferred = $q.defer();
+        var deferred = $$q.defer();
 
         this.db.query(
             "SELECT name FROM nodes WHERE is_deleted=0 AND category='tag';"
@@ -40,7 +40,7 @@ function NodesFactory($q, $rootScope, Node) {
     };
 
     this.insertNode = function(inputNode) {
-        var node = new Node(null);
+        var node = newClass(Node, null);
         node.setFields(inputNode);
         return node.save();
     };

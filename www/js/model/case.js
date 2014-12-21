@@ -2,7 +2,7 @@ ang
 
     .service('Case', Case)
 
-function Case($q, $rootScope, Node) {
+function Case($rootScope, Node) {
 
     this.currentCaseNode = null;
     this.currentStepNode = null;
@@ -10,7 +10,7 @@ function Case($q, $rootScope, Node) {
     var self = this;
 
     this.createFreshCase = function() {
-        var node = this.currentCaseNode = new Node();
+        var node = this.currentCaseNode = newClass(Node);
         node.name = "case";
         node.description = currentDateTime();
         node.category='case';
@@ -19,7 +19,7 @@ function Case($q, $rootScope, Node) {
     }
 
     this.getRecentCase = function(callback) {
-        var node = new Node();
+        var node = newClass(Node);
         node.isTemp = true;
         node.findLastCase(function(found) {
             if (found) self.currentCaseNode = node;
@@ -45,7 +45,7 @@ function Case($q, $rootScope, Node) {
     }
 
     this.attachNode = function(nodeId) {
-        var deferred = $q.defer();
+        var deferred = $$q.defer();
 
         async.series([
             function(callback) {
@@ -62,9 +62,10 @@ function Case($q, $rootScope, Node) {
                 });
 
             }, function(callback) {
-                self.currentStepNode = new Node(nodeId);
-                self.currentCaseNode.linkChild(self.currentStepNode);
-                callback();
+                self.currentStepNode = newClass(Node, nodeId);
+                self.currentCaseNode
+                    .linkChild(self.currentStepNode)
+                    .then(callback);
             }
         ], function(err, results) {
             deferred.resolve();
