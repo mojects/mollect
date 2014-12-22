@@ -8,7 +8,7 @@ ang
         "  </li>" +
         "</ul>",
         scope : {
-            ratingValue : "=",
+            ratingIndex : "=",
             max : "=",
             onRatingSelected : "&"
         },
@@ -17,7 +17,7 @@ ang
             var classes = ['foundicon-remove', 'foundicon-remove', 'foundicon-checkmark', 'foundicon-star', 'foundicon-star'];
             var updateStars = function() {
                 scope.stars = [];
-                var r = scope.ratingValue;
+                var r = scope.ratingIndex;
                 for ( var i = 0; i < scope.max; i++) {
                     var item = {
                         filled : (i == r - 1) || (i==1 && r==1) || (i==3 && r==5)
@@ -27,13 +27,14 @@ ang
                 }
             };
             scope.toggle = function(index) {
-                scope.ratingValue = index + 1;
+                scope.ratingIndex = index + 1;
                 var ratingValues = [-2, -1, 0, 50, 100];
+                scope.ratingValue = ratingValues[index];
                 scope.onRatingSelected({
-                    rating : ratingValues[index]
+                    rating : scope.ratingValue
                 });
             };
-            scope.$watch("ratingValue", function(oldVal, newVal) {
+            scope.$watch("ratingIndex", function(oldVal, newVal) {
                 if (newVal) { updateStars(); }
             });
         }

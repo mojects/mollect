@@ -22,6 +22,7 @@ function Node (nodeId) {
     this.table = "nodes";
     this.id = nodeId;
     this.tags = [];
+    this.rating = null;
 
     var self = this;
 
@@ -33,11 +34,34 @@ function Node (nodeId) {
         self.tags = node.tags;
     };
 
-    this.rate = function(rate, callback) {
-        self.create({child_id: self.id,
+    this.rate = function(rate) {
+
+        newClass(Link).create({child_id: self.id,
                 parent_id: self.Constants.scores,
                 weigth: rate},
-            callback);
+            getAvgRate);
+
+        function getAvgRate() {
+            self.sql(
+                "SELECT avg(weight) avgRate FROM links " +
+                "WHERE child_id=? AND parent_id=?;",
+                [self.id, self.Constants.scores]
+            ).then(function (rows) {
+                    setAvgScore(rows[0].avgRate);
+                });
+        }
+
+        function setAvgScore(value) {
+            self.rating = value;
+            var link = newClass(Link);
+            link.find_or_create_by(
+                {child_id: self.id, parent_id: self.Constants.avg_score},
+                function() {
+                    link.weight = value;
+                }
+
+            )
+        }
     }
 
     this.save = function() {
@@ -85,13 +109,16 @@ function Node (nodeId) {
 
     this.fillDetails = function(callback) {
         self.db.query(
-            "SELECT * FROM nodes WHERE id=?;", [self.id]
+            "SELECT n.*, l.weight rating " +
+            "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id)" +
+            "WHERE n.id=? AND l.parent_id=?;", [self.id, Constants.avg_score]
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 var node = nodes[0];
                 self.name = node.name;
                 self.category = node.category;
                 self.description = node.description;
+                self.rating = node.rating;
                 callback();
             });
     }

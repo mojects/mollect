@@ -3,11 +3,11 @@ angular.module('mollect')
     .controller('ShowCtrl', function($scope, NodesFactory, Case, $routeParams) {
         $scope.node = NodesFactory.getNodeWithDetails($routeParams.nodeId)
 
-        $scope.rating = -1;
+        $scope.ratingIndex = -1;
 
 
         $scope.rateFunction = function(rating) {
-            // alert("Rating selected - " + rating);
+            $scope.node.rate(rating);
         };
 
         Case.attachNode($routeParams.nodeId)

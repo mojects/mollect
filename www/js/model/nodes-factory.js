@@ -11,7 +11,6 @@ function NodesFactory($rootScope, Node) {
         var node = newClass(Node, nodeId);
         node.name = "Loading...";
 
-
         async.parallel([
             node.fillDetails,
             node.fillParentTags

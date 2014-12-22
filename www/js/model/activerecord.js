@@ -59,9 +59,9 @@ function sqlWiz(){
             "VALUES (" + self.insertPlaceholders + ",'"+sync+"', 0);",
             self.insertValues
         ).catch(callback)
-            .then(function(result){
+            .then(function(){
                 model.id = self.lastId;
-                callback(null, result)
+                callback(null, model.id)
             });
     };
 
