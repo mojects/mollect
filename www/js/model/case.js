@@ -121,16 +121,20 @@ function Case($rootScope, Node) {
                     return a.concat(b);
                 });
                 // Распределить по obstalces и другим:
-                var subcats = self.separateToSubcategories(merged_array);
-                $.extend(result, subcats);
+                self.distributeToSubcategories(result, merged_array);
+                // $.extend(result, subcats);
                 // $rootScope.$apply();
             });
 
         return result;
     }
     
-    this.separateToSubcategories = function(array) {
-        
+    this.distributeToSubcategories = function(result, nodes) {
+        var obstacles, others, ids = [];
+        nodes.forEach(function(node) {
+             ids.push(node.id);
+        });
+        newClass(NodesCollection, ids).filterObstacles();
     }
 
 }

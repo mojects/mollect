@@ -9,8 +9,6 @@ function NodesCollection(node_ids) {
         var where = "";
         if (typeof self.node_ids != "Array") self.node_ids = [self.node_ids];
 
-        var placeholders = (new Array(self.node_ids.length)).join("?,") + "?";
-
         if (type)
             where += " AND children.category='"+type+"'";
         self.sql(
@@ -18,10 +16,14 @@ function NodesCollection(node_ids) {
             "FROM links l "+
             "JOIN nodes children ON (l.child_id=children.id) "+
             "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
-            "AND l.parent_id IN ("+placeholders+") "+where+";", self.node_ids
+            "AND l.parent_id IN ("+self.getPlaceholdersForIds()+") "+where+";", self.node_ids
         ).then(function (children) {
                 callback(null, children);
             });
+    }
+
+    this.getPlaceholdersForIds = function() {
+          return (new Array(self.node_ids.length)).join("?,") + "?";
     }
 
     this.getChildrenRecursive = function(callback) {
@@ -51,5 +53,16 @@ function NodesCollection(node_ids) {
                 }
             });
 
+    }
+
+    this.filterObstacles = function(callback) {
+        self.sql(
+            "SELECT DISTINCT children.* "+
+            "FROM links l "+
+            "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
+            "AND l.parent_id IN ("+self.getPlaceholdersForIds()+");", self.node_ids
+        ).then(function (children) {
+                callback(null, children);
+            });
     }
 }

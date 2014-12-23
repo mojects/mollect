@@ -1,8 +1,7 @@
 ang
 
-    .factory('Node', function(Link, Constants) {
+    .factory('Node', function(Link) {
         Node.prototype.Link = Link;
-        Node.prototype.Constants = Constants;
         return Node;
     });
 
@@ -37,7 +36,7 @@ function Node (nodeId) {
     this.rate = function(rate) {
 
         newClass(Link).create({child_id: self.id,
-                parent_id: self.Constants.scores,
+                parent_id: 'scores',
                 weigth: rate},
             getAvgRate);
 
@@ -45,7 +44,7 @@ function Node (nodeId) {
             self.sql(
                 "SELECT avg(weight) avgRate FROM links " +
                 "WHERE child_id=? AND parent_id=?;",
-                [self.id, self.Constants.scores]
+                [self.id, 'scores']
             ).then(function (rows) {
                     setAvgScore(rows[0].avgRate);
                 });
@@ -55,7 +54,7 @@ function Node (nodeId) {
             self.rating = value;
             var link = newClass(Link);
             link.find_or_create_by(
-                {child_id: self.id, parent_id: self.Constants.avg_score},
+                {child_id: self.id, parent_id: 'avg_score'},
                 function() {
                     link.weight = value;
                 }
@@ -111,7 +110,7 @@ function Node (nodeId) {
         self.db.query(
             "SELECT n.*, l.weight rating " +
             "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id)" +
-            "WHERE n.id=? AND l.parent_id=?;", [self.id, Constants.avg_score]
+            "WHERE n.id=? AND l.parent_id=?;", [self.id, 'avg_score']
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 var node = nodes[0];
