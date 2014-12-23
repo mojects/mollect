@@ -87,8 +87,8 @@ function Case($rootScope, Node) {
         });
 
         async.parallel({
-                stepParentTags: self.currentStepNode.fillParentTags,
-                caseChildTags: self.currentCaseNode.getChildTags
+                stepParentTags: self.currentStepNode.fillParentTags
+                // caseChildTags: self.currentCaseNode.getChildTags
             },
             function (err, rows) {
                 self.currentStepNode.tags.forEach(function(row) {
@@ -110,7 +110,7 @@ function Case($rootScope, Node) {
     }
 
     this.getRelatedNodes = function() {
-        var result = [];
+        var result = { obstacles: null, others: null };
         async.parallel([
                 this.currentStepNode.getDirectChildren,
                 this.currentStepNode.getParentTagReactions
@@ -120,11 +120,17 @@ function Case($rootScope, Node) {
                 var merged_array = r.reduce(function(a, b) {
                     return a.concat(b);
                 });
-                $.extend(result, merged_array);
+                // Распределить по obstalces и другим:
+                var subcats = self.separateToSubcategories(merged_array);
+                $.extend(result, subcats);
                 // $rootScope.$apply();
             });
 
         return result;
+    }
+    
+    this.separateToSubcategories = function(array) {
+        
     }
 
 }

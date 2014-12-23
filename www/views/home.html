@@ -9,7 +9,7 @@
         <button ng-click="test()" class="round button">2</button>
 
         <div ng-repeat="(key, nodes) in nodeGroups">
-            {{key}}:
+            <a ng-href="#/node/{{key}}">{{key}}:</a>
             <ul class="inline-list">
                 <li ng-repeat="node in nodes">
                     <a ng-href="#/node/{{node.id}}">

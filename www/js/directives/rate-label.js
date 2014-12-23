@@ -9,10 +9,10 @@ ang
         link : function(scope, elem, attrs) {
 
             scope.$watch("ratingValue", function(oldVal, newVal) {
-                if (newVal) { updateClasses(); }
+                if (newVal) { updateClass(); }
             });
 
-            function updateClasses() {
+            function updateClass() {
 
                 var v = scope.ratingValue;
                 if (v > 80)

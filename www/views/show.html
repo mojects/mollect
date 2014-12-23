@@ -35,11 +35,21 @@
 
     <hr>
 
+    Obstacles:
+
+    <ul class="inline-list">
+        <li ng-repeat="node in relatedNodes.obstacles">
+            <div node-button node="node"></div>
+        </li>
+    </ul>    
+    
+    <hr>
+
     Related:
 
-    <ul class="stack-for-small round secondary">
-        <li ng-repeat="node in relatedNodes">
-            <a ng-href="#/node/{{node.id}}" class="small button">{{node.name}}</a>
+    <ul class="inline-list">
+        <li ng-repeat="node in relatedNodes.other">
+            <div node-button node="node"></div>
         </li>
     </ul>
 
