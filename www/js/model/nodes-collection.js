@@ -55,14 +55,19 @@ function NodesCollection(node_ids) {
 
     }
 
-    this.filterObstacles = function(callback) {
-        self.sql(
-            "SELECT DISTINCT children.* "+
-            "FROM links l "+
-            "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
-            "AND l.parent_id IN ("+self.getPlaceholdersForIds()+");", self.node_ids
-        ).then(function (children) {
-                callback(null, children);
-            });
+    this.removeNonObstacles = function(callback) {
+        $$q(function(resolve){
+            self.sql(
+                "SELECT DISTINCT * "+
+                "FROM links "+
+                "WHERE is_deleted=0 AND parent_id='obstacle' "+
+                "AND l.child_id IN ("+self.getPlaceholdersForIds()+");", self.node_ids
+            ).then(function (rows) {
+                    rows.forEach(function(row) {
+                        self.node_ids.remove(row.id);
+                    });
+                    resolve(self.node_ids);
+                });
+        }
     }
 }

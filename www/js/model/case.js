@@ -130,11 +130,22 @@ function Case($rootScope, Node) {
     }
     
     this.distributeToSubcategories = function(result, nodes) {
-        var obstacles, others, ids = [];
+        var obstacles = [], others = [], ids = [];
         nodes.forEach(function(node) {
              ids.push(node.id);
         });
-        newClass(NodesCollection, ids).filterObstacles();
+        newClass(NodesCollection, ids).removeNonObstacles()
+        .then(only_obstacles_ids) {
+            nodes.forEach(function(node) {
+                 if (only_obstacles_ids.indexOf(node.id)) !== -1)
+                    obstacles.push(node);
+                else
+                    others.push(node);
+            });
+            result.others = others;
+            result.obstacles = obstacles;
+        };
+        
     }
 
 }

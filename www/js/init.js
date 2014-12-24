@@ -13,6 +13,10 @@ ang
                 controller:'HomeCtrl',
                 templateUrl:'views/home.html'
             })
+            .when('/search', {
+                controller:'SearchCtrl',
+                templateUrl:'views/search.html'
+            })
             .when('/edit/:nodeId', {
                 controller:'EditCtrl',
                 templateUrl:'views/edit.html'
