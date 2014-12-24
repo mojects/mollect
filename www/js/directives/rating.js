@@ -1,7 +1,6 @@
 ang
 .directive("starRating", function() {
     return {
-        restrict : "A",
         template : "<ul class='rating'>" +
         "  <li ng-repeat='star in stars' ng-class='star' ng-click='toggle($index)'>" +
         "    <i class=''></i>" + //&#9733
@@ -34,7 +33,7 @@ ang
                     rating : scope.ratingValue
                 });
             };
-            scope.$watch("ratingIndex", function(oldVal, newVal) {
+            scope.$watch("ratingIndex", function(newVal, oldVal) {
                 if (newVal) { updateStars(); }
             });
         }

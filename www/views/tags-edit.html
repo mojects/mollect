@@ -1,0 +1,39 @@
+<div class="row" style="height: 50px">
+    <div class="large-12 columns">
+        Tags:
+        <angucomplete-alt id="tags"
+                          placeholder="Tags..."
+                          pause="100"
+                          clear-selected="true"
+                          override-suggestions="true"
+                          selected-object="selectedTag"
+                          input-changed="tagInputChanged"
+                          local-data="tags_list"
+                          search-fields="name"
+                          title-field="name"
+                          minlength="1"/>
+        <br/>
+    </div>
+</div>
+
+<div class="row" style="height: 50px">
+    <div class="large-12 columns">
+        <ul class="inline-list">
+            <li ng-repeat="tag in node.tags"><span class="success radius label">
+                {{tag.name}}
+                <a ng-click="dropTag(tag.name)" class="close">&times;</a>
+            </span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row" style="height: 50px" ng-class="{hide: !suggestedTags}">
+    <div class="columns">
+        Suggested tags:
+        <ul class="inline-list">
+            <li ng-repeat="tag in suggestedTags"><span class="secondary radius label">
+                <a ng-click="addTag(tag.name)">{{tag.name}}</a>
+            </span></li>
+        </ul>
+    </div>
+</div>

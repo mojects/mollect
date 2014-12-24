@@ -1,42 +1,56 @@
 ang
 .directive("tagsEdit", function() {
     return {
-        restrict : "A",
-        template : "<ul class='rating'>" +
-        "  <li ng-repeat='star in stars' ng-class='star' ng-click='toggle($index)'>" +
-        "    <i class=''></i>" + //&#9733
-        "  </li>" +
-        "</ul>",
+        templateUrl: 'views/tags-edit.html',
         scope : {
-            ratingIndex : "=",
-            max : "=",
-            onRatingSelected : "&"
+            pickedTags : "=",
+            suggestedTags : "=",
+            saveLastTag : "="
         },
-        link : function(scope, elem, attrs) {
-
-            var classes = ['foundicon-remove', 'foundicon-remove', 'foundicon-checkmark', 'foundicon-star', 'foundicon-star'];
-            var updateStars = function() {
-                scope.stars = [];
-                var r = scope.ratingIndex;
-                for ( var i = 0; i < scope.max; i++) {
-                    var item = {
-                        filled : (i == r - 1) || (i==1 && r==1) || (i==3 && r==5)
-                    };
-                    item[classes[i]] = true;
-                    scope.stars.push(item);
-                }
-            };
-            scope.toggle = function(index) {
-                scope.ratingIndex = index + 1;
-                var ratingValues = [-2, -1, 0, 50, 100];
-                scope.ratingValue = ratingValues[index];
-                scope.onRatingSelected({
-                    rating : scope.ratingValue
-                });
-            };
-            scope.$watch("ratingIndex", function(oldVal, newVal) {
-                if (newVal) { updateStars(); }
-            });
-        }
+        link : tagsEdit
     };
 });
+
+var testVar = "";
+
+function tagsEdit($scope, elem, attrs) {
+
+    // All possible tags:
+    NodesFactory.tags().then(function(tags) {
+        $scope.tags_list = tags;
+    });
+    
+    $scope.$watch('selectedTag', function(newValue, oldValue) {
+        if (newValue) {
+            var tag = newValue.originalObject;
+            $scope.addTag(tag);
+        }
+    });
+
+    $scope.$watch('saveLastTag', function(newValue, oldValue) {
+        if (newValue == "undefined") {
+            newValue = []
+        }
+        newValue.push(function() {
+            testVar += "d";
+            if ($scope.inputTag)
+                $scope.addTag($scope.inputTag);
+        });
+    });
+    
+    $scope.tagInputChanged = function(tag) {
+        $scope.inputTag = tag;
+    }
+    
+    $scope.addTag = function(tag) {
+        console.log("New tag: " + tag);
+        if (typeof tag != 'object') tag = { name: tag };
+        $scope.pickedTags.pushUnique(tag);
+    }
+
+    $scope.dropTag = function(tag) {
+        console.log("Drop tag: " + tag);
+        $scope.pickedTags.removeByName(tag);
+    }
+
+}

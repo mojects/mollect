@@ -2,11 +2,6 @@ ang
 
 .controller('EditCtrl', function($scope, $location, NodesFactory, Case, $routeParams) {
 
-    // All possible tags:
-    NodesFactory.tags().then(function(tags) {
-        $scope.tags_list = tags;
-    });
-
     if ($location.path() == "/new")
         initNew();
     else
@@ -43,35 +38,14 @@ ang
         $scope.$apply();
     }
 
-    $scope.$watch('selectedTag', function(newValue, oldValue) {
-        if (newValue) {
-            var tag = newValue.originalObject;
-            if (typeof tag == 'object') tag = tag.name;
-            $scope.addTag(tag);
-        }
-    });
-
-    $scope.tagInputChanged = function(tag) {
-        $scope.inputTag = tag;
-    }
-
-    $scope.addTag = function(tag) {
-        console.log("New tag: " + tag);
-        $scope.node.tags.pushUnique({ name: tag });
-    }
-
-    $scope.dropTag = function(tag) {
-        console.log("Drop tag: " + tag);
-        $scope.node.tags.removeByName(tag);
-    }
-
     $scope.save = function() {
         $scope.info = "";
         $scope.alert = "";
+        $scope.saveLastTag.forEach(function(f){ f(); });
 
-        if ($scope.inputTag)
-            $scope.addTag($scope.inputTag);
+        alert(testVar);
 
+        
         NodesFactory.insertNode($scope.node)
             .then(function(nodeId){
                 $scope.info = "Saved!";

@@ -1,14 +1,13 @@
 ang
 .directive("rateLabel", function() {
     return {
-        restrict : "A",
         template : "<span class='label' ng-class='labelClass'>{{ratingValue}}</span>",
         scope : {
             ratingValue : "="
         },
         link : function(scope, elem, attrs) {
 
-            scope.$watch("ratingValue", function(oldVal, newVal) {
+            scope.$watch("ratingValue", function(newVal, oldVal) {
                 if (newVal) { updateClass(); }
             });
 

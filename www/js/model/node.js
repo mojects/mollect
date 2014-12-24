@@ -37,7 +37,7 @@ function Node (nodeId) {
 
         newClass(Link).create({child_id: self.id,
                 parent_id: 'scores',
-                weigth: rate},
+                weight: rate},
             getAvgRate);
 
         function getAvgRate() {

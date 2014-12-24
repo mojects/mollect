@@ -1,7 +1,6 @@
 ang
 .directive("nodeButton", function() {
     return {
-        restrict : "A",
         template : "<a ng-href='#/node/{{node.id}}'>"+
                     "<span class='radius label big' ng-class='labelClass'>"+
                    "{{node.name}}"+
@@ -11,7 +10,7 @@ ang
         },
         link : function(scope, elem, attrs) {
 
-            scope.$watch("node", function(oldVal, newVal) {
+            scope.$watch("node", function(newVal, oldVal) {
                 if (newVal) { updateClass(); }
             });
 

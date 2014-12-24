@@ -3,6 +3,7 @@ function NodesCollection(node_ids) {
 
     var self = this;
     this.node_ids = node_ids;
+    this.exclude_ids = [];
     this.resultNodes = [];
 
     this.getChildren = function(type, callback) {

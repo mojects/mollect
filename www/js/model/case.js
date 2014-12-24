@@ -6,7 +6,7 @@ function Case($rootScope, Node) {
 
     this.currentCaseNode = null;
     this.currentStepNode = null;
-    this.selectedTags = [];
+    this.relatedTags = [];
     var self = this;
 
     this.createFreshCase = function() {
@@ -27,20 +27,25 @@ function Case($rootScope, Node) {
         });
     }
 
-    this.getFilteredNodes = function() {
+    this.searchNodes = function() {
         return $$q(function(resolve) {
-            var ids = [];
-            self.selectedTags.forEach(function(item, key){
-                ids.push(key);
+            var include_ids = [];
+            var exclude_ids = [];
+            self.relatedTags.forEach(function(item, key){
+                if (item.weight >= 0)
+                    include_ids.push(key);
+                else
+                    exclude_ids.push(key);
             });
-            newClass(NodesCollection, ids)
-                .getChildrenRecursive(resolve);
+            var c = newClass(NodesCollection, include_ids);
+            c.exclude_ids = exclude_ids;
+            c.getChildrenRecursive(resolve);
         });
 
     }
 
     this.addTag = function(tag) {
-        self.selectedTags[tag.id] = tag;
+        self.relatedTags[tag.id] = tag;
         self.attachNode(tag.id);
     }
 
@@ -104,10 +109,6 @@ function Case($rootScope, Node) {
 
         return r;
     };
-
-    this.addTag = function() {
-
-    }
 
     this.getRelatedNodes = function() {
         var result = { obstacles: null, others: null };
