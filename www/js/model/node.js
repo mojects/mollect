@@ -14,8 +14,6 @@ Node.prototype = new ActiveRecord();
 extend(Node, NodeRelations);
 
 var n = newClass(Node);
-console.log("BoooOOO:", n.linkTags);
-console.log("Booo111:", n.sqlSafe);
 
 function Node (nodeId) {
     this.table = "nodes";
@@ -109,8 +107,8 @@ function Node (nodeId) {
     this.fillDetails = function(callback) {
         self.db.query(
             "SELECT n.*, l.weight rating " +
-            "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id)" +
-            "WHERE n.id=? AND l.parent_id=?;", [self.id, 'avg_score']
+            "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id AND l.parent_id='avg_score')" +
+            "WHERE n.id=?;", [self.id]
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 var node = nodes[0];

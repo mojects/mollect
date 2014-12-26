@@ -56,7 +56,7 @@ ang
             });
     })
 
-    .run(function($window, $rootScope, $q) {
+    .run(function($window, $rootScope, $q, dbInitializer) {
         $rootScope.online = navigator.onLine;
         $window.addEventListener("offline", function () {
             $rootScope.$apply(function() {

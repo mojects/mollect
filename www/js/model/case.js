@@ -122,7 +122,8 @@ function Case($rootScope, Node) {
                     return a.concat(b);
                 });
                 // Распределить по obstalces и другим:
-                self.distributeToSubcategories(result, merged_array);
+                if (merged_array.length > 0)
+                    self.distributeToSubcategories(result, merged_array);
                 // $.extend(result, subcats);
                 // $rootScope.$apply();
             });

@@ -22,7 +22,7 @@ function NodesCollection(ids) {
             "JOIN nodes children ON (l.child_id=children.id) "+
             "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
             "AND l.parent_id IN ("+self.getPlaceholdersFor(self.include_ids)+") "+
-                " "+where+";", self.include_ids.concat(self.exclude_ids);
+                " "+where+";", self.include_ids.concat(self.exclude_ids)
         ).then(function (children) {
                 callback(null, children);
             });
@@ -62,19 +62,19 @@ function NodesCollection(ids) {
 
     }
 
-    this.removeNonObstacles = function(callback) {
-        $$q(function(resolve){
+    this.removeNonObstacles = function() {
+        return $$q(function(resolve){
             self.sql(
                 "SELECT DISTINCT * "+
                 "FROM links "+
                 "WHERE is_deleted=0 AND parent_id='obstacle' "+
-                "AND l.child_id IN ("+self.getPlaceholdersForIds()+");", self.include_ids
+                "AND child_id IN ("+self.getPlaceholdersFor(self.include_ids)+");", self.include_ids
             ).then(function (rows) {
                     rows.forEach(function(row) {
                         self.include_ids.remove(row.id);
                     });
                     resolve(self.include_ids);
                 });
-        }
+        });
     }
 }
