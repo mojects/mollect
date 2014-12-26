@@ -46,7 +46,7 @@ function Case($rootScope, Node) {
 
     this.addTag = function(tag) {
         self.relatedTags[tag.id] = tag;
-        self.attachNode(tag.id);
+        return self.attachNode(tag.id);
     }
 
     this.attachNode = function(nodeId) {
@@ -136,16 +136,16 @@ function Case($rootScope, Node) {
              ids.push(node.id);
         });
         newClass(NodesCollection, ids).removeNonObstacles()
-        .then(only_obstacles_ids) {
+        .then(function(only_obstacles_ids) {
             nodes.forEach(function(node) {
-                 if (only_obstacles_ids.indexOf(node.id)) !== -1)
+                 if (only_obstacles_ids.indexOf(node.id) !== -1)
                     obstacles.push(node);
                 else
                     others.push(node);
             });
             result.others = others;
             result.obstacles = obstacles;
-        };
+        });
         
     }
 

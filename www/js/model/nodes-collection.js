@@ -1,41 +1,47 @@
 NodesCollection.prototype = new ActiveRecord();
-function NodesCollection(node_ids) {
+function NodesCollection(ids) {
 
     var self = this;
-    this.node_ids = node_ids;
+    this.include_ids = ids;
     this.exclude_ids = [];
     this.resultNodes = [];
 
     this.getChildren = function(type, callback) {
+        
         var where = "";
-        if (typeof self.node_ids != "Array") self.node_ids = [self.node_ids];
+        if (typeof self.include_ids != "Array") self.include_ids = [self.include_ids];
 
         if (type)
             where += " AND children.category='"+type+"'";
+        if (self.exclude_ids.length > 0)
+            where += " AND exclude_ids IN ("+self.getPlaceholdersFor(self.exclude_ids)+")";
+
         self.sql(
             "SELECT DISTINCT children.* "+
             "FROM links l "+
             "JOIN nodes children ON (l.child_id=children.id) "+
             "WHERE l.is_deleted=0 AND children.is_deleted=0 "+
-            "AND l.parent_id IN ("+self.getPlaceholdersForIds()+") "+where+";", self.node_ids
+            "AND l.parent_id IN ("+self.getPlaceholdersFor(self.include_ids)+") "+
+                " "+where+";", self.include_ids.concat(self.exclude_ids);
         ).then(function (children) {
                 callback(null, children);
             });
     }
 
-    this.getPlaceholdersForIds = function() {
-          return (new Array(self.node_ids.length)).join("?,") + "?";
+    this.getPlaceholdersFor = function(arr) {
+          return (new Array(arr.length)).join("?,") + "?";
     }
 
     this.getChildrenRecursive = function(callback) {
-        self.walkDeeper(self.node_ids, function(){
+        self.walkDeeper(self.include_ids, function(){
             callback(self.resultNodes);
         })
     }
 
     this.walkDeeper = function(parent_ids, callback) {
-        newClass(NodesCollection, parent_ids)
-            .getChildren(false, function(nodes) {
+        var c = newClass(NodesCollection, parent_ids);
+        c.exclude_ids = self.exclude_ids;
+        c.getChildren(false, function(nodes) {
                 var search_for_ids = [];
                 // Remove children, which already in our array
                 nodes.forEach(function(n, key) {
@@ -62,12 +68,12 @@ function NodesCollection(node_ids) {
                 "SELECT DISTINCT * "+
                 "FROM links "+
                 "WHERE is_deleted=0 AND parent_id='obstacle' "+
-                "AND l.child_id IN ("+self.getPlaceholdersForIds()+");", self.node_ids
+                "AND l.child_id IN ("+self.getPlaceholdersForIds()+");", self.include_ids
             ).then(function (rows) {
                     rows.forEach(function(row) {
-                        self.node_ids.remove(row.id);
+                        self.include_ids.remove(row.id);
                     });
-                    resolve(self.node_ids);
+                    resolve(self.include_ids);
                 });
         }
     }
