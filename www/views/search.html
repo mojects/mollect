@@ -1,16 +1,14 @@
 <form name="myForm">
 
-- содержит: _____
--- [ ] Галочка - искать также в описании
-- Должно быть: ____контрол тэгов_____
-- Не должно быть: ___контрол тэгов____
 
-        $scope.containsString;
-        $scope.searchInDescription;
+<label>Содержит:
+        <input ng-model="$scope.containsString" type="text" placeholder="Содержит" />
+</label>
+<input ng-model="$scope.searchInDescription" id="searchInDescription" type="checkbox"><label for="searchInDescription">Искать также в описании</label>
 
-<tags-edit picked-tags="includeTags" save-last-tag="saveLastTag"></tags-edit>
+<tags-edit label="Должно быть:" picked-tags="includeTags" save-last-tag="saveLastTag"></tags-edit>
 
-<tags-edit picked-tags="excludeTags" save-last-tag="saveLastTag"></tags-edit>
+<tags-edit label="Не должно быть:" picked-tags="excludeTags" save-last-tag="saveLastTag"></tags-edit>
 
 
 <button type="button" ng-click="search()" class="round button">Search</button>

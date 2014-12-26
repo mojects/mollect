@@ -11,9 +11,7 @@ ang
     $scope.search = function() {
         $scope.saveLastTag.forEach(function(f){ f(); });
 
-        return;
-
-        Case.createFreshCase
+        Case.createFreshCase()
             .then(attachTags)
             .then(Case.searchNodes);
         
@@ -26,7 +24,7 @@ ang
             });
             $scope.excludeTags.forEach(function(tag){
                 tag.weight = -1;
-                tags.push(tag);   
+                tags.push(tag);
             });
 
             return $$q.all(tags.map(Case.addTag));

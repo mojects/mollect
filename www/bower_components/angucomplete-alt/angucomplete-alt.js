@@ -579,7 +579,6 @@ angular.module('angucomplete-alt', [] )
       };
 
       scope.$watch('searchStr', function(str, oldValue) {
-        console.log("SS:"+str);
         if (typeof str == "undefined" || str == null) str = "";
         if (str.length < minlength) {
           clearResults();

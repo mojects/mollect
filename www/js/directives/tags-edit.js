@@ -3,6 +3,7 @@ ang
     return {
         templateUrl: 'views/tags-edit.html',
         scope : {
+            label : "@",
             pickedTags : "=",
             suggestedTags : "=",
             saveLastTag : "="
