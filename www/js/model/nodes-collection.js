@@ -67,11 +67,12 @@ function NodesCollection(ids) {
             self.sql(
                 "SELECT DISTINCT * "+
                 "FROM links "+
-                "WHERE is_deleted=0 AND parent_id='obstacle' "+
+                "WHERE is_deleted=0 AND parent_id='obstacles' "+
                 "AND child_id IN ("+self.getPlaceholdersFor(self.include_ids)+");", self.include_ids
             ).then(function (rows) {
+                    self.include_ids = []
                     rows.forEach(function(row) {
-                        self.include_ids.remove(row.id);
+                        self.include_ids.push(row.child_id);
                     });
                     resolve(self.include_ids);
                 });

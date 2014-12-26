@@ -6,10 +6,13 @@ ang
     $scope.searchInDescription = true;
     $scope.excludeTags = [];
     $scope.includeTags = [];
+    $scope.saveLastTag = [];
 
     $scope.search = function() {
         $scope.saveLastTag.forEach(function(f){ f(); });
-        
+
+        return;
+
         Case.createFreshCase
             .then(attachTags)
             .then(Case.searchNodes);

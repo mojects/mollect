@@ -2,6 +2,8 @@ ang
 
 .controller('EditCtrl', function($scope, $location, NodesFactory, Case, $routeParams) {
 
+    $scope.saveLastTag = [];
+
     if ($location.path() == "/new")
         initNew();
     else
@@ -43,9 +45,6 @@ ang
         $scope.alert = "";
         $scope.saveLastTag.forEach(function(f){ f(); });
 
-        alert(testVar);
-
-        
         NodesFactory.insertNode($scope.node)
             .then(function(nodeId){
                 $scope.info = "Saved!";

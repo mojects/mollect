@@ -11,8 +11,8 @@
 
 
 
-    <star-rating rating-index="ratingIndex" max="5" on-rating-selected="rateFunction(rating)" />
-    <rate-label rating-value="node.rating" />
+    <star-rating rating-index="ratingIndex" max="5" on-rating-selected="rateFunction(rating)"></star-rating>
+    <rate-label rating-value="node.rating"></rate-label>
 
 </div>
 
@@ -31,28 +31,22 @@
 
 </div>
 
-<div class="row">
-
-    <hr>
-
+<div class="row" ng-show="relatedNodes.obstacles.length">
     Obstacles:
-
-    <ul class="inline-list">
+    <ul class="inline-list" >
         <li ng-repeat="node in relatedNodes.obstacles">
-            <node-button node="node" />
-        </li>
-    </ul>    
-    
-    <hr>
-
-    Related:
-
-    <ul class="inline-list">
-        <li ng-repeat="node in relatedNodes.other">
-            <node-button node="node" />
+            <node-button node="node"></node-button>
         </li>
     </ul>
+</div>
 
+<div class="row" ng-show="relatedNodes.others.length">
+    Related:
+    <ul class="inline-list">
+        <li ng-repeat="node in relatedNodes.others">
+            <node-button node="node"></node-button>
+        </li>
+    </ul>
 </div>
 
 

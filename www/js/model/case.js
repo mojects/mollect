@@ -111,7 +111,7 @@ function Case($rootScope, Node) {
     };
 
     this.getRelatedNodes = function() {
-        var result = { obstacles: null, others: null };
+        var result = { obstacles: [], others: [] };
         async.parallel([
                 this.currentStepNode.getDirectChildren,
                 this.currentStepNode.getParentTagReactions

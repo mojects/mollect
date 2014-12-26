@@ -5,6 +5,13 @@ npm start
 
 *------------------------*
 
+
+SELECT DISTINCT *
+                FROM links
+                WHERE is_deleted=0 AND parent_id='obstacles'
+                AND child_id IN ('i454nx7r-ini')
+
+
 heroku config:set ELASTICSEARCH="{user:oyobax3z, password:nmhi9lqy85txvr6g, host:azalea-6024853.eu-west-1.bonsai.io, port: 443}" -a aff-prod-es-proxy
 
 

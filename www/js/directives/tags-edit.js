@@ -7,13 +7,13 @@ ang
             suggestedTags : "=",
             saveLastTag : "="
         },
-        link : tagsEdit
+        controller : tagsEdit
     };
 });
 
 var testVar = "";
 
-function tagsEdit($scope, elem, attrs) {
+function tagsEdit($scope, NodesFactory) {
 
     // All possible tags:
     NodesFactory.tags().then(function(tags) {
@@ -27,19 +27,16 @@ function tagsEdit($scope, elem, attrs) {
         }
     });
 
-    $scope.$watch('saveLastTag', function(newValue, oldValue) {
-        if (newValue == "undefined") {
-            newValue = []
-        }
-        newValue.push(function() {
-            testVar += "d";
-            if ($scope.inputTag)
-                $scope.addTag($scope.inputTag);
-        });
+
+    $scope.saveLastTag.push(function() {
+        if (inputTag)
+            $scope.addTag(inputTag);
     });
-    
+
+    var inputTag = null;
     $scope.tagInputChanged = function(tag) {
-        $scope.inputTag = tag;
+        // if (tag)
+            inputTag = tag;
     }
     
     $scope.addTag = function(tag) {

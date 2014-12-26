@@ -1,3 +1,5 @@
+<form name="myForm">
+
 - содержит: _____
 -- [ ] Галочка - искать также в описании
 - Должно быть: ____контрол тэгов_____
@@ -6,6 +8,11 @@
         $scope.containsString;
         $scope.searchInDescription;
 
-<tags-edit picked-tags="includeTags" save-last-tag="saveLastTag" />
+<tags-edit picked-tags="includeTags" save-last-tag="saveLastTag"></tags-edit>
 
-<tags-edit picked-tags="excludeTags" save-last-tag="saveLastTag" />
+<tags-edit picked-tags="excludeTags" save-last-tag="saveLastTag"></tags-edit>
+
+
+<button type="button" ng-click="search()" class="round button">Search</button>
+
+</form>

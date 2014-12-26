@@ -35,7 +35,7 @@ angular.module('angucomplete-alt', [] )
   // Set the default template for this directive
   $templateCache.put(TEMPLATE_URL,
       '<div class="angucomplete-holder" ng-class="{\'angucomplete-dropdown-visible\': showDropdown}">' +
-      '  <input id="{{id}}_value" ng-model="searchStr" ng-disabled="disableInput" type="text" placeholder="{{placeholder}}" ng-focus="onFocusHandler()" class="{{inputClass}}" ng-focus="resetHideResults()" ng-blur="hideResults($event)" autocapitalize="off" autocorrect="off" autocomplete="off" ng-change="inputChangeHandler(searchStr)"/>' +
+      '  <input id="{{id}}_value" ng-model="searchStr" ng-disabled="disableInput" type="text" placeholder="{{placeholder}}" ng-focus="onFocusHandler()" class="{{inputClass}}" ng-focus="resetHideResults()" ng-blur="hideResults($event)" autocapitalize="off" autocorrect="off" autocomplete="off"/>' +
       '  <div id="{{id}}_dropdown" class="angucomplete-dropdown" ng-show="showDropdown">' +
       '    <div class="angucomplete-searching" ng-show="searching" ng-bind="textSearching"></div>' +
       '    <div class="angucomplete-searching" ng-show="!searching && (!results || results.length == 0)" ng-bind="textNoResults"></div>' +
@@ -423,8 +423,6 @@ angular.module('angucomplete-alt', [] )
       function clearResults() {
         scope.showDropdown = false;
         scope.results = [];
-        if (scope.inputChanged)
-           scope.inputChanged("");
         if (dd) {
           dd.scrollTop = 0;
         }
@@ -580,7 +578,9 @@ angular.module('angucomplete-alt', [] )
         clearResults();
       };
 
-      scope.inputChangeHandler = function(str) {
+      scope.$watch('searchStr', function(str, oldValue) {
+        console.log("SS:"+str);
+        if (typeof str == "undefined" || str == null) str = "";
         if (str.length < minlength) {
           clearResults();
         }
@@ -588,7 +588,7 @@ angular.module('angucomplete-alt', [] )
           str = scope.inputChanged(str);
         }
         return str;
-      };
+      });
 
       // check required
       if (scope.fieldRequiredClass && scope.fieldRequiredClass !== '') {
