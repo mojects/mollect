@@ -19,7 +19,7 @@
 <div class="row" style="height: 50px">
     <div class="large-12 columns">
         <ul class="inline-list">
-            <li ng-repeat="tag in pickedTags"><span class="success radius label">
+            <li ng-repeat="tag in pickedTags"><span class="radius label" ng-class="tagStyle">
                 {{tag.name}}
                 <a ng-click="dropTag(tag.name)" class="close">&times;</a>
             </span></li>

@@ -27,25 +27,8 @@ function Case($rootScope, Node) {
         });
     }
 
-    this.searchNodes = function() {
-        return $$q(function(resolve) {
-            var include_ids = [];
-            var exclude_ids = [];
-            self.relatedTags.forEach(function(item, key){
-                if (item.weight >= 0)
-                    include_ids.push(key);
-                else
-                    exclude_ids.push(key);
-            });
-            var c = newClass(NodesCollection, include_ids);
-            c.exclude_ids = exclude_ids;
-            c.getChildrenRecursive(resolve);
-        });
-
-    }
-
     this.addTag = function(tag) {
-        self.relatedTags[tag.id] = tag;
+        self.relatedTags.push(tag);
         return self.attachNode(tag.id);
     }
 
@@ -80,73 +63,82 @@ function Case($rootScope, Node) {
     }
 
     this.getAttributesForNewReaction = function() {
-        // 1. Текущая нода (то, что как бы из нее прямо вытекает)
-        //    - не поставлено по умолчанию.
-        // 3. Тэги текущего нода
-        // 2. Тэги текущей ситуации (Пока что все)
-        var r = {selected: null, unselected: null};
-        r.selected = [];
-        r.unselected = [];
-        self.currentStepNode.getName(function(name){
-            r.unselected.push(self.currentStepNode);
+        var r = {selected: [], unselected: []};
+
+        self.currentStepNode.getName(function(){
+            if (self.currentStepNode.category == "tag")
+                r.selected.push(self.currentStepNode);
+            else
+                fillForThing();
         });
 
-        async.parallel({
-                stepParentTags: self.currentStepNode.fillParentTags
-                // caseChildTags: self.currentCaseNode.getChildTags
-            },
-            function (err, rows) {
-                self.currentStepNode.tags.forEach(function(row) {
-                    r.selected.pushUnique(row);
-                });
 
-                rows.caseChildTags.forEach(function(row) {
-                    r.selected.pushUnique(row);
-                });
+        function fillForThing() {
+            r.unselected.push(self.currentStepNode);
 
-                $rootScope.$apply();
-            });
+            async.parallel({
+                    stepParentTags: self.currentStepNode.fillParentTags
+                    // caseChildTags: self.currentCaseNode.getChildTags
+                },
+                function (err, rows) {
+                    self.currentStepNode.tags.forEach(function(row) {
+                        r.selected.pushUnique(row);
+                    });
+                    /*rows.caseChildTags.forEach(function(row) {
+                     r.selected.pushUnique(row);
+                     });*/
+
+                    $rootScope.$apply();
+                });
+        }
+
 
         return r;
+
     };
 
     this.getRelatedNodes = function() {
-        var result = { obstacles: [], others: [] };
-        async.parallel([
-                this.currentStepNode.getDirectChildren,
-                this.currentStepNode.getParentTagReactions
-            ],
-            function (err, r) {
-                // Вытащить многомерный массив в плоский:
-                var merged_array = r.reduce(function(a, b) {
-                    return a.concat(b);
-                });
-                // Распределить по obstalces и другим:
-                if (merged_array.length > 0)
-                    self.distributeToSubcategories(result, merged_array);
-                // $.extend(result, subcats);
-                // $rootScope.$apply();
+        var result = { an_obstacles: [], children: [], related: [] };
+        async.parallel({
+                directChildren: this.currentStepNode.getDirectChildren,
+                parentTagReactions:        this.currentStepNode.getParentTagReactions
+            },
+            function (err, related) {
+                // Вытащить obstalces в отдельную категорию
+                self.distributeToSubcategories(result, related);
             });
 
         return result;
     }
     
-    this.distributeToSubcategories = function(result, nodes) {
-        var obstacles = [], others = [], ids = [];
-        nodes.forEach(function(node) {
+    this.distributeToSubcategories = function(result, related) {
+
+        // Вытащить многомерный массив в плоский:
+        var all_nodes = [related.directChildren, related.parentTagReactions]
+            .reduce(function(a, b) {
+                return a.concat(b);
+            });
+
+        if (all_nodes.length < 1) return;
+
+        var ids = [];
+
+        all_nodes.forEach(function(node) {
              ids.push(node.id);
         });
-        newClass(NodesCollection, ids).removeNonObstacles()
+
+        newClass(NodesWalker, ids).leaveOnlyObstacles()
         .then(function(only_obstacles_ids) {
-            nodes.forEach(function(node) {
-                 if (only_obstacles_ids.indexOf(node.id) !== -1)
-                    obstacles.push(node);
-                else
-                    others.push(node);
-            });
-            result.others = others;
-            result.obstacles = obstacles;
+                related.directChildren.forEach(distribute.bind(result.children, only_obstacles_ids));
+                related.parentTagReactions.forEach(distribute.bind(result.related, only_obstacles_ids));
         });
+
+        function distribute(only_obstacles_ids, node) {
+            if (only_obstacles_ids.indexOf(node.id) !== -1)
+                result.an_obstacles.push(node);
+            else
+                this.push(node);
+        }
         
     }
 

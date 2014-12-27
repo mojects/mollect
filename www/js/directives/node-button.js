@@ -18,9 +18,9 @@ ang
 
                 var c = scope.node.category;
                 if (c == "thing")
-                    scope.labelClass = "success";
-                else if (c == "tag")
                     scope.labelClass = "";
+                else if (c == "tag")
+                    scope.labelClass = "success";
                 else
                     scope.labelClass = "alert";
 

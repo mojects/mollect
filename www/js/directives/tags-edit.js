@@ -4,6 +4,7 @@ ang
         templateUrl: 'views/tags-edit.html',
         scope : {
             label : "@",
+            tagStyle : "@",
             pickedTags : "=",
             suggestedTags : "=",
             saveLastTag : "="
@@ -12,10 +13,9 @@ ang
     };
 });
 
-var testVar = "";
-
 function tagsEdit($scope, NodesFactory) {
 
+    $scope.tagStyle = $scope.tagStyle || "success";
     // All possible tags:
     NodesFactory.tags().then(function(tags) {
         $scope.tags_list = tags;
@@ -41,13 +41,11 @@ function tagsEdit($scope, NodesFactory) {
     }
     
     $scope.addTag = function(tag) {
-        console.log("New tag: " + tag);
         if (typeof tag != 'object') tag = { name: tag };
         $scope.pickedTags.pushUnique(tag);
     }
 
     $scope.dropTag = function(tag) {
-        console.log("Drop tag: " + tag);
         $scope.pickedTags.removeByName(tag);
     }
 

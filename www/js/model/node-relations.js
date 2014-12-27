@@ -84,13 +84,14 @@ function NodeRelations () {
     };
 
     this.getChildTags = function(callback) {
-        newClass(NodesCollection, this.id)
-            .getChildren("tag", callback);
+        var c = newClass(NodesWalker, this.id);
+        c.category = "tag";
+        c.getChildren(callback);
     };
 
     this.getDirectChildren = function(callback) {
-        newClass(NodesCollection, this.id)
-            .getChildren(false, callback);
+        newClass(NodesWalker, this.id)
+            .getChildren(callback);
     };
 
     this.getParentTagReactions = function(callback) {

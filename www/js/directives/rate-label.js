@@ -13,6 +13,7 @@ ang
 
             function updateClass() {
 
+                scope.ratingValue = Math.round(scope.ratingValue);
                 var v = scope.ratingValue;
                 if (v > 80)
                     scope.labelClass = "success";

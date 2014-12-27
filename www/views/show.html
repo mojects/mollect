@@ -23,36 +23,23 @@
 
     Tags:
 
-    <ul class="stack-for-small round secondary button-group">
-        <li ng-repeat="tag in node.tags">
-            <a ng-href="#/node/{{tag.id}}" class="small button">{{tag.name}}</a>
-        </li>
-    </ul>
-
-</div>
-
-<div class="row" ng-show="relatedNodes.obstacles.length">
-    Obstacles:
     <ul class="inline-list" >
-        <li ng-repeat="node in relatedNodes.obstacles">
+        <li ng-repeat="tag in node.tags">
+            <node-button node="tag"></node-button>
+        </li>
+    </ul>
+
+</div>
+
+<div ng-repeat="(group_name, group) in relatedNodes" class="row" ng-show="group.length">
+    {{group_name}}:
+    <ul class="inline-list" >
+        <li ng-repeat="node in group">
             <node-button node="node"></node-button>
         </li>
     </ul>
 </div>
 
-<div class="row" ng-show="relatedNodes.others.length">
-    Related:
-    <ul class="inline-list">
-        <li ng-repeat="node in relatedNodes.others">
-            <node-button node="node"></node-button>
-        </li>
-    </ul>
-</div>
-
-
-<div class="row">
-{{relatedNodes}}
-</div>
     <!--
     -----
 

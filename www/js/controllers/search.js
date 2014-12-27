@@ -3,6 +3,7 @@ ang
 .controller('SearchCtrl', function($scope,Case) {
     
     $scope.containsString = "";
+    $scope.category = "all";
     $scope.searchInDescription = true;
     $scope.excludeTags = [];
     $scope.includeTags = [];
@@ -11,26 +12,27 @@ ang
     $scope.search = function() {
         $scope.saveLastTag.forEach(function(f){ f(); });
 
-        Case.createFreshCase()
-            .then(attachTags)
-            .then(Case.searchNodes);
-        
-        function attachTags() {
+        var c = newClass(NodesWalker);
 
-            var tags = [];
-            $scope.includeTags.forEach(function(tag){
-                tag.weight = 100;
-                tags.push(tag);
-            });
-            $scope.excludeTags.forEach(function(tag){
-                tag.weight = -1;
-                tags.push(tag);
-            });
+        c.containsString = $scope.containsString;
+        c.searchInDescription = $scope.searchInDescription;
+        c.category = $scope.category;
 
-            return $$q.all(tags.map(Case.addTag));
+        $scope.includeTags.forEach(function(tag){
+            c.include_ids.push(tag.id);
+        });
+        $scope.excludeTags.forEach(function(tag){
+            c.exclude_ids.push(tag.id);
+        });
+
+        c.getChildrenRecursive(outputNodes);
+
+        function outputNodes(nodes) {
+            $scope.resultNodes = nodes;
         }
-
     };
+
+
 
         
 })

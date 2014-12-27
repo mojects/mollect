@@ -11,6 +11,25 @@ SELECT DISTINCT *
                 WHERE is_deleted=0 AND parent_id='obstacles'
                 AND child_id IN ('i454nx7r-ini')
 
+                SELECT children.* FROM links l JOIN nodes children ON
+                 (l.child_id=children.id) WHERE l.is_deleted=0 AND children.is_deleted=0
+                 AND l.parent_id IN ('i3nu0be9-ini')
+                 GROUP BY children.id
+                  HAVING  MAX(l.parent_id IN ('i3nxzq33-ini'))=0;
+
+
+
+
+                SELECT children.name
+                FROM links l
+                 JOIN nodes children ON
+                   (l.child_id=children.id AND l.is_deleted=0 AND l.parent_id IN ('i3nu0be9-ini'))
+                 LEFT JOIN links negative ON
+                   (negative.child_id=children.id AND negative.is_deleted=0 AND negative.parent_id IN ())
+                WHERE  children.is_deleted=0
+                GROUP BY children.id
+                HAVING  MIN(negative.child_id IS NULL)=1;
+
 
 heroku config:set ELASTICSEARCH="{user:oyobax3z, password:nmhi9lqy85txvr6g, host:azalea-6024853.eu-west-1.bonsai.io, port: 443}" -a aff-prod-es-proxy
 

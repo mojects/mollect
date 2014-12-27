@@ -1,16 +1,42 @@
-<form name="myForm">
+<div class="row">
+
+        <form name="myForm">
+
+        <div class="medium-4 columns">
+                <input ng-model="containsString" type="text" placeholder="Содержит" />
+        </div>
+        <div class="medium-4 small-6 columns">
+                <input ng-model="searchInDescription" id="searchInDescription" type="checkbox">
+                <label for="searchInDescription">В описании тоже</label>
+        </div>
+        <div class="medium-4 small-6 columns">
+                <select ng-model="category">
+                        <option value="all">Все типы</option>
+                        <option value="tag">Тэги</option>
+                        <option value="thing">Things</option>
+                </select>
+        </div>
 
 
-<label>Содержит:
-        <input ng-model="$scope.containsString" type="text" placeholder="Содержит" />
-</label>
-<input ng-model="$scope.searchInDescription" id="searchInDescription" type="checkbox"><label for="searchInDescription">Искать также в описании</label>
+        <div class="medium-6 columns">
+                <tags-edit label="Должно быть:" picked-tags="includeTags" save-last-tag="saveLastTag"></tags-edit>
+        </div>
+        <div class="medium-6 columns">
+                <tags-edit label="Не должно быть:" tag-style="alert" picked-tags="excludeTags" save-last-tag="saveLastTag"></tags-edit>
+        </div>
+        <div class="medium-12 columns">
+                <input type="submit" ng-click="search()" class="round button"/>
+        </div>
 
-<tags-edit label="Должно быть:" picked-tags="includeTags" save-last-tag="saveLastTag"></tags-edit>
+        </form>
+</div>
 
-<tags-edit label="Не должно быть:" picked-tags="excludeTags" save-last-tag="saveLastTag"></tags-edit>
-
-
-<button type="button" ng-click="search()" class="round button">Search</button>
-
-</form>
+<div class="row">
+        <div class="medium-12 columns">
+        <ul class="inline-list">
+                <li ng-repeat="node in resultNodes">
+                        <node-button node="node"></node-button>
+                </li>
+        </ul>
+        </div>
+</div>

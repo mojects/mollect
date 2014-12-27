@@ -25,7 +25,7 @@ function NodesFactory($rootScope, Node) {
         var deferred = $$q.defer();
 
         this.db.query(
-            "SELECT name FROM nodes WHERE is_deleted=0 AND category='tag';"
+            "SELECT id, name FROM nodes WHERE is_deleted=0 AND category='tag';"
         ).fail(dbErrorHandler)
             .done(function (tags) {
                 /*var tags_array = [];
