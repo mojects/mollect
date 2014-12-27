@@ -5,12 +5,16 @@ ang
         var db = $.WebSQL('mollect');
         db.query(
             'CREATE TABLE IF NOT EXISTS ' +
-            'nodes (id VARCHAR(15) PRIMARY KEY, name VARCHAR, description TEXT, category VARCHAR(10),'+
-            'sync VARCHAR(10), is_deleted INT);',
+            ' nodes (id VARCHAR(15) PRIMARY KEY, name VARCHAR, description TEXT, category VARCHAR(10),'+
+            '  sync VARCHAR(10), is_deleted INT);',
 
             'CREATE TABLE IF NOT EXISTS ' +
-            'links (id VARCHAR(15) PRIMARY KEY, parent_id VARCHAR(15), child_id VARCHAR(15), weight INT,'+
-            'sync VARCHAR(10), is_deleted INT);',
+            ' links (id VARCHAR(15) PRIMARY KEY, parent_id VARCHAR(15), child_id VARCHAR(15), weight INT,'+
+            '  sync VARCHAR(10), is_deleted INT);',
+
+            'CREATE TABLE IF NOT EXISTS ' +
+            ' loops (parent_id VARCHAR(15), child_id VARCHAR(15), weight INT, depth INT,'+
+            '  PRIMARY KEY (parent_id, child_id));',
 
             'CREATE TABLE IF NOT EXISTS settings (key VARCHAR, value VARCHAR);',
 
@@ -27,7 +31,7 @@ ang
             'WHERE (SELECT count(0) FROM settings WHERE key="server")=0;'
         ).fail(function (tx, err) {
                 throw new Error(err.message);
-            }).done(function (products) {
+            }).done(function () {
                 async.series([
                     settingsManager.getClientSettings,
                     sync.run
@@ -52,7 +56,8 @@ function sync($http, NodesFactory, settingsManager) {
         async.series([
             self.pingServer,
             self.retrievePrerequisites,
-            self.sendRequestToServer
+            self.sendRequestToServer,
+            newClass(Loops).rebuildLoops
         ], function(err) {
             callback(err);
         });
@@ -172,5 +177,7 @@ function sync($http, NodesFactory, settingsManager) {
                 callback();
             });
     }
+
+
 
 }

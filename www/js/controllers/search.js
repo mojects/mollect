@@ -25,9 +25,10 @@ ang
             c.exclude_ids.push(tag.id);
         });
 
-        c.getChildrenRecursive(outputNodes);
+        c.depth = 10;
+        c.getChildren(outputNodes);
 
-        function outputNodes(nodes) {
+        function outputNodes(err, nodes) {
             $scope.resultNodes = nodes;
         }
     };

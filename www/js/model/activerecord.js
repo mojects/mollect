@@ -157,6 +157,11 @@ function ActiveRecord () {
             });
     };
 
+    this.getPlaceholdersFor = function(arr) {
+        if (arr.length == 0) return "";
+        return (new Array(arr.length)).join("?,") + "?";
+    };
+
 
     this.test = function () {
         console.log("table is : "+ this.table);

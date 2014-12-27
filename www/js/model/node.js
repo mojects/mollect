@@ -66,7 +66,8 @@ function Node (nodeId) {
 
         async.series([
             self.saveNode,
-            self.linkTags
+            self.linkTags,
+            newClass(Loops).rebuildLoops
         ], function() {
             deferred.resolve(self.id);
         });
