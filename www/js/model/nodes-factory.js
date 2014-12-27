@@ -51,28 +51,33 @@ function NodesFactory($rootScope, Node) {
             delete self.indexNodes[key];
 
         var parent_where = "";
-        var children_where = "";
         if (obstacles) {
             parent_where = "AND p.id='obstacles'"
         } 
         
         this.db.query(
-            "SELECT n.*, parents.parent_id FROM nodes n " +
-            "  JOIN (SELECT child_id, parent_id " +
-            "    FROM links l JOIN nodes p ON (parent_id=p.id)" +
-            "    WHERE l.is_deleted=0 and p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
+            "SELECT n.*, parents.parent_id parent_id FROM nodes n " +
+            "  JOIN (SELECT l.child_id, l.parent_id " +
+            "    FROM links l JOIN nodes p ON (l.parent_id=p.id AND l.is_deleted=0 ) " +
+            "    LEFT JOIN links h ON (p.id=h.child_id AND h.is_deleted=0 AND h.parent_id='home')" +
+            "    WHERE (h.child_id IS NOT NULL OR p.id='home') AND " +
+            "      p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
             "  ) parents ON (n.id=child_id)" +
             "WHERE n.is_deleted=0 AND category='tag';"
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 nodes.forEach(function(node){
-                    if (node.parent_id == 'home') return;
+                    if (node.parent_id == 'home') {
+
+                    }
                     var parent = nodes.byID(node.parent_id);
+                    if (parent == null) return;   // || parent.parent_id != 'home'
+                      console.log(parent);
                     if (typeof self.indexNodes[parent.id] == "undefined") {
                         self.indexNodes[parent.id] = parent;
                         parent.children = [];
                     }
-                    parent.children.push(node);                    
+                    parent.children.push(node);
                 })
                 $rootScope.$apply();
             });

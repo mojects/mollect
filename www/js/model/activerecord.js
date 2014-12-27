@@ -131,7 +131,7 @@ function ActiveRecord () {
         var deferred = $$q.defer();
 
         console.log(sql + params);
-        if (typeof params != 'array' && typeof params != 'undefined') params = [params];
+        if (typeof params != 'object' && typeof params != 'undefined') params = [params];
 
         var call;
         if (typeof params == 'undefined')

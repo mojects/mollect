@@ -24,7 +24,7 @@ function Loops() {
         return $$q(function(resolve){
             self.sql(
                 "SELECT n.id "+
-                "FROM nodes n LEFT JOIN links l (n.id=l.child_id AND l.is_deleted=0) "+
+                "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id AND l.is_deleted=0) "+
                 "WHERE n.is_deleted=0 AND parent_id IS NULL AND n.category IN ('tag', 'thing') "
             ).then(function (rows) {
                     var ids = []
@@ -45,9 +45,9 @@ function Loops() {
                 var loops = [], children_ids = [];
                 // Remove children, which already in our array
                 children.forEach(function (n) {
+                    // child_id, parent_id, weight, depth
+                    loops.push([n.child_id, n.parent_id, 0, 1]);
                     if (walkedNodes.indexOf(n.child_id) == -1) {
-                        // child_id, parent_id, weight, depth
-                        loops.push([n.child_id, n.parent_id, 0, 1]);
                         walkedNodes.push(n.child_id);
                         children_ids.push(n.child_id);
                     }
@@ -76,7 +76,7 @@ function Loops() {
 
     this.copyParents = function(children_ids) {
         return $$q(function(resolve) {
-            var sql = "INSERT INTO loops (child_id, parent_id, weight, depth) " +
+            var sql = "INSERT OR REPLACE INTO loops (child_id, parent_id, weight, depth) " +
                 "SELECT c.child_id, p.parent_id, p.weight, p.depth+1 " +
                 "FROM loops c JOIN loops p ON (c.parent_id=p.child_id) " +
                 "WHERE c.child_id IN ("+self.getPlaceholdersFor(children_ids)+")";
@@ -91,9 +91,8 @@ function Loops() {
             "FROM nodes children " +
             "  JOIN links l ON " +
             "   (l.child_id=children.id AND l.is_deleted=0 " +
-            "    AND l.parent_id IN (" + self.getPlaceholdersFor(self.include_ids) + ")) " +
-            "WHERE  children.is_deleted=0 AND children.category IN ('tag', 'thing') " +
-            "GROUP BY children.id ";
+            "    AND l.parent_id IN (" + self.getPlaceholdersFor(parent_ids) + ")) " +
+            "WHERE  children.is_deleted=0 AND children.category IN ('tag', 'thing') ";
 
          return self.sql(sql, parent_ids);
     }

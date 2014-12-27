@@ -27,7 +27,7 @@ function NodesWalker(ids) {
         if (self.exclude_ids.length > 0) {
             sql += "LEFT JOIN loops negative ON " +
             "   (negative.child_id=children.id " +
-            "    AND negative.parent_id IN (" + self.getPlaceholdersFor(self.exclude_ids) + ")  AND l.depth<="+self.depth+" ) ";
+            "    AND negative.parent_id IN (" + self.getPlaceholdersFor(self.exclude_ids) + ")  AND negative.depth<="+self.depth+" ) ";
             args.merge(self.exclude_ids);
         }
 
@@ -69,7 +69,7 @@ function NodesWalker(ids) {
                 rows.forEach(function(row) {
                     self.include_ids.push(row.child_id);
                 });
-                rows = self.include_ids;
+                return self.include_ids;
             });
     }
 
