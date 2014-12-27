@@ -3,19 +3,14 @@
     <div class="large-12 columns">
         <a href="#/new" class="round button">New thing</a>
         <a href="#/new?type=tag" class="round button">New tag</a>
-        <a href="#/stuff" class="round button">HTML Components</a>
         <button ng-click="sync()" class="round button">Sync</button>
-        <button ng-click="test('Test error!')" class="round button">1</button>
-        <button ng-click="test()" class="round button">2</button>
 
-        <div ng-repeat="(key, nodes) in nodeGroups">
-            <a ng-href="#/node/{{key}}">{{key}}:</a>
+        <div ng-repeat="parent in nodeGroups">
+            <a ng-href="#/node/{{parent.id}}">{{parent.name}}:</a>
             <ul class="inline-list">
-                <li ng-repeat="node in nodes">
-                    <a ng-href="#/node/{{node.id}}">
-                        <span class="radius label big" ng-class="{success: selectedTags[node.id]}">
-                   {{node.name}}
-                </span></a></li>
+                <li ng-repeat="node in parent.children">
+                    <node-button node="node"></node-button>
+                </li>
             </ul>
         </div>
 
