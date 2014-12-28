@@ -24,8 +24,11 @@ function Loops() {
         return $$q(function(resolve){
             self.sql(
                 "SELECT n.id "+
-                "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id AND l.is_deleted=0) "+
-                "WHERE n.is_deleted=0 AND parent_id IS NULL AND n.category IN ('tag', 'thing') "
+                "FROM nodes n LEFT JOIN " +
+                "  (SELECT child_id FROM links l JOIN nodes p ON (l.parent_id=p.id) " +
+                "   WHERE l.is_deleted=0 AND p.is_deleted=0 AND p.category IN ('tag', 'thing')" +
+                "   ) parents ON (n.id=parents.child_id) "+
+                "WHERE n.is_deleted=0 AND child_id IS NULL AND n.category IN ('tag', 'thing') "
             ).then(function (rows) {
                     var ids = []
                     rows.forEach(function(row) {

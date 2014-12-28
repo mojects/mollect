@@ -3,7 +3,26 @@ FROM nodes n JOIN loops l ON (n.id=l.child_id)
   JOIN nodes p ON (l.parent_id=p.id)  ;
 
 
+select count(0) from loops
+145
 
+
+SELECT n.id
+FROM nodes n LEFT JOIN
+  (SELECT child_id FROM links l JOIN nodes p ON (l.parent_id=p.id)
+   WHERE l.is_deleted=0 AND p.is_deleted=0 AND p.category IN ('tag', 'thing')
+   ) parents ON (n.id=l.child_id)
+WHERE n.is_deleted=0 AND parent_id IS NULL AND n.category IN ('tag', 'thing')
+
+
+
+SELECT n.id
+FROM nodes n LEFT JOIN links l ON (n.id=l.child_id AND l.is_deleted=0)
+WHERE n.is_deleted=0 AND n.category IN ('tag', 'thing') AND n.id='i3pj055o-chr'
+
+SELECT *
+FROM links JOIN
+WHERE child_id='i3pj055o-chr'
 
                SELECT n.*, parents.parent_id parent_id FROM nodes n
                  JOIN (SELECT l.child_id, l.parent_id
