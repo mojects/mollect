@@ -49,14 +49,11 @@ function Node (nodeId) {
         }
 
         function setAvgScore(value) {
-            self.rating = value;
+            self.rating = Math.round(value);
             var link = newClass(Link);
-            link.find_or_create_by(
-                {child_id: self.id, parent_id: 'avg_score'},
-                function() {
-                    link.weight = value;
-                }
-
+            link.update_or_create(
+                {child_id: self.id, parent_id: 'avg_score', weight: self.rating},
+                function() {}
             )
         }
     }

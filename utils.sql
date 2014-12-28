@@ -3,6 +3,10 @@ FROM nodes n JOIN loops l ON (n.id=l.child_id)
   JOIN nodes p ON (l.parent_id=p.id)  ;
 
 
+UPDATE links SET child_id='i3nxt5zo-ini',parent_id='avg_score',weight=81,sync='new',is_deleted=0
+WHERE is_deleted=0 AND links.child_id='i3nxt5zo-ini' AND links.parent_id='avg_score'
+
+
 SELECT n.*, parents.parent_id parent_id FROM nodes n
   JOIN (SELECT l.child_id, l.parent_id
     FROM links l JOIN nodes p ON (l.parent_id=p.id AND l.is_deleted=0 )

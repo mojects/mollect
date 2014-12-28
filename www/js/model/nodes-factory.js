@@ -67,12 +67,9 @@ function NodesFactory($rootScope, Node) {
         ).fail(dbErrorHandler)
             .done(function (nodes) {
                 nodes.forEach(function(node){
-                    if (node.parent_id == 'home') {
-
-                    }
                     var parent = nodes.byID(node.parent_id);
-                    if (parent == null) return;   // || parent.parent_id != 'home'
-                      console.log(parent);
+                    if (parent == null) return;
+
                     if (typeof self.indexNodes[parent.id] == "undefined") {
                         self.indexNodes[parent.id] = parent;
                         parent.children = [];

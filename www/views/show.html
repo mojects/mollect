@@ -17,18 +17,13 @@
 </div>
 
 
-<div class="row" ng-class="{hide: node.category=='tag'}">
-
-    <hr>
-
+<div class="row">
     Tags:
-
     <ul class="inline-list" >
         <li ng-repeat="tag in node.tags">
             <node-button node="tag"></node-button>
         </li>
     </ul>
-
 </div>
 
 <div ng-repeat="(group_name, group) in relatedNodes" class="row" ng-show="group.length">

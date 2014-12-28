@@ -55,7 +55,8 @@ function Loops() {
                 if (loops.length > 0) {
                     self.addLoops(loops, children_ids)
                         .then(self.copyParents)
-                        .then(self.walkDeeper);
+                        .then(self.walkDeeper)
+                        .then(resolve);
                 } else {
                     resolve();
                 }

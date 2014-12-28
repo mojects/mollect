@@ -18,6 +18,7 @@ function sqlWiz(){
     this.whereCondition = "WHERE is_deleted=0";
     this.whereValues = [];
     this.objID = null;
+    this.nonComparableFields = ['weight', 'description', 'is_deleted', 'depth'];
 
     this.setData = function(obj, m){
         model = m;
@@ -26,13 +27,15 @@ function sqlWiz(){
             self.insertFields.push(key);
             self.insertValues.push(value);
             self.insertPlaceholders.push("?");
-            if (key != 'id') {
+            if (key == 'id')
+                self.objID = value;
+            else
                 self.addUpdateField(key, value);
-            }
+
+            if (self.nonComparableFields.indexOf(key) != -1) return;
             if (!obj.hasOwnProperty('id') || key == 'id') {
                 self.whereCondition += " AND " + model.table + "." + key + "=?";
                 self.whereValues.push(value);
-                self.objID = value;
             }
         });
     };
@@ -69,13 +72,13 @@ function sqlWiz(){
         var sync = (model.isTemp ? "temp" : "new");
         self.addUpdateField("sync", sync);
         self.addUpdateField("is_deleted", 0);
-        self.updateValues.push(self.objID);
+        // self.updateValues.push(self.objID);
 
         model.sql(
             "UPDATE " + model.table +
-            " SET " + self.updateFields.join(",") +
-            " WHERE id=?;",
-            self.updateValues
+            " SET " + self.updateFields.join(",") + " " +
+            self.whereCondition,
+            self.updateValues.concat(self.whereValues)
         ).then(function () {
                 if (callback) callback();
             });
