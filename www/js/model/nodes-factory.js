@@ -51,17 +51,17 @@ function NodesFactory($rootScope, Node) {
             delete self.indexNodes[key];
 
         var parent_where = "";
-        if (obstacles) {
-            parent_where = "AND p.id='obstacles'"
-        } 
+        if (obstacles)
+            parent_where = "AND (p.id='obstacles' OR l.child_id='obstacles') ";
+        else
+            parent_where = "AND (h.child_id IS NOT NULL OR p.id='home') ";
         
         this.db.query(
             "SELECT n.*, parents.parent_id parent_id FROM nodes n " +
             "  JOIN (SELECT l.child_id, l.parent_id " +
             "    FROM links l JOIN nodes p ON (l.parent_id=p.id AND l.is_deleted=0 ) " +
             "    LEFT JOIN links h ON (p.id=h.child_id AND h.is_deleted=0 AND h.parent_id='home')" +
-            "    WHERE (h.child_id IS NOT NULL OR p.id='home') AND " +
-            "      p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
+            "    WHERE p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
             "  ) parents ON (n.id=child_id)" +
             "WHERE n.is_deleted=0 AND category='tag';"
         ).fail(dbErrorHandler)
