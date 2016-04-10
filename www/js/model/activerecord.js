@@ -7,7 +7,7 @@ function sqlWiz(){
         sleep(1);
         var time = Date.now().toString(36);
         return time + "-" + settings.client_code;
-    }
+    };
 
     this.lastId = this.generatePK();
     this.insertFields = [ 'id' ];
@@ -101,7 +101,7 @@ function ActiveRecord () {
         return self.sql(
             "SELECT * FROM "+self.table+";"
         );
-    }
+    };
 
     this.create = function (obj, callback) {
         var wiz = newClass(sqlWiz);
@@ -133,7 +133,7 @@ function ActiveRecord () {
     this.sqlSafe = function(sql, params) {
         var deferred = $$q.defer();
 
-        console.log(sql + params);
+        //console.log(sql + params);
         if (typeof params != 'object' && typeof params != 'undefined') params = [params];
 
         var call;
@@ -167,6 +167,6 @@ function ActiveRecord () {
 
 
     this.test = function () {
-        console.log("table is : "+ this.table);
+        //console.log("table is : "+ this.table);
     };
 }

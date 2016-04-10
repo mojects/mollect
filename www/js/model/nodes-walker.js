@@ -51,12 +51,12 @@ function NodesWalker(ids) {
         sql += "GROUP BY children.id ";
 
         if (self.exclude_ids.length > 0)
-            sql += "HAVING  MIN(negative.child_id IS NULL)=1 "
+            sql += "HAVING  MIN(negative.child_id IS NULL)=1 ";
 
         self.sql(sql, args).then(function (children) {
                 callback(null, children);
             });
-    }
+    };
 
     this.leaveOnlyObstacles = function() {
         return self.sql(

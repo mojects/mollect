@@ -93,7 +93,7 @@ Array.prototype.pushUnique = function(item) {
 
 Array.prototype.merge = function(chunk) {
     this.push.apply(this, chunk);
-}
+};
 
 Array.prototype.byID = function(id) {
     var result = null;
@@ -108,12 +108,12 @@ Array.prototype.byID = function(id) {
 // For todays date;
 Date.prototype.today = function () {
     return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear();
-}
+};
 
 // For the time now
 Date.prototype.timeNow = function () {
     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
-}
+};
 
 function currentDateTime() {
     return new Date().today() + " " + new Date().timeNow();
@@ -122,7 +122,7 @@ function currentDateTime() {
 // ---
 function to01(x) {
     if (x == true)
-        return 1
+        return 1;
     else
         return 0
 }

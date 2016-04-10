@@ -5,33 +5,37 @@ var $$q = null;
 ang
     .config(function($routeProvider) {
         $routeProvider
+            .when('/home/:type', {
+                controller:'HomeCtrl',
+                templateUrl:'js/main/home.html'
+            })
             .when('/', {
                 controller:'HomeCtrl',
-                templateUrl:'views/home.html'
-            })
-            .when('/obstacles', {
-                controller:'HomeCtrl',
-                templateUrl:'views/home.html'
+                templateUrl:'js/main/home.html'
             })
             .when('/search', {
                 controller:'SearchCtrl',
                 templateUrl:'views/search.html'
             })
+            .when('/recent', {
+                controller:'RecentCtrl',
+                templateUrl:'js/main/recent.html'
+            })
             .when('/edit/:nodeId', {
                 controller:'EditCtrl',
-                templateUrl:'views/edit.html'
+                templateUrl:'js/main/edit.html'
             })                         
             .when('/new', {
                 controller:'EditCtrl',
-                templateUrl:'views/edit.html'
+                templateUrl:'js/main/edit.html'
             })
             .when('/delete/:nodeId', {
                 controller:'DeleteCtrl',
-                templateUrl:'views/show.html'
+                templateUrl:'js/main/show.html'
             })
             .when('/node/:nodeId', {
                 controller:'ShowCtrl',
-                templateUrl:'views/show.html'
+                templateUrl:'js/main/show.html'
             })
             .when('/config', {
                 controller:'ConfigCtrl',
@@ -72,7 +76,7 @@ ang
         $$q = $q;
 
         log(document.URL);
-    })
+    });
 
 
              /*

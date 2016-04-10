@@ -1,10 +1,7 @@
 ang
-.directive("nodeButton", function() {
+.directive("nodeTag", function() {
     return {
-        template : "<a ng-href='#/node/{{node.id}}'>"+
-                    "<span class='radius label big' ng-class='labelClass'>"+
-                   "{{node.name}}"+
-                "</span></a>",
+        templateUrl : "js/directives/node-tag.html",
         scope : {
             node : "="
         },
@@ -24,7 +21,7 @@ ang
                 else
                     scope.labelClass = "alert";
 
-            };
+            }
 
 
         }

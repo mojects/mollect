@@ -1,7 +1,5 @@
-ang
-    .service('NodesFactory', NodesFactory)
-
-function NodesFactory($rootScope, Node) {
+ang.service('NodesFactory', 
+function NodesFactory($q, $rootScope, Node) {
 
     var self = this;
     this.db = $.WebSQL('mollect');
@@ -43,15 +41,27 @@ function NodesFactory($rootScope, Node) {
         node.setFields(inputNode);
         return node.save();
     };
+    
+    this.recent = function () {
+        var q = "SELECT id, category, name FROM nodes " +
+            "WHERE is_deleted=0 AND category='thing' " +
+            "ORDER BY id DESC " +
+            "LIMIT 100;";
+        return $q(function(resolve, reject) {
+            self.db.query(q)
+                .fail(dbErrorHandler)
+                .done(resolve);
+        });
+    };
 
-    this.getIndexNodes = function(obstacles) {
+    this.getIndexNodes = function(type) {
         console.log("getIndexNodes");
 
         for (var key in self.indexNodes)
             delete self.indexNodes[key];
 
         var parent_where = "";
-        if (obstacles)
+        if (type == 'obstacles')
             parent_where = "AND (p.id='obstacles' OR l.child_id='obstacles') ";
         else
             parent_where = "AND (h.child_id IS NOT NULL OR p.id='home') ";
@@ -75,11 +85,11 @@ function NodesFactory($rootScope, Node) {
                         parent.children = [];
                     }
                     parent.children.push(node);
-                })
+                });
                 $rootScope.$apply();
             });
 
         return self.indexNodes;
     };
 
-};
+});

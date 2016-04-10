@@ -24,7 +24,7 @@ ang
                 else if (v < 0)
                     scope.labelClass = "alert";
 
-            };
+            }
 
 
         }

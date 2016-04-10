@@ -28,7 +28,7 @@ function desk($rootScope, $timeout) {
     this.clean = function() {
         self.info = null;
         self.alert = null;
-    }
+    };
 
     this.showErrorOrSuccess = function(err) {
         self.info = err ? "" : "Все четко как чичотка!";

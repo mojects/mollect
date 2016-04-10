@@ -17,6 +17,11 @@ button.small, .button.small {
 }
 
 
+.inline-list {
+    margin-left: 0;
+}
+
+
 .label a {
     color: white;
 }

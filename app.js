@@ -1,11 +1,11 @@
 winston = require('winston');
-winston.info('Starting');
-
 var http = require('http'),
     fs = require('fs'),
     mime = require('mime');
 
 var port = process.env.PORT || 5000;
+
+winston.info('Starting at '+port);
 
 http.createServer(function(request, response) {
     winston.info(request.url);
