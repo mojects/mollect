@@ -8,3 +8,4 @@ www/bower_components/angular-tagger/test/index.html
 
 platforms/
 plugins/
+.DS_Store

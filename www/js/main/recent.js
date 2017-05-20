@@ -1,15 +1,11 @@
 angular.module('mollect')
-.controller('RecentCtrl', 
+.controller('RecentCtrl',
 function($scope, desk, $location,
-         $routeParams, NodesFactory, sync) {
-
-//    $scope.nodes = NodesFactory.recent();
-
+         $routeParams, NodesFactory) {
 
     NodesFactory.recent()
         .then(function (nodes) {
-            console.log('!!!', nodes);
             $scope.nodes = nodes;
         });
-    
+
 });
