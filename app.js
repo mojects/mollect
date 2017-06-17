@@ -13,7 +13,7 @@ http.createServer(function(request, response) {
         outputFile('www/index.html', response);
     else
         outputFile('www' + request.url, response);
-}).listen(port);
+}).listen(port, "0.0.0.0");
 
 
 function outputFile(path, response) {

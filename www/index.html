@@ -10,11 +10,16 @@
     <link rel="stylesheet" href="css/foundation.min.css" />
     <link rel="stylesheet" href="css/icons/stylesheets/general_foundicons.css">
     <link rel="stylesheet" href="css/custom.css" />
+    <link rel="stylesheet" href="css/rating.css" />
     <link rel="stylesheet" href="bower_components/angucomplete-alt/angucomplete-alt.css" />
   </head>
   <body ng-app="mollect">
 
-  <div class="sticky fixed" id="footer">
+  <div class="preloader ng-hide">
+    Погоди, дядя...
+  </div>
+
+  <div class="sticky fixed" id="footer" ng-cloak>
     <nav class="tab-bar">
       <section class="left-small">
         <a class="left-off-canvas-toggle menu-icon"><span></span></a>
@@ -37,7 +42,7 @@
     </nav>
   </div>
 
-    <div id="menu" class="off-canvas-wrap" data-offcanvas>
+  <div id="menu" class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
 
         <aside class="left-off-canvas-menu">
@@ -77,14 +82,14 @@
 
         <section id="content" class="main-section">
 
-          <div ng-controller="DeskCtrl" class="row" style="margin-top: 5px;">
-            <div data-alert class="alert-box alert hide round" ng-class="{hide: !desk.alert}">
+          <div ng-controller="DeskCtrl" class="status row">
+            <div ng-cloak class="alert" ng-show="desk.alert">
               <span>{{desk.alert}}</span>
-              <a class="close">&times;</a>
+              <a class="close" ng-click="desk.clear()">&times;</a>
             </div>
-            <div data-alert class="alert-box success hide round" ng-class="{hide: !desk.info}">
-              <span>{{desk.info}}</span>
-              <a class="close">&times;</a>
+            <div ng-cloak class="info" ng-show="desk.message">
+              <span>{{desk.message}}</span>
+              <a class="close" ng-click="desk.clear()">&times;</a>
             </div>
           </div>
 

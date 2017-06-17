@@ -1,7 +1,6 @@
 ang
     .service('sync', sync)
-
-    .factory('dbInitializer', function (sync, settingsManager) {
+    .factory('dbInitializer', function (sync, settingsManager, desk) {
         var db = $.WebSQL('mollect');
         db.query(
             'CREATE TABLE IF NOT EXISTS ' +
@@ -34,7 +33,8 @@ ang
             }).done(function () {
                 async.series([
                     settingsManager.getClientSettings,
-                    sync.run
+                    sync.run,
+                    desk.clear
                 ]);
             });
         return true;
@@ -44,9 +44,9 @@ ang
          DROP TABLE IF EXISTS links;
          DROP TABLE IF EXISTS  client_version
          */
-    })
+    });
 
-function sync($http, NodesFactory, settingsManager) {
+function sync($http, NodesFactory, settingsManager, desk) {
     var self = this;
     var db = $.WebSQL('mollect');
     this.nodes = null;
@@ -57,12 +57,16 @@ function sync($http, NodesFactory, settingsManager) {
             self.pingServer,
             self.retrievePrerequisites,
             self.sendRequestToServer,
-            newClass(Loops).rebuildLoops
+            self.rebuildLoops
         ], function(err) {
             callback(err);
         });
 
-    }
+    };
+    this.rebuildLoops = (cb) => {
+        desk.info('3/3 optimize data...');
+        newClass(Loops).rebuildLoops(cb);
+    };
     this.retrievePrerequisites = function(callback) {
         async.series([
                 async.apply(self.retrieveEntriesForUpdate, "nodes"),
@@ -71,18 +75,19 @@ function sync($http, NodesFactory, settingsManager) {
             function(err, results) {
                 callback(err);
             });
-    }
+    };
     this.pingServer = function(callback) {
+        desk.info('1/3 ping server...');
         var req = {
             method: 'OPTIONS',
             url: settings.server+'/sync'
-        }
+        };
         $http(req).success(function(data, status, headers, config){
             callback(null, true);
         }).error(function(data, status, headers, config){
             throw new Error(status);
         });
-    }
+    };
     this.retrieveEntriesForUpdate = function(table, callback) {
         var db = $.WebSQL('mollect');
         db.query(
@@ -94,20 +99,21 @@ function sync($http, NodesFactory, settingsManager) {
                 self[table] = rows;
                 callback(null, true);
             });
-    }
+    };
     this.sendRequestToServer = function(callback) {
+        desk.info('2/3 sync data...');
         var req = {
             method: 'POST',
             url: settings.server+'/sync.json',
             data: self.buildDataForServer()
-        }
+        };
 
         $http(req).success(function(data, status, headers, config){
             self.processServerAnswer(callback, data);
         }).error(function(data, status, headers, config){
             throw new Error(status);
         });
-    }
+    };
     this.processServerAnswer = function(callback, data) {
 
         // Check for possible conflicts on local storage
@@ -157,7 +163,7 @@ function sync($http, NodesFactory, settingsManager) {
                 NodesFactory.getIndexNodes();
                 callback();
             });
-    }
+    };
     this.buildDataForServer = function() {
         var data = {};
         data.client_version = settings.client_version;

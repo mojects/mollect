@@ -18,7 +18,7 @@ function Loops() {
 
     this.cleanLoops = function() {
         return self.sql("DELETE FROM loops");
-    }
+    };
 
     this.getTopNodeIds = function() {
         return $$q(function(resolve){

@@ -6,6 +6,10 @@ button.small, .button.small {
     font-size: 0.7125rem;
 }
 
+button:focus {
+    outline: none;
+}
+
 .tab-bar-section button, .tab-bar-section .button {
     padding-top: 0.475rem;
     padding-right: 1rem;
@@ -48,32 +52,27 @@ button.small, .button.small {
     margin-bottom: 0.05rem;
 }
 
-
-/* ---- RATING ---- */
-
-.rating {
-    margin: 0;
-    padding: 0;
-    display: inline-block;
+[ng-cloak] {
+    display: none !important;
 }
-.rating li {
-    padding: 1px;
-    color: #a9a9a9;
+
+.preloader {
     text-align: center;
-    font-weight: bold;
-    font-size: 28px;
-    list-style-type: none;
-    display: inline-block;
-    cursor: pointer;
-}
-.rating li.foundicon-star.filled {
-    color: #fd0;
-}
-.rating li.foundicon-checkmark.filled {
-    color: #19469D;
-}
-.rating li.foundicon-remove.filled {
-    color: #cc0000;
+    margin: 12px;
+    font-size: 12px;
+    color: #858686;
 }
 
-/* --------------- */
+.status {
+    font-size: 12px;
+    height: 19px;
+    padding: 0 8px;
+    text-align: right;
+    color: #a7a7a7;
+}
+.status .close {
+    color: #b7b7b7;
+}
+.status .alert {
+    color: #b92828;
+}

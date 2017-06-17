@@ -1,7 +1,7 @@
 angular.module('mollect')
-.controller('HomeCtrl', 
-function($scope, desk, $location,
-         $routeParams, NodesFactory, sync) {
+  .controller('HomeCtrl',
+  function($scope, desk, $location,
+           $routeParams, NodesFactory, sync) {
     console.log('HomeCtrl', $routeParams.type);
 
     $scope.nodeGroups = NodesFactory.getIndexNodes($routeParams.type);
@@ -10,20 +10,18 @@ function($scope, desk, $location,
     $scope.clientVersion =     settings.client_version          ;
 
     $scope.sync = function() {
-        sync.run(function(err){
-            desk.showErrorOrSuccess(err);
-        });
+      sync.run(desk.showErrorOrSuccess);
     };
 
     $scope.suggest = function(tag) {
-        Case.addTag(tag);
+      Case.addTag(tag);
     };
 
     $scope.setTag = function(tag) {
-        Case.addTag(tag);
+      Case.addTag(tag);
     };
 
     $scope.test = function(arg) {
-        desk.showErrorOrSuccess(arg);
+      desk.showErrorOrSuccess(arg);
     }
-});
+  });

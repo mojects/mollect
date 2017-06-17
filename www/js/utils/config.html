@@ -17,7 +17,7 @@
 
     <div class="large-12 columns">
         <label>Client code:
-            <input type="text" ng-model="code" />
+            <input type="text" ng-model="code" maxlength="26" />
         </label>
     </div>
 
@@ -34,7 +34,5 @@
 </div>
 
     <button type="button" ng-click="cleanLocal()" ng-disabled="myForm.$invalid" class="round button">Clean local data</button>
-
-
 
 </form>
