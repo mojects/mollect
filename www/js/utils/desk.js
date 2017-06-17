@@ -2,14 +2,13 @@ ang
 
 .controller('DeskCtrl', function($scope, $rootScope, desk) {
 
-        $scope.desk = desk;
+    $scope.desk = desk;
 
-        $rootScope.$on('$locationChangeSuccess', function () {
-            desk.clean();
-        });
+    $rootScope.$on('$locationChangeSuccess', function () {
+        desk.clean();
+    });
 
-        /*
-
+    /*
     $scope.showErrorOrSuccess = function(err) {
         $scope.info = err || "Все четко как чичотка!";
         $scope.alert = err || "";

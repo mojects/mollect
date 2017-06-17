@@ -1,7 +1,7 @@
 ang
 
 .controller('SearchCtrl', function($scope,Case) {
-    
+
     $scope.containsString = "";
     $scope.category = "all";
     $scope.searchInDescription = true;
@@ -35,5 +35,5 @@ ang
 
 
 
-        
-})
+
+});

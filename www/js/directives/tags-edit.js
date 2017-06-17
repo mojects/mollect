@@ -1,7 +1,7 @@
 ang
 .directive("tagsEdit", function() {
     return {
-        templateUrl: 'views/tags-edit.html',
+        templateUrl: 'js/directives/tags-edit.html',
         scope : {
             label : "@",
             tagStyle : "@",
@@ -20,7 +20,7 @@ function tagsEdit($scope, NodesFactory) {
     NodesFactory.tags().then(function(tags) {
         $scope.tags_list = tags;
     });
-    
+
     $scope.$watch('selectedTag', function(newValue, oldValue) {
         if (newValue) {
             var tag = newValue.originalObject;
@@ -39,7 +39,7 @@ function tagsEdit($scope, NodesFactory) {
         // if (tag)
             inputTag = tag;
     }
-    
+
     $scope.addTag = function(tag) {
         if (typeof tag != 'object') tag = { name: tag };
         $scope.pickedTags.pushUnique(tag);
