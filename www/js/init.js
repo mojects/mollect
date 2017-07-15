@@ -1,10 +1,11 @@
-ang = angular.module('mollect', ['ngRoute', 'ngResource', 'angucomplete-alt']);
+ang = angular.module('mollect', ['ngRoute', 'ngResource',
+    'ngSanitize', 'angucomplete-alt']);
 
-var $$q = null;
+var $$q = null, $$sce = null;
 
 ang
 .config(['$routeProvider', routesSetup])
-.run(function($window, $rootScope, $q, dbInitializer) {
+.run(function($window, $rootScope, $q, $sce, dbInitializer) {
     $rootScope.online = navigator.onLine;
     $window.addEventListener("offline", function () {
         $rootScope.$apply(function() {
@@ -18,6 +19,7 @@ ang
     }, false);
 
     $$q = $q;
+    $$sce = $sce;
 
     log(document.URL);
 });

@@ -17,14 +17,16 @@
     </div>
 </div>
 
-<tags-edit label="Тэги:" picked-tags="node.tags" suggested-tags="suggestedTags" save-last-tag="saveLastTag"></tags-edit>
+<tags-edit label="Тэги:" picked-tags="node.tags" suggested-tags="suggestedTags" save-last-tag="saveLastTag">
+  <button type="button" ng-click="save()"
+          ng-disabled="myForm.$invalid"
+          class="round button">Save</button>
+</tags-edit>
 
 <div class="row">
-    <div class="large-12 columns">
-        <textarea ng-model="node.description" rows="12" placeholder="Comment"></textarea>
-    </div>
+  <div class="large-12 columns">
+    <textarea ng-model="node.description" rows="12" placeholder="Comment"></textarea>
+  </div>
 </div>
-
-<button type="button" ng-click="save()" ng-disabled="myForm.$invalid" class="round button">Save</button>
 
 </form>

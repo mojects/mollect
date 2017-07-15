@@ -1,16 +1,17 @@
 ang
 .directive("tagsEdit", function() {
-    return {
-        templateUrl: 'js/directives/tags-edit.html',
-        scope : {
-            label : "@",
-            tagStyle : "@",
-            pickedTags : "=",
-            suggestedTags : "=",
-            saveLastTag : "="
-        },
-        controller : tagsEdit
-    };
+  return {
+    templateUrl: 'js/directives/tags-edit.html',
+    scope : {
+      label : "@",
+      tagStyle : "@",
+      pickedTags : "=",
+      suggestedTags : "=",
+      saveLastTag : "="
+    },
+    transclude: true,
+    controller : tagsEdit
+  };
 });
 
 function tagsEdit($scope, NodesFactory) {

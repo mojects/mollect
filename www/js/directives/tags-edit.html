@@ -17,14 +17,15 @@
 </div>
 
 <div class="row" style="height: 50px">
-    <div class="large-12 columns">
-        <ul class="inline-list">
-            <li ng-repeat="tag in pickedTags"><span class="radius label" ng-class="tagStyle">
-                {{tag.name}}
-                <a ng-click="dropTag(tag.name)" class="close">&times;</a>
-            </span></li>
-        </ul>
-    </div>
+  <div class="large-12 columns">
+    <div ng-transclude style="display: inline-block; float: right;"></div>
+    <ul class="inline-list">
+      <li ng-repeat="tag in pickedTags"><span class="radius label" ng-class="tagStyle">
+          {{tag.name}}
+        <a ng-click="dropTag(tag.name)" class="close">&times;</a>
+      </span></li>
+    </ul>
+  </div>
 </div>
 
 <div class="row" style="height: 50px" ng-class="{hide: !suggestedTags}">

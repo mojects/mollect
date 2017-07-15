@@ -16,7 +16,7 @@ function Case($rootScope, Node) {
         node.category='case';
         node.isTemp = true;
         return node.save();
-    }
+    };
 
     this.getRecentCase = function(callback) {
         var node = newClass(Node);
@@ -25,18 +25,18 @@ function Case($rootScope, Node) {
             if (found) self.currentCaseNode = node;
             callback(found);
         });
-    }
+    };
 
     this.addTag = function(tag) {
         self.relatedTags.push(tag);
         return self.attachNode(tag.id);
-    }
+    };
 
     this.attachNode = function(nodeId) {
         var deferred = $$q.defer();
 
         async.series([
-            function(callback) {
+            (callback) => {
                 if (self.currentCaseNode) {
                     callback();
                     return;
@@ -49,18 +49,18 @@ function Case($rootScope, Node) {
                     }
                 });
 
-            }, function(callback) {
+            }, (callback) => {
                 self.currentStepNode = newClass(Node, nodeId);
                 self.currentCaseNode
                     .linkChild(self.currentStepNode)
                     .then(callback);
             }
-        ], function(err, results) {
+        ], (err, results) => {
             deferred.resolve();
         });
 
         return deferred.promise;
-    }
+    };
 
     this.getAttributesForNewReaction = function() {
         var r = {selected: [], unselected: []};
@@ -110,7 +110,7 @@ function Case($rootScope, Node) {
 
         return result;
     }
-    
+
     this.distributeToSubcategories = function(result, related) {
 
         // Вытащить многомерный массив в плоский:
@@ -139,9 +139,8 @@ function Case($rootScope, Node) {
             else
                 this.push(node);
         }
-        
+
     }
 
 }
-    
-    
+
