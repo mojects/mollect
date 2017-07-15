@@ -16,6 +16,17 @@ button:focus {
     outline: none;
 }
 
+.sticky {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 99;
+}
+.tab-bar {
+  height: 45px;
+  overflow: hidden;
+}
 .tab-bar-section button, .tab-bar-section .button {
   padding: 0.475rem 1rem 0.5375rem;
   font-size: 1.3125rem;
