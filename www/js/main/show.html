@@ -1,16 +1,14 @@
 <div class="row">
+  <div class="columns">
+    <div style="float: right; width: 120px; margin-left: 12px;">
+      <a ng-href="#/new?isReaction=true" class="button">Новая реакция</a>
+      <a ng-href="#/edit/{{node.id}}" class="button"><i class="foundicon-edit"></i></a>
+      <a ng-href="#/delete/{{node.id}}" class="button"><i class="foundicon-trash"></i></a>
+    </div>
 
-  <div class="small-7 large-4 columns">
     <h3>{{node.name}}</h3>
     <div ng-bind-html="node.descriptionHtml"></div>
   </div>
-
-  <div class="small-5 large-8 columns">
-    <a ng-href="#/new?isReaction=true" class="button">Новая реакция</a>
-    <a ng-href="#/edit/{{node.id}}" class="button"><i class="foundicon-edit"></i></a>
-    <a ng-href="#/delete/{{node.id}}" class="button"><i class="foundicon-trash"></i></a>
-  </div>
-
 </div>
 
 <div class="row">
