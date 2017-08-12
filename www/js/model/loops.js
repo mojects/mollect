@@ -37,7 +37,7 @@ function Loops() {
                     resolve(ids);
                 });
         });
-    }
+    };
 
     this.walkDeeper = function(parent_ids) {
         return $$q(function(resolve) {
@@ -66,7 +66,7 @@ function Loops() {
             }
         });
 
-    }
+    };
 
     this.addLoops = function(loops, children_ids) {
         return $$q(function(resolve) {
@@ -76,26 +76,26 @@ function Loops() {
                 resolve(children_ids);
             });
         });
-    }
+    };
 
     this.copyParents = function(children_ids) {
         return $$q(function(resolve) {
             var sql = "INSERT OR REPLACE INTO loops (child_id, parent_id, weight, depth) " +
                 "SELECT c.child_id, p.parent_id, p.weight, p.depth+1 " +
                 "FROM loops c JOIN loops p ON (c.parent_id=p.child_id) " +
-                "WHERE c.child_id IN ("+self.getPlaceholdersFor(children_ids)+")";
+                "WHERE c.child_id IN ("+self.placeholdersFor(children_ids)+")";
             self.sql(sql, children_ids).then(function () {
                 resolve(children_ids);
             });
         });
-    }
+    };
 
     this.getChildren = function(parent_ids) {
         var sql = "SELECT l.child_id, l.parent_id " +
             "FROM nodes children " +
             "  JOIN links l ON " +
             "   (l.child_id=children.id AND l.is_deleted=0 " +
-            "    AND l.parent_id IN (" + self.getPlaceholdersFor(parent_ids) + ")) " +
+            "    AND l.parent_id IN (" + self.placeholdersFor(parent_ids) + ")) " +
             "WHERE  children.is_deleted=0 AND children.category IN ('tag', 'thing') ";
 
          return self.sql(sql, parent_ids);

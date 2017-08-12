@@ -1,8 +1,7 @@
-ang.service('NodesFactory', 
-function NodesFactory($q, $rootScope, Node) {
+ang.service('nodes',
+function ($q, $rootScope, Node) {
 
     var self = this;
-    this.db = $.WebSQL('mollect');
     this.indexNodes = {};
 
     this.getNodeWithDetails = function(nodeId) {
@@ -19,21 +18,17 @@ function NodesFactory($q, $rootScope, Node) {
         return node;
     };
 
+    this.byIds = (ids) => {
+      var query =
+        `SELECT id, name FROM nodes
+          WHERE is_deleted=0 AND id IN (?);`;
+      return $$db.query(query, [ids]);
+    };
+
     this.tags = function() {
-        var deferred = $$q.defer();
-
-        this.db.query(
-            "SELECT id, name FROM nodes WHERE is_deleted=0 AND category='tag';"
-        ).fail(dbErrorHandler)
-            .done(function (tags) {
-                /*var tags_array = [];
-                 angular.forEach(tags, function(tag) {
-                 this.push(String(tag.name));
-                 }, tags_array);*/
-                deferred.resolve(tags);
-            });
-
-        return deferred.promise;
+      return $$db.query(
+        "SELECT id, name FROM nodes WHERE is_deleted=0 AND category='tag';"
+      );
     };
 
     this.insertNode = function(inputNode) {
@@ -41,16 +36,14 @@ function NodesFactory($q, $rootScope, Node) {
         node.setFields(inputNode);
         return node.save();
     };
-    
+
     this.recent = function () {
         var q = "SELECT id, category, name FROM nodes " +
             "WHERE is_deleted=0 AND category='thing' " +
             "ORDER BY id DESC " +
             "LIMIT 100;";
         return $q(function(resolve, reject) {
-            self.db.query(q)
-                .fail(dbErrorHandler)
-                .done(resolve);
+            $$db.query(q).then(resolve);
         });
     };
 
@@ -65,8 +58,8 @@ function NodesFactory($q, $rootScope, Node) {
             parent_where = "AND (p.id='obstacles' OR l.child_id='obstacles') ";
         else
             parent_where = "AND (h.child_id IS NOT NULL OR p.id='home') ";
-        
-        this.db.query(
+
+        $$db.query(
             "SELECT n.*, parents.parent_id parent_id FROM nodes n " +
             "  JOIN (SELECT l.child_id, l.parent_id " +
             "    FROM links l JOIN nodes p ON (l.parent_id=p.id AND l.is_deleted=0 ) " +
@@ -74,8 +67,7 @@ function NodesFactory($q, $rootScope, Node) {
             "    WHERE p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
             "  ) parents ON (n.id=child_id)" +
             "WHERE n.is_deleted=0 AND category='tag';"
-        ).fail(dbErrorHandler)
-            .done(function (nodes) {
+        ).then(function (nodes) {
                 nodes.forEach(function(node){
                     var parent = nodes.byID(node.parent_id);
                     if (parent == null) return;

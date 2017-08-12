@@ -20,14 +20,14 @@ function NodesWalker(ids) {
         if (self.include_ids.length > 0) {
             sql += "JOIN loops l ON " +
             "   (l.child_id=children.id " +
-            "    AND l.parent_id IN (" + self.getPlaceholdersFor(self.include_ids) + ") AND l.depth<="+self.depth+" ) ";
+            "    AND l.parent_id IN (" + self.placeholdersFor(self.include_ids) + ") AND l.depth<="+self.depth+" ) ";
             args.merge(self.include_ids);
         }
 
         if (self.exclude_ids.length > 0) {
             sql += "LEFT JOIN loops negative ON " +
             "   (negative.child_id=children.id " +
-            "    AND negative.parent_id IN (" + self.getPlaceholdersFor(self.exclude_ids) + ")  AND negative.depth<="+self.depth+" ) ";
+            "    AND negative.parent_id IN (" + self.placeholdersFor(self.exclude_ids) + ")  AND negative.depth<="+self.depth+" ) ";
             args.merge(self.exclude_ids);
         }
 
@@ -63,7 +63,7 @@ function NodesWalker(ids) {
                 "SELECT DISTINCT child_id "+
                 "FROM loops "+
                 "WHERE parent_id='obstacles' "+
-                "AND child_id IN ("+self.getPlaceholdersFor(self.include_ids)+");", self.include_ids
+                "AND child_id IN ("+self.placeholdersFor(self.include_ids)+");", self.include_ids
             ).then(function (rows) {
                 self.include_ids = [];
                 rows.forEach(function(row) {

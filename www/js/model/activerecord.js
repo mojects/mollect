@@ -130,6 +130,7 @@ function ActiveRecord () {
             });
     };
 
+    // todo: replace with $$db
     this.sqlSafe = function(sql, params) {
         var deferred = $$q.defer();
 
@@ -160,7 +161,7 @@ function ActiveRecord () {
             });
     };
 
-    this.getPlaceholdersFor = function(arr) {
+    this.placeholdersFor = function(arr) {
         if (arr.length == 0) return "";
         return (new Array(arr.length)).join("?,") + "?";
     };

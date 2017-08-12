@@ -1,6 +1,5 @@
-ang
-
-.controller('EditCtrl', function($scope, $location, NodesFactory, Case, $routeParams) {
+ang.controller('EditCtrl',
+function($scope, $location, nodes, Case, $routeParams) {
 
     $scope.saveLastTag = [];
 
@@ -8,7 +7,7 @@ ang
         initNew();
     else
         initEdit();
-   
+
     // NEW:
     function initNew() {
         if ($routeParams.type)
@@ -31,25 +30,26 @@ ang
 
     // EDIT:
     function initEdit() {
-        $scope.node = NodesFactory.getNodeWithDetails($routeParams.nodeId);
+        $scope.node = nodes.
+          getNodeWithDetails($routeParams.nodeId);
     }
 
     // ERROR
     $scope.error = function(err) {
         $scope.alert = err;
         $scope.$apply();
-    }
+    };
 
     $scope.save = function() {
         $scope.info = "";
         $scope.alert = "";
         $scope.saveLastTag.forEach(function(f){ f(); });
 
-        NodesFactory.insertNode($scope.node)
+        nodes.insertNode($scope.node)
             .then(function(nodeId){
                 $scope.info = "Saved!";
                 location.href = "#/node/" + nodeId;
             });
     };
 
-})
+});

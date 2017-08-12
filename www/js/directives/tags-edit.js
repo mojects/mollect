@@ -14,11 +14,11 @@ ang
   };
 });
 
-function tagsEdit($scope, NodesFactory) {
+function tagsEdit($scope, nodes) {
 
     $scope.tagStyle = $scope.tagStyle || "success";
     // All possible tags:
-    NodesFactory.tags().then(function(tags) {
+    nodes.tags().then(function(tags) {
         $scope.tags_list = tags;
     });
 

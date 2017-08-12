@@ -1,6 +1,4 @@
-ang
-
-    .factory('Node', function(Link) {
+ang.factory('Node', function(Link) {
         Node.prototype.Link = Link;
         return Node;
     });
@@ -9,11 +7,11 @@ ang
 /**
  * @class Node
  * @extends ActiveRecord
+ * example:
+ *  var n = newClass(Node);
  **/
 Node.prototype = new ActiveRecord();
 extend(Node, NodeRelations);
-
-var n = newClass(Node);
 
 function Node (nodeId) {
   this.table = "nodes";
@@ -28,11 +26,10 @@ function Node (nodeId) {
       "SELECT n.*, l.weight rating " +
       "FROM nodes n LEFT JOIN links l ON (n.id=l.child_id AND l.parent_id='avg_score')" +
       "WHERE n.id=?;", [self.id]
-    ).fail(dbErrorHandler)
-      .done(function (nodes) {
-        self.setFields(nodes[0]);
-        callback();
-      });
+    ).then(function (nodes) {
+      self.setFields(nodes[0]);
+      callback();
+    });
   };
 
   self.setFields = (node) => {

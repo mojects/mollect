@@ -6,7 +6,7 @@ function NodeRelations () {
             self.unlinkAbsentTags(results)
                 .then(function(){callback();});
         });
-    }
+    };
 
     this.linkTag = function (tag, callback) {
         var self = this;
@@ -32,7 +32,7 @@ function NodeRelations () {
             var placeholders = Array(presentTags.length).join("?,") + "?";
             where = "AND NOT parent_id IN ("+placeholders+")";
         }
-        presentTags.unshift(this.id)
+        presentTags.unshift(this.id);
         this.sql(
             "UPDATE links SET is_deleted=1, sync='new' " +
             "WHERE (SELECT category FROM nodes WHERE nodes.id=links.parent_id)='tag'" +
@@ -43,7 +43,7 @@ function NodeRelations () {
             });
 
         return deferred.promise;
-    }
+    };
 
     this.linkChild = function(child) {
         return $$q(function(resolve){
@@ -51,14 +51,13 @@ function NodeRelations () {
             l.isTemp = this.isTemp;
             l.find_or_create_by({parent_id: this.id, child_id: child.id}, resolve);
         });
-    }
+    };
 
     this.findLastCase = function(callback) {
         var self = this;
         this.db.query(
             "SELECT max(id) id FROM nodes WHERE is_deleted=0 AND  category='case';"
-        ).fail(dbErrorHandler)
-            .done(function (nodes) {
+        ).then(function (nodes) {
                 if (nodes[0].id != null) {
                     self.id = nodes[0].id;
                     callback(true);
@@ -76,8 +75,7 @@ function NodeRelations () {
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
             "WHERE l.is_deleted=0 AND parents.is_deleted=0 AND "+
             "parents.category='tag' AND l.child_id=?;", [self.id]
-        ).fail(dbErrorHandler)
-            .done(function (tags) {
+        ).then(function (tags) {
                 self.tags = tags;
                 callback();
             });

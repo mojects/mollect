@@ -46,9 +46,8 @@ ang
          */
     });
 
-function sync($http, NodesFactory, settingsManager, desk) {
+function sync($http, nodes, settingsManager, desk) {
     var self = this;
-    var db = $.WebSQL('mollect');
     this.nodes = null;
     this.links = null;
     this.run = function(callback) {
@@ -89,13 +88,10 @@ function sync($http, NodesFactory, settingsManager, desk) {
         });
     };
     this.retrieveEntriesForUpdate = function(table, callback) {
-        var db = $.WebSQL('mollect');
-        db.query(
+        $$db.multiQuery(
             "UPDATE "+table+" SET sync='sent' WHERE sync='new';",
             "SELECT * FROM "+table+" WHERE NOT sync IN ('original', 'new', 'temp');"
-        ).fail(function (tx, err) {
-                callback(err.message);
-            }).done(function (rows) {
+        ).then(function (rows) {
                 self[table] = rows;
                 callback(null, true);
             });
@@ -125,24 +121,19 @@ function sync($http, NodesFactory, settingsManager, desk) {
             settingsManager.setClientSetting("client_code", data.client_code);
 
         // Transform to array which SQL will like
-        var nodes = [];
+        var rows = [];
         data.nodes.forEach(
             function(node) {
-                nodes.push([node.id, node.name, node.description, node.category, to01(node.is_deleted)]);
+                rows.push([node.id, node.name, node.description, node.category, to01(node.is_deleted)]);
             }
         );
         // Update nodes in local storage
-        if (nodes.length > 0)
-        db.query(
+        if (rows.length > 0)
+        $$db.query(
             "INSERT OR REPLACE INTO nodes (id, name, description, category, is_deleted, sync) " +
             "VALUES (?, ?, ?, ?, ?, 'original')",
-            nodes
-        ).fail(function (tx, err) {
-                throw new Error(err.message);
-            }).done(function (version) {
-                return true;
-            });
-
+            rows
+        );
 
         // Transform to array which SQL will like
         var links = [];
@@ -153,14 +144,12 @@ function sync($http, NodesFactory, settingsManager, desk) {
         );
         // Update nodes in local storage
         if (links.length > 0)
-        db.query(
+        $$db.query(
             "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, is_deleted, sync) " +
             "VALUES (?, ?, ?, ?, ?, 'original')",
             links
-        ).fail(function (tx, err) {
-                throw new Error(err.message);
-            }).done(function (version) {
-                NodesFactory.getIndexNodes();
+        ).then(function (version) {
+                nodes.getIndexNodes();
                 callback();
             });
     };
@@ -174,14 +163,11 @@ function sync($http, NodesFactory, settingsManager, desk) {
     };
 
     this.cleanLocal = function(callback) {
-        db.query(
-            "drop table nodes;",
-            "drop table links;"
-        ).fail(function (tx, err) {
-                callback(err.message);
-            }).done(function () {
-                callback();
-            });
+      $$db.multiQuery(
+          "drop table nodes;",
+          "drop table links;"
+      ).catch(callback)
+      .then(callback);
     }
 
 

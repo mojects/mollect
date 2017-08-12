@@ -1,10 +1,10 @@
 angular.module('mollect')
   .controller('HomeCtrl',
   function($scope, desk, $location,
-           $routeParams, NodesFactory, sync) {
+           $routeParams, nodes, sync) {
     console.log('HomeCtrl', $routeParams.type);
 
-    $scope.nodeGroups = NodesFactory.getIndexNodes($routeParams.type);
+    $scope.nodeGroups = nodes.getIndexNodes($routeParams.type);
     $scope.selectedTags = Case.selectedTags;
 
     $scope.clientVersion =     settings.client_version          ;
