@@ -11,7 +11,8 @@ function ($scope, $routeParams, $location, nodes) {
 
   if ($routeParams.includeTags)
     nodes.byIds($routeParams.includeTags)
-    .then((nodes) => $scope.includeTags.concat(nodes));
+    .then((nodes) =>
+      $scope.includeTags.merge(nodes));
 
   $scope.excludeTags = [];
   $scope.saveLastTag = [];

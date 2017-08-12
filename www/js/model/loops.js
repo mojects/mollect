@@ -83,7 +83,7 @@ function Loops() {
             var sql = "INSERT OR REPLACE INTO loops (child_id, parent_id, weight, depth) " +
                 "SELECT c.child_id, p.parent_id, p.weight, p.depth+1 " +
                 "FROM loops c JOIN loops p ON (c.parent_id=p.child_id) " +
-                "WHERE c.child_id IN ("+self.placeholdersFor(children_ids)+")";
+                "WHERE c.child_id IN ("+$$db.placeholdersFor(children_ids)+")";
             self.sql(sql, children_ids).then(function () {
                 resolve(children_ids);
             });
@@ -95,7 +95,7 @@ function Loops() {
             "FROM nodes children " +
             "  JOIN links l ON " +
             "   (l.child_id=children.id AND l.is_deleted=0 " +
-            "    AND l.parent_id IN (" + self.placeholdersFor(parent_ids) + ")) " +
+            "    AND l.parent_id IN (" + $$db.placeholdersFor(parent_ids) + ")) " +
             "WHERE  children.is_deleted=0 AND children.category IN ('tag', 'thing') ";
 
          return self.sql(sql, parent_ids);

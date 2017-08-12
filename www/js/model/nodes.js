@@ -19,10 +19,11 @@ function ($q, $rootScope, Node) {
     };
 
     this.byIds = (ids) => {
+      if (ids.constructor != Array) ids = [ids];
       var query =
         `SELECT id, name FROM nodes
-          WHERE is_deleted=0 AND id IN (?);`;
-      return $$db.query(query, [ids]);
+          WHERE is_deleted=0 AND id IN (${$$db.placeholdersFor(ids)});`;
+      return $$db.query(query, ids);
     };
 
     this.tags = function() {
