@@ -1,8 +1,7 @@
 <div class="row" style="height: 50px">
     <div class="large-12 columns">
-        {{label}}
         <angucomplete-alt id="tags"
-                          placeholder="Tags..."
+                          placeholder="{{label}}"
                           pause="100"
                           clear-selected="true"
                           override-suggestions="true"
@@ -29,12 +28,12 @@
 </div>
 
 <div class="row" style="height: 50px" ng-class="{hide: !suggestedTags}">
-    <div class="columns">
-        Suggested tags:
-        <ul class="inline-list">
-            <li ng-repeat="tag in suggestedTags"><span class="secondary radius label">
-                <a ng-click="addTag(tag.name)">{{tag.name}}</a>
-            </span></li>
-        </ul>
-    </div>
+  <div class="columns">
+    Suggested tags:
+    <ul class="inline-list">
+      <li ng-repeat="tag in suggestedTags"><span class="secondary radius label">
+        <a ng-click="addTag(tag.name)">{{tag.name}}</a>
+      </span></li>
+    </ul>
+  </div>
 </div>

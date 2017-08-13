@@ -17,7 +17,11 @@
     </div>
 </div>
 
-<tags-edit label="Тэги:" picked-tags="node.tags" suggested-tags="suggestedTags" save-last-tag="saveLastTag">
+<tags-edit label="Тэги" picked-tags="node.tags"
+           create-new-tags="true"
+           input-text="notUsed"
+           suggested-tags="suggestedTags"
+           save-last-tag="saveLastTag">
   <button type="button" ng-click="save()"
           ng-disabled="myForm.$invalid"
           class="round button">Save</button>

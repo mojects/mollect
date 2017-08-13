@@ -29,14 +29,16 @@ ang
             'SELECT "server", "http://mollect-server.herokuapp.com" '+
             'WHERE (SELECT count(0) FROM settings WHERE key="server")=0;'
         ).fail(function (tx, err) {
-                throw new Error(err.message);
-            }).done(function () {
-                async.series([
-                    settingsManager.getClientSettings,
-                    sync.run,
-                    desk.clear
-                ]);
-            });
+          desk.error(err.message);
+        }).done(function () {
+          async.series([
+            settingsManager.getClientSettings,
+            sync.run
+          ], (err) => {
+            if (err) desk.error(err);
+            else desk.clear();
+          });
+        });
         return true;
         /*
          To clean DB:
@@ -50,18 +52,16 @@ function sync($http, nodes, settingsManager, desk) {
     var self = this;
     this.nodes = null;
     this.links = null;
+
     this.run = function(callback) {
-        // this.retrievePrerequisites();
         async.series([
             self.pingServer,
             self.retrievePrerequisites,
             self.sendRequestToServer,
             self.rebuildLoops
-        ], function(err) {
-            callback(err);
-        });
-
+        ], callback);
     };
+
     this.rebuildLoops = (cb) => {
         desk.info('3/3 optimize data...');
         newClass(Loops).rebuildLoops(cb);
@@ -70,10 +70,7 @@ function sync($http, nodes, settingsManager, desk) {
         async.series([
                 async.apply(self.retrieveEntriesForUpdate, "nodes"),
                 async.apply(self.retrieveEntriesForUpdate, "links")
-            ],
-            function(err, results) {
-                callback(err);
-            });
+            ], callback);
     };
     this.pingServer = function(callback) {
         desk.info('1/3 ping server...');
@@ -84,7 +81,7 @@ function sync($http, nodes, settingsManager, desk) {
         $http(req).success(function(data, status, headers, config){
             callback(null, true);
         }).error(function(data, status, headers, config){
-            throw new Error(status);
+          callback(data || 'Server ping error');
         });
     };
     this.retrieveEntriesForUpdate = function(table, callback) {
@@ -107,7 +104,7 @@ function sync($http, nodes, settingsManager, desk) {
         $http(req).success(function(data, status, headers, config){
             self.processServerAnswer(callback, data);
         }).error(function(data, status, headers, config){
-            throw new Error(status);
+          callback(data || 'Sync error');
         });
     };
     this.processServerAnswer = function(callback, data) {

@@ -4,9 +4,11 @@ ang
     templateUrl: 'js/directives/tags-edit.html',
     scope : {
       label : "@",
+      createNewTags: "@",
       tagStyle : "@",
       pickedTags : "=",
-      suggestedTags : "=",
+      suggestedTags: "=",
+      inputText: "=",
       saveLastTag : "="
     },
     transclude: true,
@@ -19,35 +21,36 @@ function tagsEdit($scope, nodes) {
     $scope.tagStyle = $scope.tagStyle || "success";
     // All possible tags:
     nodes.tags().then(function(tags) {
-        $scope.tags_list = tags;
+      $scope.tags_list = tags;
     });
 
-    $scope.$watch('selectedTag', function(newValue, oldValue) {
-        if (newValue) {
-            var tag = newValue.originalObject;
-            $scope.addTag(tag);
-        }
+    $scope.$watch('selectedTag', function(newValue) {
+      var tag
+      if (newValue && (tag = newValue.originalObject))
+        $scope.addTag(tag)
     });
 
-
-    $scope.saveLastTag.push(function() {
-        if (inputTag)
-            $scope.addTag(inputTag);
-    });
-
-    var inputTag = null;
-    $scope.tagInputChanged = function(tag) {
-        // if (tag)
-            inputTag = tag;
+    if ($scope.saveLastTag) {
+      $scope.saveLastTag = () => {
+        if ($scope.inputText)
+          $scope.addTag($scope.inputText)
+      }
     }
 
-    $scope.addTag = function(tag) {
-        if (typeof tag != 'object') tag = { name: tag };
-        $scope.pickedTags.pushUnique(tag);
+    $scope.tagInputChanged = function(tag) {
+      $scope.inputText = tag
+    }
+
+    $scope.addTag = (tag) => {
+      if (typeof tag != 'object') {
+        if (!$scope.createNewTags) return
+        tag = { name: tag }
+      }
+      $scope.pickedTags.pushUnique(tag)
     }
 
     $scope.dropTag = function(tag) {
-        $scope.pickedTags.removeByName(tag);
+      $scope.pickedTags.removeByName(tag)
     }
 
 }

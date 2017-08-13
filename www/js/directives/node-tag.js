@@ -1,5 +1,4 @@
-ang
-.directive("nodeTag", function() {
+ang.directive("nodeTag", () => {
     return {
         templateUrl : "js/directives/node-tag.html",
         scope : {

@@ -43,7 +43,7 @@ function($scope, $location, nodes, Case, $routeParams) {
     $scope.save = function() {
         $scope.info = "";
         $scope.alert = "";
-        $scope.saveLastTag.forEach(function(f){ f(); });
+        $scope.saveLastTag();
 
         nodes.insertNode($scope.node)
             .then(function(nodeId){
