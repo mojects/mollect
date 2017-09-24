@@ -1,6 +1,8 @@
 ang.controller('SearchCtrl',
 function ($scope, $routeParams) {
 
+  if (!($routeParams.text || $routeParams.tags)) return
+
   $scope.searching = true
 
   var c = newClass(NodesWalker)
