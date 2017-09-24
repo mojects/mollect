@@ -1,6 +1,9 @@
 ang.directive("searchField", function() {
   return {
     templateUrl: 'js/directives/search-field.html',
+    scope : {
+      searching: "="
+    },
     controller : function($scope, $routeParams, $location, nodes, desk) {
 
       $scope.text = $routeParams.text

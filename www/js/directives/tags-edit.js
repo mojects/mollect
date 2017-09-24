@@ -4,7 +4,7 @@ ang
     templateUrl: 'js/directives/tags-edit.html',
     scope : {
       label : "@",
-      createNewTags: "@",
+      searchOnEnter: "&",
       tagStyle : "@",
       pickedTags : "=",
       suggestedTags: "=",
@@ -16,7 +16,7 @@ ang
   };
 });
 
-function tagsEdit($scope, nodes) {
+function tagsEdit($scope, nodes, desk) {
 
     $scope.tagStyle = $scope.tagStyle || "success";
     // All possible tags:
@@ -37,15 +37,29 @@ function tagsEdit($scope, nodes) {
       }
     }
 
-    $scope.tagInputChanged = function(tag) {
+    $scope.inputChanged = function(tag) {
       $scope.inputText = tag
     }
 
     $scope.addTag = (tag) => {
-      if (typeof tag != 'object') {
-        if (!$scope.createNewTags) return
-        tag = { name: tag }
-      }
+      if (typeof tag == 'object')
+        addTag(tag)
+      else
+        performSearch(tag) || addTag({ name: tag })
+    }
+
+    function performSearch(tag) {
+      if (!$scope.searchOnEnter) return false
+
+      $scope.inputChanged(tag)
+      setTimeout(() => {
+        $scope.searchOnEnter()
+        desk.refresh()
+      }, 0)
+      return true
+    }
+
+    function addTag(tag) {
       $scope.pickedTags.pushUnique(tag)
     }
 

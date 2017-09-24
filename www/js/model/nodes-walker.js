@@ -12,12 +12,13 @@ function NodesWalker(ids) {
     this.getChildren = function(callback) {
 
         var args = [];
-        if (typeof self.include_ids != "object") self.include_ids = [self.include_ids];
+        if (typeof self.include_ids != "object" && typeof self.include_ids != 'undefined')
+            self.include_ids = [self.include_ids];
 
         var sql = "SELECT children.* " +
             "FROM nodes children ";
 
-        if (self.include_ids.length > 0) {
+        if (self.include_ids && self.include_ids.length > 0) {
             sql += "JOIN loops l ON " +
             "   (l.child_id=children.id " +
             "    AND l.parent_id IN (" + $$db.placeholdersFor(self.include_ids) + ") AND l.depth<="+self.depth+" ) ";
