@@ -4,8 +4,7 @@ ang
     templateUrl: 'js/directives/tags-edit.html',
     scope : {
       label : "@",
-      searchOnEnter: "&",
-      tagStyle : "@",
+      searchFunc: "&",
       pickedTags : "=",
       suggestedTags: "=",
       inputText: "=",
@@ -18,7 +17,6 @@ ang
 
 function tagsEdit($scope, nodes, desk) {
 
-    $scope.tagStyle = $scope.tagStyle || "success";
     // All possible tags:
     nodes.tags().then(function(tags) {
       $scope.tags_list = tags;
@@ -49,11 +47,11 @@ function tagsEdit($scope, nodes, desk) {
     }
 
     function performSearch(tag) {
-      if (!$scope.searchOnEnter) return false
+      if ($scope.saveLastTag) return false
 
       $scope.inputChanged(tag)
       setTimeout(() => {
-        $scope.searchOnEnter()
+        $scope.searchFunc()
         desk.refresh()
       }, 0)
       return true

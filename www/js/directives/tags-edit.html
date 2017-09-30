@@ -20,7 +20,7 @@
   <div class="large-12 columns">
     <div ng-transclude style="display: inline-block; float: right;"></div>
     <ul class="inline-list">
-      <li ng-repeat="tag in pickedTags"><span class="radius label" ng-class="tagStyle">
+      <li ng-repeat="tag in pickedTags"><span class="radius label success">
           {{tag.name}}
         <a ng-click="dropTag(tag.name)" class="close">&times;</a>
       </span></li>
