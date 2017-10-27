@@ -9,7 +9,8 @@ ang
         },
         link : function(scope, elem, attrs) {
 
-            var classes = ['foundicon-remove', 'foundicon-remove', 'foundicon-checkmark', 'foundicon-star', 'foundicon-star'];
+            var classes = ['foundicon-remove', 'foundicon-star'];
+
             var updateStars = function() {
                 scope.stars = [];
                 var r = scope.ratingIndex;
@@ -20,10 +21,11 @@ ang
                     item[classes[i]] = true;
                     scope.stars.push(item);
                 }
-            };
+            }
+
             scope.toggle = function(index) {
                 scope.ratingIndex = index + 1;
-                var ratingValues = [-2, -1, 0, 50, 100];
+                var ratingValues = [-100, 100];
                 scope.ratingValue = ratingValues[index];
                 scope.onRatingSelected({
                     rating : scope.ratingValue

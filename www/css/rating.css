@@ -23,3 +23,9 @@
 .rating li.foundicon-remove.filled {
     color: #cc0000;
 }
+
+rate-label .label {
+  position: relative;
+  top: -9px;
+  font-size: 13px;
+}

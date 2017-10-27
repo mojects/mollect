@@ -1,15 +1,16 @@
 
 <div class="row">
   <div class="columns">
-    <div style="float: right; width: 120px; margin-left: 12px;"><a class="button" ng-href="#/new?isReaction=true">Новая реакция</a><a class="button" ng-href="#/edit/{{node.id}}"><i class="foundicon-edit"></i></a><a class="button" ng-click="delete()"><i class="foundicon-trash"></i></a></div>
+    <div style="float: right; width: 120px; margin-left: 12px;">
+      <star-rating rating-index="ratingIndex" max="5" on-rating-selected="node.rate(rating)"></star-rating>
+      <rate-label rating-value="node.rating"></rate-label><a class="button" ng-href="#/new?isReaction=true">Новая реакция</a><a class="button" ng-href="#/edit/{{node.id}}"><i class="foundicon-edit"></i></a><a class="button" ng-click="delete()"><i class="foundicon-trash"></i></a>
+    </div>
     <h3>{{node.name}}</h3>
     <div ng-bind-html="node.descriptionHtml"></div>
   </div>
 </div>
 <div class="row">
   <div class="columns">
-    <star-rating rating-index="ratingIndex" max="5" on-rating-selected="rateFunction(rating)"></star-rating>
-    <rate-label rating-value="node.rating"></rate-label>
     <div>Tags:
       <ul class="inline-list">
         <li ng-repeat="tag in node.tags">
