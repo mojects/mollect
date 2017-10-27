@@ -139,7 +139,7 @@ function sync($http, nodes, settingsManager, desk) {
                 links.push([link.id, link.parent_id, link.child_id, link.weight, to01(link.is_deleted)]);
             }
         );
-        // Update nodes in local storage
+        // Update links in local storage
         if (links.length > 0)
         $$db.query(
             "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, is_deleted, sync) " +

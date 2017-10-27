@@ -58,11 +58,11 @@ function Node (nodeId) {
         function getAvgRate() {
             self.sql(
                 "SELECT avg(weight) avgRate FROM links " +
-                "WHERE child_id=? AND parent_id=?;",
-                [self.id, 'scores']
+                "WHERE child_id=? AND parent_id='scores';",
+                [self.id]
             ).then(function (rows) {
-                    setAvgScore(rows[0].avgRate);
-                });
+              setAvgScore(rows[0].avgRate);
+            });
         }
 
         function setAvgScore(value) {

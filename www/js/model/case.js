@@ -101,7 +101,7 @@ function Case($rootScope, Node) {
         var result = { an_obstacles: [], children: [], related: [] };
         async.parallel({
                 directChildren: this.currentStepNode.getDirectChildren,
-                parentTagReactions:        this.currentStepNode.getParentTagReactions
+                parentTagReactions: this.currentStepNode.getParentTagReactions
             },
             function (err, related) {
                 // Вытащить obstalces в отдельную категорию

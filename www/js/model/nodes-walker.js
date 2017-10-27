@@ -49,10 +49,13 @@ function NodesWalker(ids) {
         if (self.category != "all") sql += " AND children.category='"+self.category+"' ";
         else  sql += " AND children.category IN ('tag', 'thing') ";
 
-        sql += "GROUP BY children.id ";
+        sql += "GROUP BY children.id "
 
         if (self.exclude_ids.length > 0)
-            sql += "HAVING  MIN(negative.child_id IS NULL)=1 ";
+            sql += "HAVING  MIN(negative.child_id IS NULL)=1 "
+
+        // sql += "ORDER BY children.weight DESC, children.id DESC"
+        sql += "ORDER BY children.id DESC"
 
         self.sql(sql, args).then(function (children) {
                 callback(null, children);
