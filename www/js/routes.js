@@ -24,10 +24,6 @@ function routesSetup($routeProvider) {
       controller:'EditCtrl',
       templateUrl:'js/main/edit.html'
     })
-    .when('/delete/:nodeId', {
-      controller:'DeleteCtrl',
-      templateUrl:'js/main/show.html'
-    })
     .when('/node/:nodeId', {
       controller:'ShowCtrl',
       templateUrl:'js/main/show.html'

@@ -3,7 +3,7 @@
     <div style="float: right; width: 120px; margin-left: 12px;">
       <a ng-href="#/new?isReaction=true" class="button">Новая реакция</a>
       <a ng-href="#/edit/{{node.id}}" class="button"><i class="foundicon-edit"></i></a>
-      <a ng-href="#/delete/{{node.id}}" class="button"><i class="foundicon-trash"></i></a>
+      <a ng-click="delete()" class="button"><i class="foundicon-trash"></i></a>
     </div>
 
     <h3>{{node.name}}</h3>
