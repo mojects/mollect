@@ -1,7 +1,7 @@
 .row
   .columns
     div(style="float: right; width: 120px; margin-left: 12px;")
-      star-rating(rating-index="ratingIndex" max="5" on-rating-selected="node.rate(rating)")
+      star-rating(on-rating-selected="node.rate(rating)")
       rate-label(rating-value="node.rating")
       a.button(ng-href="#/new?isReaction=true") Новая реакция
       a.button(ng-href="#/edit/{{node.id}}")

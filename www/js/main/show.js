@@ -3,7 +3,6 @@ angular.module('mollect')
 function($scope, nodes, Case, $routeParams, $location) {
 
   $scope.node = nodes.getNodeWithDetails($routeParams.nodeId)
-  $scope.ratingIndex = -1
 
   $scope.delete = () => {
     if (!confirm('Delete?')) return
