@@ -35,6 +35,7 @@ gulp.task('default', [
 
 gulp.task('prod', function() {
   connect.server({
-    root: 'www'
+    root: 'www',
+    port: process.env.PORT || 5000
   });
 });
