@@ -1,7 +1,10 @@
 var gulp = require('gulp'),
-    pug = require('gulp-pug'),
-    watch = require('gulp-watch'),
     connect = require('gulp-connect');
+
+try {
+  var watch = require('gulp-watch'),
+      pug = require('gulp-pug');
+} catch (e) {}
 
 gulp.task('connect', function() {
   connect.server({
