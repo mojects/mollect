@@ -29,3 +29,9 @@ gulp.task('watch-reload', function () {
 
 gulp.task('default', [
   'connect', 'watch-pug', 'watch-reload'])
+
+gulp.task('prod', function() {
+  connect.server({
+    root: 'www'
+  });
+});

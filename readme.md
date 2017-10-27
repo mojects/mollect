@@ -2,7 +2,8 @@
 
 ```
 npm i
-npm start
+npm i gulp -g
+gulp
 ```
 
 # Publish
