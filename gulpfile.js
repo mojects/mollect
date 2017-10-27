@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
     pug = require('gulp-pug'),
+    watch = require('gulp-watch'),
     connect = require('gulp-connect');
 
 gulp.task('connect', function() {
@@ -11,19 +12,20 @@ gulp.task('connect', function() {
 });
 
 const PUG_PATH = './www/js/**/*.pug';
-
-gulp.task('pug', function () {
-  gulp.src(PUG_PATH)
+gulp.task('watch-pug', function () {
+  watch(PUG_PATH, {ignoreInitial: false})
     .pipe(pug({
       verbose: true,
       pretty: true
     }))
     .pipe(gulp.dest('./www/html/'))
     .pipe(connect.reload())
-});
+})
 
-gulp.task('watch', function () {
-  gulp.watch([PUG_PATH], ['pug']);
-});
+gulp.task('watch-reload', function () {
+  watch('./www/js/**/!(*.pug)')
+    .pipe(connect.reload())
+})
 
-gulp.task('default', ['pug', 'connect', 'watch']);
+gulp.task('default', [
+  'connect', 'watch-pug', 'watch-reload'])

@@ -1,15 +1,11 @@
 ang
 .directive("starRating", function() {
     return {
-        template : "<ul class='rating'>" +
-        "  <li ng-repeat='star in stars' ng-class='star' ng-click='toggle($index)'>" +
-        "    <i class=''></i>" + //&#9733
-        "  </li>" +
-        "</ul>",
-        scope : {
-            ratingIndex : "=",
-            max : "=",
-            onRatingSelected : "&"
+        templateUrl: "/html/directives/star-rating.html",
+        scope: {
+          ratingIndex : "=",
+          max : "=",
+          onRatingSelected : "&"
         },
         link : function(scope, elem, attrs) {
 
