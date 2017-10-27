@@ -1,0 +1,43 @@
+.row
+  .columns
+    div(style="float: right; width: 120px; margin-left: 12px;")
+      a.button(ng-href="#/new?isReaction=true") Новая реакция
+      a.button(ng-href="#/edit/{{node.id}}")
+        i.foundicon-edit
+      a.button(ng-click="delete()")
+        i.foundicon-trash
+    h3 {{node.name}}
+    div(ng-bind-html="node.descriptionHtml")
+
+.row
+  .columns
+    star-rating(rating-index="ratingIndex" max="5" on-rating-selected="rateFunction(rating)")
+    rate-label(rating-value="node.rating")
+    div
+      | Tags:
+      ul.inline-list
+        li(ng-repeat="tag in node.tags")
+          node-tag(node="tag")
+    div(ng-repeat="(group_name, group) in relatedNodes" ng-show="group.length")
+      | {{group_name}}:
+      ul.inline-list
+        li(ng-repeat="node in group")
+          node-tag(node="node")
+
+
+
+//
+
+    -----
+    button: Add new case  -- #/new/parent-node/:id
+
+    Related notes:  <list of related nodes type='things'> - это значит, что это реакции/дальнейшее действие на эту вещь.
+    1. прямой ребенок
+    2. ... (Случаи, когда реакции общие, не конкретные)
+
+    (Список: лимитирован на 5) Кнопка More reactions: (выводится, если там еще что-то есть. т.е. к БД лимит идет на 6 записей)
+    -----
+    Alternative actions:
+
+    1)	родительские в перемешку с родительски-родительскими. через один.
+

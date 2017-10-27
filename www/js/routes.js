@@ -26,7 +26,7 @@ function routesSetup($routeProvider) {
     })
     .when('/node/:nodeId', {
       controller:'ShowCtrl',
-      templateUrl:'js/main/show.html'
+      templateUrl:'html/main/show.html'
     })
     .when('/config', {
       controller:'ConfigCtrl',
