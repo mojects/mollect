@@ -8,7 +8,8 @@ ang
       pickedTags : "=",
       suggestedTags: "=",
       inputText: "=",
-      saveLastTag : "="
+      saveLastTag : "=",
+      showAddNewTag: "="
     },
     transclude: true,
     controller : tagsEdit

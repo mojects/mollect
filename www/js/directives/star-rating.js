@@ -1,7 +1,7 @@
 ang
 .directive("starRating", function() {
     return {
-        templateUrl: "/html/directives/star-rating.html",
+        templateUrl: "html/directives/star-rating.html",
         scope: {
           onRatingSelected : "&"
         },
