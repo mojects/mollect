@@ -5,18 +5,20 @@ function ($q, $rootScope, Node) {
     this.indexNodes = {};
 
     this.getNodeWithDetails = function(nodeId) {
+
+      return $q((resolve, reject) => {
         var node = newClass(Node, nodeId);
-        node.name = "Loading...";
 
         async.parallel([
-            node.fillDetails,
-            node.fillParentTags
-        ],function() {
-            $rootScope.$apply();
-        });
+          node.fillDetails,
+          node.fillParentTags
+        ], function (err) {
+          if (err) reject(err)
+          else resolve(node)
+        })
+      })
 
-        return node;
-    };
+    }
 
     this.byIds = (ids) => {
       if (ids.constructor != Array) ids = [ids];
@@ -83,6 +85,6 @@ function ($q, $rootScope, Node) {
             });
 
         return self.indexNodes;
-    };
+    }
 
 });

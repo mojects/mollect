@@ -1,28 +1,22 @@
-var walkedNodes = [];
-
 Loops.prototype = new ActiveRecord();
 function Loops() {
 
-    var self = this;
+    var self = this
+    self.walkedNodes = []
 
-    this.rebuildLoops = function(callback) {
+    this.rebuildLoops = function() {
         return self.cleanLoops()
             .then(self.getTopNodeIds)
             .then(self.walkDeeper)
-            .then(function(){
-                // Clean RAM
-                walkedNodes = [];
-                callback();
-            });
     };
 
     this.cleanLoops = function() {
-        return self.sql("DELETE FROM loops");
+        return self.query("DELETE FROM loops");
     };
 
     this.getTopNodeIds = function() {
         return $$q(function(resolve){
-            self.sql(
+            self.query(
                 "SELECT n.id "+
                 "FROM nodes n LEFT JOIN " +
                 "  (SELECT child_id FROM links l JOIN nodes p ON (l.parent_id=p.id) " +
@@ -50,8 +44,8 @@ function Loops() {
                 children.forEach(function (n) {
                     // child_id, parent_id, weight, depth
                     loops.push([n.child_id, n.parent_id, 0, 1]);
-                    if (walkedNodes.indexOf(n.child_id) == -1) {
-                        walkedNodes.push(n.child_id);
+                    if (self.walkedNodes.indexOf(n.child_id) == -1) {
+                        self.walkedNodes.push(n.child_id);
                         children_ids.push(n.child_id);
                     }
                 });
@@ -72,7 +66,7 @@ function Loops() {
         return $$q(function(resolve) {
             var sql = "INSERT INTO loops (child_id, parent_id, weight, depth) " +
                 "VALUES (?, ?, ?, ?)";
-            self.sql(sql, loops).then(function () {
+            self.query(sql, loops).then(function () {
                 resolve(children_ids);
             });
         });
@@ -84,7 +78,7 @@ function Loops() {
                 "SELECT c.child_id, p.parent_id, p.weight, p.depth+1 " +
                 "FROM loops c JOIN loops p ON (c.parent_id=p.child_id) " +
                 "WHERE c.child_id IN ("+$$db.placeholdersFor(children_ids)+")";
-            self.sql(sql, children_ids).then(function () {
+            self.query(sql, children_ids).then(function () {
                 resolve(children_ids);
             });
         });
@@ -98,7 +92,7 @@ function Loops() {
             "    AND l.parent_id IN (" + $$db.placeholdersFor(parent_ids) + ")) " +
             "WHERE  children.is_deleted=0 AND children.category IN ('tag', 'thing') ";
 
-         return self.sql(sql, parent_ids);
+         return self.query(sql, parent_ids);
     }
 
 

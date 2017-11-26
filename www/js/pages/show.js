@@ -2,7 +2,10 @@ angular.module('mollect')
 .controller('ShowCtrl',
 function($scope, nodes, Case, $routeParams, $location) {
 
-  $scope.node = nodes.getNodeWithDetails($routeParams.nodeId)
+  $scope.node = {name: "Loading..."}
+
+  nodes.getNodeWithDetails($routeParams.nodeId)
+  .then((n) => $scope.node = n)
 
   $scope.delete = () => {
     if (!confirm('Delete?')) return

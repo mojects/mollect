@@ -2,31 +2,31 @@ function routesSetup($routeProvider) {
   $routeProvider
     .when('/home/:type', {
       controller:'HomeCtrl',
-      templateUrl:'js/main/home.html'
+      templateUrl:'js/pages/home.html'
     })
     .when('/', {
       controller:'HomeCtrl',
-      templateUrl:'js/main/home.html'
+      templateUrl:'js/pages/home.html'
     })
     .when('/search', {
       controller:'SearchCtrl',
-      templateUrl:'js/main/search.html'
+      templateUrl:'js/pages/search.html'
     })
     .when('/recent', {
       controller:'RecentCtrl',
-      templateUrl:'js/main/recent.html'
+      templateUrl:'js/pages/recent.html'
     })
     .when('/edit/:nodeId', {
       controller:'EditCtrl',
-      templateUrl:'js/main/edit.html'
+      templateUrl:'js/pages/edit.html'
     })
     .when('/new', {
       controller:'EditCtrl',
-      templateUrl:'js/main/edit.html'
+      templateUrl:'js/pages/edit.html'
     })
     .when('/node/:nodeId', {
       controller:'ShowCtrl',
-      templateUrl:'html/main/show.html'
+      templateUrl:'html/pages/show.html'
     })
     .when('/config', {
       controller:'ConfigCtrl',

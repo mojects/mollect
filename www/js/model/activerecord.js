@@ -5,7 +5,7 @@ function ActiveRecord () {
     this.db = $.WebSQL('mollect');
 
     this.all = function() {
-        return self.sql(
+        return self.query(
             "SELECT * FROM "+self.table+";"
         );
     };
@@ -61,11 +61,11 @@ function ActiveRecord () {
         return deferred.promise;
     };
 
-    this.sql = function(sql, params) {
+    this.query = function(sql, params) {
         return self.sqlSafe(sql, params)
-            .catch(function (err) {
-                throw new Error(err);
-            });
+            .catch((err) => {
+                throw new Error(err)
+            })
     };
 
 }

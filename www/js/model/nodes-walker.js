@@ -57,13 +57,13 @@ function NodesWalker(ids) {
         // sql += "ORDER BY children.weight DESC, children.id DESC"
         sql += "ORDER BY children.id DESC"
 
-        self.sql(sql, args).then(function (children) {
+        self.query(sql, args).then(function (children) {
                 callback(null, children);
             });
     };
 
     this.leaveOnlyObstacles = function() {
-        return self.sql(
+        return self.query(
                 "SELECT DISTINCT child_id "+
                 "FROM loops "+
                 "WHERE parent_id='obstacles' "+

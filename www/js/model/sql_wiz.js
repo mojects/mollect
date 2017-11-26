@@ -41,7 +41,7 @@ function sqlWiz(){
   };
 
   this.preSearch = function (callbackSuccess, callbackError) {
-    model.sql(
+    model.query(
       "SELECT id FROM "+model.table+" "+ self.whereCondition,
       self.whereValues
     ).then(function (result) {
@@ -74,7 +74,7 @@ function sqlWiz(){
     self.addUpdateField("is_deleted", 0);
     // self.updateValues.push(self.objID);
 
-    model.sql(
+    model.query(
       "UPDATE " + model.table +
       " SET " + self.updateFields.join(",") + " " +
       self.whereCondition,

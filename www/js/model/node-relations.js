@@ -33,7 +33,7 @@ function NodeRelations () {
             where = "AND NOT parent_id IN ("+placeholders+")";
         }
         presentTags.unshift(this.id);
-        this.sql(
+        this.query(
             "UPDATE links SET is_deleted=1, sync='new' " +
             "WHERE (SELECT category FROM nodes WHERE nodes.id=links.parent_id)='tag'" +
             " AND child_id=? "+where+" ;",
@@ -76,9 +76,10 @@ function NodeRelations () {
             "WHERE l.is_deleted=0 AND parents.is_deleted=0 AND "+
             "parents.category='tag' AND l.child_id=?;", [self.id]
         ).then(function (tags) {
-                self.tags = tags;
-                callback();
-            });
+            console.log('TAGS', tags);
+            self.tags = tags;
+            callback();
+        });
     };
 
     this.getChildTags = function(callback) {
@@ -93,7 +94,7 @@ function NodeRelations () {
     };
 
     this.getParentTagReactions = function(callback) {
-        this.sql(
+        this.query(
             "SELECT DISTINCT reactions.* FROM links l "+
             "JOIN nodes parents ON (l.parent_id=parents.id) "+
             "JOIN links link_p ON (parents.id=link_p.parent_id) "+
