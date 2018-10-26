@@ -1,13 +1,13 @@
 ang
 .directive("starRating", function() {
     return {
-        templateUrl: "html/directives/star-rating.html",
+        templateUrl: "html/components/star-rating.html",
         scope: {
           onRatingSelected : "&"
         },
         link : function(scope, elem, attrs) {
 
-          var classes = ['foundicon-remove', 'foundicon-star']
+          var classes = ['foundicon-minus', 'foundicon-plus']
 
           updateStars()
           function updateStars() {

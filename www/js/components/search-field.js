@@ -1,6 +1,6 @@
 ang.directive("searchField", function() {
   return {
-    templateUrl: 'js/directives/search-field.html',
+    templateUrl: 'js/components/search-field.html',
     scope : {
       searching: "="
     },

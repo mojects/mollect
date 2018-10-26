@@ -1,7 +1,7 @@
 ang
 .directive("tagsEdit", function() {
   return {
-    templateUrl: 'js/directives/tags-edit.html',
+    templateUrl: 'js/components/tags-edit.html',
     scope : {
       label : "@",
       searchFunc: "&",

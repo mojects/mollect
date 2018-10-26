@@ -1,8 +1,10 @@
 # Dev
 
+`git clone git@github.com:mojects/mollect.git`
+
 ```
-npm i
-npm i gulp -g
+yarn --ignore-engines
+yarn global add gulp
 gulp
 ```
 

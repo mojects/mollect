@@ -1,7 +1,7 @@
 ang
 .directive("customTag", function() {
     return {
-        templateUrl : "js/directives/custom-tag.html",
+        templateUrl : "js/components/custom-tag.html",
         scope : {
             url: "=",
             tagClass: "="

@@ -1,6 +1,6 @@
 ang.directive("nodeTag", () => {
     return {
-        templateUrl : "js/directives/node-tag.html",
+        templateUrl : "js/components/node-tag.html",
         scope : {
             node : "="
         },
