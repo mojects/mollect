@@ -7,7 +7,7 @@ function sqlWiz(){
     sleep(1);
     var time = Date.now().toString(36);
     return time + "-" + settings.client_code;
-  };
+  }
 
   this.lastId = this.generatePK();
   this.insertFields = [ 'id' ];
@@ -20,10 +20,10 @@ function sqlWiz(){
   this.objID = null;
   this.nonComparableFields = ['weight', 'description', 'is_deleted', 'depth'];
 
-  this.setData = function(obj, m){
+  this.setData = function(data, m){
     model = m;
 
-    $.map(obj, function(value, key) {
+    $.map(data, function(value, key) {
       self.insertFields.push(key);
       self.insertValues.push(value);
       self.insertPlaceholders.push("?");
@@ -33,7 +33,7 @@ function sqlWiz(){
         self.addUpdateField(key, value);
 
       if (self.nonComparableFields.indexOf(key) != -1) return;
-      if (!obj.hasOwnProperty('id') || key == 'id') {
+      if (!data.hasOwnProperty('id') || key == 'id') {
         self.whereCondition += " AND " + model.table + "." + key + "=?";
         self.whereValues.push(value);
       }
@@ -68,21 +68,19 @@ function sqlWiz(){
       });
   };
 
-  this.update = function(callback) {
+  this.update = () => {
     var sync = (model.isTemp ? "temp" : "new");
     self.addUpdateField("sync", sync);
     self.addUpdateField("is_deleted", 0);
     // self.updateValues.push(self.objID);
 
-    model.query(
+    return model.query(
       "UPDATE " + model.table +
       " SET " + self.updateFields.join(",") + " " +
       self.whereCondition,
       self.updateValues.concat(self.whereValues)
-    ).then(function () {
-      if (callback) callback();
-    });
-  };
+    )
+  }
 
   this.addUpdateField = function(field, value) {
     self.updateFields.push(field + "=?");

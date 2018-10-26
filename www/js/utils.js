@@ -5,22 +5,23 @@
  */
 
 function newClass(klass, param1) {
-    var obj = new klass(param1);
+  var instance = new klass(param1);
 
-    $.map(obj, function(value, key) {
-        if (typeof  value == "function") {
-            obj[key] = value.bind(obj);
-        }
-    });
+  for (var key in instance) {
+    let value = instance[key]
+    if (typeof  value == "function")
+      instance[key] = value.bind(instance)
+  }
 
-    return obj;
+  return instance
 }
 
-function extend(subClass, superClass) {
-    var inst = new superClass();
+function extend(subClass, parentClass) {
+    var parent = new parentClass();
 
-    for (var prop in inst)
-        subClass.prototype[prop] = inst[prop]
+    for (var prop in parent) {
+      subClass.prototype[prop] = parent[prop]
+    }
 }
 
 
@@ -38,6 +39,8 @@ function PrintProperties(obj) {
  *
  *
  */
+
+Array.prototype.each = Array.prototype.forEach
 
 function log(msg) {
     $("#msg").prepend(msg+"<br/>");

@@ -54,8 +54,7 @@ function NodesWalker(ids) {
         if (self.exclude_ids.length > 0)
             sql += "HAVING  MIN(negative.child_id IS NULL)=1 "
 
-        // sql += "ORDER BY children.weight DESC, children.id DESC"
-        sql += "ORDER BY children.id DESC"
+        sql += "ORDER BY children.avg_weight DESC, children.id DESC"
 
         self.query(sql, args).then(function (children) {
                 callback(null, children);

@@ -12,13 +12,17 @@ function NodeRelations () {
         var self = this;
         var tagRecord = newClass(Node);
         async.series([
-            async.apply(tagRecord.find_or_create_by, {name: tag.name, category: "tag"}),
-            function (callback2) {
-                var l = newClass(Link);
-                l.find_or_create_by(
-                    {parent_id: tagRecord.id, child_id: self.id},
-                    callback2);
-            }
+          (cb) => {
+            tagRecord
+              .findOrCreateBy({name: tag.name, category: "tag"})
+              .then(() => cb())
+          },
+          (callback2) => {
+              var l = newClass(Link);
+              l.findOrCreateBy(
+                  {parent_id: tagRecord.id, child_id: self.id}
+              ).then(() => callback2())
+          }
         ], function() {
             callback(null, tagRecord.id);
         });
@@ -46,12 +50,10 @@ function NodeRelations () {
     };
 
     this.linkChild = function(child) {
-        return $$q(function(resolve){
-            var l = new Link();
-            l.isTemp = this.isTemp;
-            l.find_or_create_by({parent_id: this.id, child_id: child.id}, resolve);
-        });
-    };
+      var l = new Link();
+      l.isTemp = this.isTemp;
+      return l.findOrCreateBy({parent_id: this.id, child_id: child.id})
+    }
 
     this.findLastCase = function(callback) {
         var self = this;

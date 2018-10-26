@@ -8,6 +8,7 @@ ang
 
 extend(Link, ActiveRecord);
 function Link (linkId) {
-    this.table = "links";
+  this.table = "links"
+  this.fields = ["id", "weight"]
 }
 

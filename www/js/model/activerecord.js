@@ -10,31 +10,53 @@ function ActiveRecord () {
         );
     };
 
-    this.create = function (obj, callback) {
+    this.create = function(obj, callback) {
         var wiz = newClass(sqlWiz);
         wiz.setData(obj, this);
         wiz.insertNewRecord(callback);
-    };
+    }
+
+  this.update = function(data) {
+    var wiz = newClass(sqlWiz)
+    if (!this.id) throw 'id field missing'
+    data.id = this.id
+    wiz.setData(data, this)
+    return wiz.update()
+  }
+
+  this.save = function() {
+    var wiz = newClass(sqlWiz)
+    console.log(self);
+    if (!this.id) throw 'id field missing'
+    const data = {}
+    this.fields.each((field) => {
+      data[field] = this[field]
+    })
+    wiz.setData(data, this)
+    return wiz.update()
+  }
 
     this.update_or_create = function (obj, callback) {
         var wiz = newClass(sqlWiz);
         wiz.setData(obj, this);
         wiz.preSearch(
             function found() {
-                wiz.update(callback);
+              wiz.update().then((d) => callback(null, d))
             },
             function notFound() {
                 wiz.insertNewRecord(callback);
             });
     };
 
-    this.find_or_create_by = function (obj, callback) {
+    this.findOrCreateBy = function (obj) {
+      return $$q((resolve) => {
         var wiz = newClass(sqlWiz);
         wiz.setData(obj, this);
-        wiz.preSearch(callback,
-            function notFound() {
-                wiz.insertNewRecord(callback);
-            });
+        wiz.preSearch(() => resolve(this),
+          function notFound() {
+            wiz.insertNewRecord(() => resolve(this));
+          })
+      })
     };
 
     // todo: replace with $$db

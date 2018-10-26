@@ -11,6 +11,8 @@ extend(Node, NodeRelations);
 
 function Node (nodeId) {
   this.table = "nodes";
+  this.fields = ["id", "name", "description", "avg_weight"]
+
   this.id = nodeId;
   this.tags = [];
   this.rating = null;
@@ -42,15 +44,21 @@ function Node (nodeId) {
     return $$sce.trustAsHtml(html);
   };
 
-  this.rate = (rate) => {
-    newClass(Link).create({
+  this.rate = (rate) =>
+    newClass(Link)
+      .findOrCreateBy({
         child_id: self.id,
-        parent_id: 'scores',
-        weight: rate
-      },
-      () => Weights.updateAvgWeight(self.id)
-    )
-  }
+        parent_id: 'scores'
+      })
+      .then((rating) => {
+        if (!rating.weight) rating.weight = 0
+        rating.weight += rate
+        return rating.save()
+      })
+      .then((rating) => {
+        self.avg_weight = rating.weight
+        return self.save()
+      })
 
     this.save = function() {
         var deferred = $$q.defer()

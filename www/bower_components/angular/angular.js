@@ -4136,7 +4136,7 @@ function createInjector(modulesToLoad, strictDi) {
       // Check if Type is annotated and use just the given function at n-1 as parameter
       // e.g. someModule.factory('greeter', ['$window', function(renamed$window) {}]);
       Constructor.prototype = (isArray(Type) ? Type[Type.length - 1] : Type).prototype;
-      instance = newClass(Constructor); // instance = new Constructor();
+      instance = new Constructor();
       returnedValue = invoke(Type, instance, locals, serviceName);
 
       return isObject(returnedValue) || isFunction(returnedValue) ? returnedValue : instance;
