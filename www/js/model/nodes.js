@@ -50,7 +50,7 @@ function ($q, $rootScope, Node) {
         });
     };
 
-    this.getIndexNodes = function(type) {
+    this.getIndexNodes = async function(type) {
         console.log("getIndexNodes");
 
         for (var key in self.indexNodes)
@@ -62,29 +62,29 @@ function ($q, $rootScope, Node) {
         else
             parent_where = "AND (h.child_id IS NOT NULL OR p.id='home') ";
 
-        $$db.query(
-            "SELECT n.*, parents.parent_id parent_id FROM nodes n " +
-            "  JOIN (SELECT l.child_id, l.parent_id " +
-            "    FROM links l JOIN nodes p ON (l.parent_id=p.id AND l.is_deleted=0 ) " +
-            "    LEFT JOIN links h ON (p.id=h.child_id AND h.is_deleted=0 AND h.parent_id='home')" +
-            "    WHERE p.is_deleted=0 AND p.category='tag' "+parent_where+" " +
-            "  ) parents ON (n.id=child_id)" +
-            "WHERE n.is_deleted=0 AND category='tag';"
-        ).then(function (nodes) {
-                nodes.forEach(function(node){
-                    var parent = nodes.byID(node.parent_id);
-                    if (parent == null) return;
+        let nodes = await $$db.query(`
+          SELECT n.*, parents.parent_id parent_id 
+          FROM nodes n   
+            JOIN (SELECT l.child_id, l.parent_id   
+              FROM links l JOIN nodes p ON (l.parent_id=p.id AND l.is_deleted=0 )   
+              LEFT JOIN links h ON (p.id=h.child_id AND h.is_deleted=0 AND h.parent_id='home')  
+              WHERE p.is_deleted=0 AND p.category='tag' ${parent_where}   
+            ) parents ON (n.id=child_id)
+          WHERE n.is_deleted=0 AND category='tag';
+        `)
 
-                    if (typeof self.indexNodes[parent.id] == "undefined") {
-                        self.indexNodes[parent.id] = parent;
-                        parent.children = [];
-                    }
-                    parent.children.push(node);
-                });
-                $rootScope.$apply();
-            });
+        nodes.forEach(function(node){
+            var parent = nodes.byID(node.parent_id);
+            if (parent == null) return;
 
-        return self.indexNodes;
+            if (typeof self.indexNodes[parent.id] == "undefined") {
+                self.indexNodes[parent.id] = parent
+                parent.children = []
+            }
+            parent.children.push(node)
+        })
+
+        return self.indexNodes
     }
 
 });

@@ -4,24 +4,28 @@ angular.module('mollect')
            $routeParams, nodes, sync) {
     console.log('HomeCtrl', $routeParams.type);
 
-    $scope.nodeGroups = nodes.getIndexNodes($routeParams.type);
-    $scope.selectedTags = Case.selectedTags;
+    load()
+    async function load() {
+      $scope.nodeGroups = await nodes.getIndexNodes($routeParams.type)
+    }
 
-    $scope.clientVersion =     settings.client_version          ;
+    $scope.selectedTags = Case.selectedTags
+    $scope.clientVersion = settings.client_version
 
     $scope.sync = function() {
-      sync.run(desk.showErrorOrSuccess);
-    };
+      sync.run(desk.showErrorOrSuccess)
+    }
 
     $scope.suggest = function(tag) {
-      Case.addTag(tag);
-    };
+      Case.addTag(tag)
+    }
 
     $scope.setTag = function(tag) {
-      Case.addTag(tag);
-    };
+      Case.addTag(tag)
+    }
 
     $scope.test = function(arg) {
-      desk.showErrorOrSuccess(arg);
+      desk.showErrorOrSuccess(arg)
     }
-  });
+
+  })

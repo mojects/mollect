@@ -44,7 +44,7 @@ function Node (nodeId) {
     return $$sce.trustAsHtml(html);
   };
 
-  this.rate = (rate) =>
+  this.rate = async (rate) =>
     newClass(Link)
       .findOrCreateBy({
         child_id: self.id,

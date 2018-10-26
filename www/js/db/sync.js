@@ -45,7 +45,7 @@ function($http, nodes, settingsManager, desk) {
         method: 'POST',
         url: settings.server+'/sync.json',
         data: self.buildDataForServer(tables)
-      };
+      }
 
       return $http(req).catch((response) => {
         throw response.data || 'Sync error'
@@ -72,9 +72,9 @@ function($http, nodes, settingsManager, desk) {
       )
       if (rows.length == 0) return
       //
-      return $$db.query(
-        "INSERT OR REPLACE INTO nodes (id, name, description, category, is_deleted, sync) " +
-        "VALUES (?, ?, ?, ?, ?, 'original')",
+      return $$db.query(`
+        INSERT OR REPLACE INTO nodes (id, name, description, category, is_deleted, sync)
+        VALUES (?, ?, ?, ?, ?, 'original')`,
         rows
       )
     }
@@ -85,11 +85,11 @@ function($http, nodes, settingsManager, desk) {
       data.links.forEach((link) =>
         links.push([link.id, link.parent_id, link.child_id, link.weight, to01(link.is_deleted)])
       )
-      if (links.length > 0) return
+      if (links.length == 0) return
 
       return $$db.query(
-        "INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, is_deleted, sync) " +
-        "VALUES (?, ?, ?, ?, ?, 'original')",
+        `INSERT OR REPLACE INTO links (id, parent_id, child_id, weight, is_deleted, sync)
+        VALUES (?, ?, ?, ?, ?, 'original')`,
         links
       )
     }
